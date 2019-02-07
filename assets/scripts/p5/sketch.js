@@ -1,7 +1,10 @@
+const rockets = [new Rocket(), new Rocket(100, 100)]
+
 function setup() {
-    createCanvas(750, 750);
+    createCanvas(600, 600);
 }
 
 function draw() {
-    background(0, 5, 60);
+    background(255, 255, 255);
+    rockets.forEach(rocket => rocket.display())
 }
