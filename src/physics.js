@@ -87,13 +87,17 @@ function updatePhysics(){
 			var theirPosition = details.theirCollider.getPosition();
 			var theirWidth = details.theirCollider.w;
 			
+			
+			
 			if(myPosition.x < theirPosition.x){
 				//Colliding from left
-				physicsObjects[i].position.x = theirPosition.x - myWidth;
+				var difference = theirPosition.x - (myPosition.x+myWidth);
+				physicsObjects[i].position.x += difference;
 			}
 			else{
 				//Colliding from right
-				physicsObjects[i].position.x = theirPosition.x + theirWidth;
+				var difference = myPosition.x - (theirPosition.x+theirWidth);
+				physicsObjects[i].position.x -= difference;
 			}
 			
 			
@@ -109,9 +113,9 @@ function updatePhysics(){
 			physicsObjects[i].position.y -= physicsObjects[i].velocity.y;
 			
 			
-			//Check if colliding from left or right
+			//Check if colliding from bottom or top
 			
-			//Get collider position and width
+			//Get collider position and height
 			var myPosition = details.myCollider.getPosition();
 			var myHeight = details.myCollider.h;
 			
@@ -120,11 +124,13 @@ function updatePhysics(){
 			
 			if(myPosition.y < theirPosition.y){
 				//Colliding from above
-				physicsObjects[i].position.y = theirPosition.y - myHeight;
+				var difference = theirPosition.y - (myPosition.y + myHeight);
+				physicsObjects[i].position.y += difference;
 			}
 			else{
 				//Colliding from below
-				physicsObjects[i].position.y = theirPosition.y + theirHeight;
+				var difference = myPosition.y - (theirPosition.y + theirHeight);
+				physicsObjects[i].position.y -= difference;
 			}
 		}
 
@@ -165,26 +171,30 @@ function checkCollision(obj1){
 
 
 //x y in top left corner
-function ColliderBox(position, offsetX, offsetY, w, h){
+function ColliderBox(transform, offsetX, offsetY, w, h){
 	this.offsetX = offsetX;
 	this.offsetY = offsetY;
 	this.w = w;
 	this.h = h;
-	this.position = position;
+	this.transform = transform;
 	
 	this.type = ColliderTypes.BOX;
 }
 ColliderBox.prototype.getPosition = function(){
-	return createVector(this.offsetX + this.position.x, this.offsetY + this.position.y);
+	return createVector(this.offsetX + this.transform.x, this.offsetY + this.transform.y);
 }
 
 /*WORK ON THIS*/
 //x y in center
-function ColliderCircle(position, x, y, r){
-	this.x = x;
-	this.y = y;
+function ColliderCircle(transform, x, y, r){
+	this.offsetX = offSetY;
+	this.offsetY = offsetY;
 	this.r = r;
-	this.position = position;
+	this.transform = transform;
 	
 	this.type = ColliderTypes.BOX;
+}
+
+ColliderCircle.prototype.getPosition = function(){
+	return createVector(this.offsetX + this.transform.x, this.offsetY + this.transform.y);
 }
