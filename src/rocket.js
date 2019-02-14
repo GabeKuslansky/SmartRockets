@@ -1,5 +1,5 @@
 
-function Rocket(x, y, id){
+function Rocket(x, y, id, DNA){
 	this.id = id;
 
 	//Top Left coords
@@ -12,6 +12,7 @@ function Rocket(x, y, id){
 	//Physics Colliders
 	this.physics = new PhysicsObject(this.position, true);
 	this.physics.addColliderBox(0, 0, this.w, this.h);
+	
 	
 	//Testing
 	//this.physics.force(-2, 0);
@@ -34,6 +35,7 @@ Rocket.prototype.update = function(){
 	
 	
 	//Update 
+	
 	
 	
 };
