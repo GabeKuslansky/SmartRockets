@@ -3,7 +3,7 @@ var physicsObjects = [];
 
 //Physics Object holds colliders and is used in the array of
 //physics objects
-function PhysicsObject(position, isRocket){
+function PhysicsObject(position, isRocket, callBack){
 	this.isRocket = isRocket;
 	this.colliders = [];
 	
@@ -11,9 +11,18 @@ function PhysicsObject(position, isRocket){
 	this.velocity = createVector();
 	this.acceleration = createVector();
 	
+	this.callBack = callBack;
+	
 	//add to list
 	physicsObjects.push(this);
 };
+
+//Callback function
+PhysicsObject.prototype.onCollision = function(){
+	if(this.callBack){
+		this.callBack();
+	}
+}
 
 //Add colliders
 PhysicsObject.prototype.addColliderBox = function(x, y, w, h){
@@ -26,6 +35,16 @@ PhysicsObject.prototype.addColliderCircle = function(x, y, r){
 //Force
 PhysicsObject.prototype.applyForce = function(x, y){
 	this.acceleration.add(createVector(x, y));
+};
+
+//Delete from objects
+PhysicsObject.prototype.deletePhysics = function(){
+	for(var i = 0; i < physicsObjects.size(); i++){
+		if(this == physicsObjects[i]){
+			physics.splice(i, 1);
+			break;
+		}
+	}
 };
 
 
@@ -72,6 +91,9 @@ function updatePhysics(){
 		physicsObjects[i].position.x += physicsObjects[i].velocity.x;
 		var details = checkCollision(physicsObjects[i]);
 		if(details.collision){
+			//Callback
+			physicsObjects[i].onCollision();
+			
 			//X Collision
 			
 			//Undo movement
@@ -108,6 +130,9 @@ function updatePhysics(){
 		physicsObjects[i].position.y += physicsObjects[i].velocity.y;
 		details = checkCollision(physicsObjects[i]);
 		if(details.collision){
+			//Callback
+			physicsObjects[i].onCollision();
+			
 			
 			//Undo movement
 			physicsObjects[i].position.y -= physicsObjects[i].velocity.y;
