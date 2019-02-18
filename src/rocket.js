@@ -10,8 +10,10 @@ function Rocket(x, y, id, DNA){
 	this.h = 60;
 	
 	//Physics Colliders
-	this.physics = new PhysicsObject(this.position, true);
+	this.physics = new PhysicsObject(this.position, true, this.onCollision);
 	this.physics.addColliderBox(0, 0, this.w, this.h);
+	
+	this.crashed = false;
 	
 	
 	//Testing
@@ -39,3 +41,7 @@ Rocket.prototype.update = function(){
 	
 	
 };
+//Collided
+Rocket.prototype.onCollision = function(){
+	console.log("callback");
+}
