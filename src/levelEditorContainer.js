@@ -3,8 +3,9 @@ function LevelEditorContainer(width, height) {
     this.y = height-100;
     this.w = width;
     this.h = 100;
-    this.marginX = 25;
-    this.marginY = 25;
+    this.isHoldingObject = false;
+    this.marginX = 120;
+    this.marginY = 20;
     this.offsetX = 15;
     this.color = [150, 155, 155];
     this.borderWidth = 5;
@@ -26,7 +27,9 @@ LevelEditorContainer.prototype.draw = function() {
 }
 
 LevelEditorContainer.prototype.update = function() {
-
+    if (mouseIsPressed) {
+        //const touchingObject = this.obstacles.forEach(x => x.checkMouse())
+    }
 }
 
 LevelEditorContainer.prototype.drawObstacles = function() {
@@ -34,7 +37,7 @@ LevelEditorContainer.prototype.drawObstacles = function() {
 }
 
 LevelEditorContainer.prototype.getObstacles = function() {
-    return [new Box(true)];
+    return [new Box(), new VerticalLine()];
 }
 
 LevelEditorContainer.prototype.generateSpawnPoints = function() {
@@ -42,5 +45,6 @@ LevelEditorContainer.prototype.generateSpawnPoints = function() {
     this.obstacles.forEach(function(obstacle, i) {
         obstacle.position.x = (i * marginX) + offsetX;
         obstacle.position.y = y + marginY;
+        obstacle.protoype.addHandler = thisfunction
     });
 }
