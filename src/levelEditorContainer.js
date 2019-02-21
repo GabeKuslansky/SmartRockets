@@ -45,6 +45,6 @@ LevelEditorContainer.prototype.generateSpawnPoints = function() {
     this.obstacles.forEach(function(obstacle, i) {
         obstacle.position.x = (i * marginX) + offsetX;
         obstacle.position.y = y + marginY;
-        obstacle.protoype.addHandler = thisfunction
+        //obstacle.protoype.addHandler = addClickHandler
     });
 }
