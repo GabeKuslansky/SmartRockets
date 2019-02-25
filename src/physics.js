@@ -3,7 +3,13 @@ var physicsObjects = [];
 
 //Physics Object holds colliders and is used in the array of
 //physics objects
-function PhysicsObject(position, isRocket){
+//Arguments
+//	position: position of object
+//	isRocket: boolean of wheather object is a rockets
+//	ref:	reference to the object physicsObject is attatch to
+//	callback:	callback function on collision
+// ref and callback are optional.
+function PhysicsObject(position, isRocket, ref, callBack){
 	this.isRocket = isRocket;
 	this.colliders = [];
 	
@@ -11,9 +17,20 @@ function PhysicsObject(position, isRocket){
 	this.velocity = createVector();
 	this.acceleration = createVector();
 	
+	this.ref = ref;
+	this.callBack = callBack;
+	
 	//add to list
 	physicsObjects.push(this);
 };
+
+//Callback function
+PhysicsObject.prototype.onCollision = function(){
+	if(this.callBack){
+		//pass in reference to callback function
+		this.callBack(this.ref);
+	}
+}
 
 //Add colliders
 PhysicsObject.prototype.addColliderBox = function(x, y, w, h){
@@ -24,8 +41,19 @@ PhysicsObject.prototype.addColliderCircle = function(x, y, r){
 };
 
 //Force
-PhysicsObject.prototype.applyForce = function(x, y){
-	this.acceleration.add(createVector(x, y));
+//force : a p5 vector which is added to acceleration
+PhysicsObject.prototype.applyForce = function(force){
+	this.acceleration.add(force);
+};
+
+//Delete from objects
+PhysicsObject.prototype.deletePhysics = function(){
+	for(var i = 0; i < physicsObjects.length; i++){
+		if(this == physicsObjects[i]){
+			physicsObjects.splice(i, 1);
+			break;
+		}
+	}
 };
 
 
@@ -34,6 +62,11 @@ var ColliderTypes = {
 	BOX: 0,
 	CIRCLE: 1
 };
+
+//find point in box
+function pointInBox(pointX, pointY, boxX, boxY, boxW, boxH){
+	return (pointX < boxX+boxW && pointX > boxX && pointY > boxY && pointY < boxY+boxH);
+}
 
 
 //Compares different types of colliders for intersection
@@ -72,6 +105,9 @@ function updatePhysics(){
 		physicsObjects[i].position.x += physicsObjects[i].velocity.x;
 		var details = checkCollision(physicsObjects[i]);
 		if(details.collision){
+			//Callback
+			physicsObjects[i].onCollision();
+			
 			//X Collision
 			
 			//Undo movement
@@ -87,13 +123,17 @@ function updatePhysics(){
 			var theirPosition = details.theirCollider.getPosition();
 			var theirWidth = details.theirCollider.w;
 			
+			
+			
 			if(myPosition.x < theirPosition.x){
 				//Colliding from left
-				physicsObjects[i].position.x = theirPosition.x - myWidth;
+				var difference = theirPosition.x - (myPosition.x+myWidth);
+				physicsObjects[i].position.x += difference;
 			}
 			else{
 				//Colliding from right
-				physicsObjects[i].position.x = theirPosition.x + theirWidth;
+				var difference = myPosition.x - (theirPosition.x+theirWidth);
+				physicsObjects[i].position.x -= difference;
 			}
 			
 			
@@ -104,14 +144,17 @@ function updatePhysics(){
 		physicsObjects[i].position.y += physicsObjects[i].velocity.y;
 		details = checkCollision(physicsObjects[i]);
 		if(details.collision){
+			//Callback
+			physicsObjects[i].onCollision();
+			
 			
 			//Undo movement
 			physicsObjects[i].position.y -= physicsObjects[i].velocity.y;
 			
 			
-			//Check if colliding from left or right
+			//Check if colliding from bottom or top
 			
-			//Get collider position and width
+			//Get collider position and height
 			var myPosition = details.myCollider.getPosition();
 			var myHeight = details.myCollider.h;
 			
@@ -120,11 +163,13 @@ function updatePhysics(){
 			
 			if(myPosition.y < theirPosition.y){
 				//Colliding from above
-				physicsObjects[i].position.y = theirPosition.y - myHeight;
+				var difference = theirPosition.y - (myPosition.y + myHeight);
+				physicsObjects[i].position.y += difference;
 			}
 			else{
 				//Colliding from below
-				physicsObjects[i].position.y = theirPosition.y + theirHeight;
+				var difference = myPosition.y - (theirPosition.y + theirHeight);
+				physicsObjects[i].position.y -= difference;
 			}
 		}
 
@@ -165,26 +210,30 @@ function checkCollision(obj1){
 
 
 //x y in top left corner
-function ColliderBox(position, offsetX, offsetY, w, h){
+function ColliderBox(transform, offsetX, offsetY, w, h){
 	this.offsetX = offsetX;
 	this.offsetY = offsetY;
 	this.w = w;
 	this.h = h;
-	this.position = position;
+	this.transform = transform;
 	
 	this.type = ColliderTypes.BOX;
 }
 ColliderBox.prototype.getPosition = function(){
-	return createVector(this.offsetX + this.position.x, this.offsetY + this.position.y);
+	return createVector(this.offsetX + this.transform.x, this.offsetY + this.transform.y);
 }
 
 /*WORK ON THIS*/
 //x y in center
-function ColliderCircle(position, x, y, r){
-	this.x = x;
-	this.y = y;
+function ColliderCircle(transform, x, y, r){
+	this.offsetX = offSetY;
+	this.offsetY = offsetY;
 	this.r = r;
-	this.position = position;
+	this.transform = transform;
 	
 	this.type = ColliderTypes.BOX;
+}
+
+ColliderCircle.prototype.getPosition = function(){
+	return createVector(this.offsetX + this.transform.x, this.offsetY + this.transform.y);
 }

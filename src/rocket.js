@@ -1,48 +1,117 @@
 
-function Rocket(x, y, id){
-	this.id = id;
+function Rocket(x, y, DNA, target){
 
 	//Top Left coords
 	this.position = new createVector(x, y);
-
+	
 	//Dimensions
-	this.w = 20;
-	this.h = 60;
-
+	this.w = 50;
+	this.h = 50;
+	
 	//Physics Colliders
-	this.physics = new PhysicsObject(this.position, true);
+	this.physics = new PhysicsObject(this.position, true, this, this.onCollision);
 	this.physics.addColliderBox(0, 0, this.w, this.h);
+	
+	//If crashed
+	this.crashed = false;
+	
+	//If success
+	this.success = false;
+	
+	this.fitness = 0;
+		
+	//Index of DNA
+	this.currentDNA = 0;
+	
+	//target
+	this.target = target;
+	
+	//If deleted
+	this.deleted = false;
+	
+	this.DNA = DNA;
+	
+	this.angle = 0;
+	
+	//Testing
+	//this.physics.velocity = p5.Vector.random2D();
+	//this.physics.velocity = createVector(1, 0);
+	//this.physics.force(-2, 0);
 }
 
-//Get ID
-Rocket.prototype.getID = () => this.id;
 
 //Draw Rocket
 Rocket.prototype.draw = function(){
-	rect(this.position.x, this.position.y, this.w, this.h);
-};
+	
+	
+	push();
+	translate(this.position.x + this.w/2, this.position.y + this.h/2);
+	rotate(this.angle);
+	rotate(PI/2);
+	fill(100, 144, 159);
+	triangle(0, -this.h/2,
+			-this.w/2, this.h/2,
+			this.w/2, this.h/2);
+	pop();
+}
+
+
 
 //Update Rocket
 Rocket.prototype.update = function(){
-	this.enableInput();
-};
+
+	//Update crashed
+	if(this.crashed == true){
+		
+		//Delete rocket if not deleted
+		if(!this.deleted)
+			this.deleteRocket();
+
+	}
+	else if(!this.deleted){ //Rocket alive
+	
+		//Update Logic//
+		
+		//Check if center of rocket is within radius of target
+		if(dist(this.position.x + this.w/2, this.position.y + this.h/2, this.target.position.x, this.target.position.y) <= this.target.radius){
+			this.success = true;
+			this.deleteRocket();
+		}
+		else{
+			//Force
+			this.angle = this.physics.velocity.heading();
+			this.physics.applyForce(this.DNA.genes[this.currentDNA]);
+			this.currentDNA++;
+		}
+	}
+	
+}
+//Collided
+Rocket.prototype.onCollision = function(object){
+	
+	object.crashed = true;
+}
 
 
-Rocket.prototype.enableInput = () => {
-	const speed = 10;
+//Calculate Fitness
+Rocket.prototype.calcFitness = function()
+{
+	var d = dist(this.position.x+this.w/2, this.position.y+this.h/2, this.target.position.x, this.target.position.y);
+	this.fitness = 1/d;
+	if(this.crashed)
+		this.fitness /= 100;
+	if(this.success){
+		this.fitness *= 100;
+	}
+	
+}
 
-	pop.getRocketByIndex(0).physics.velocity.x = 0;
-	pop.getRocketByIndex(0).physics.velocity.y = 0;
-	if (keyIsDown(87)) {
-		pop.getRocketByIndex(0).physics.velocity.y -= speed;
-	}
-	if (keyIsDown(65)) {
-		pop.getRocketByIndex(0).physics.velocity.x -= speed;
-	}
-	if (keyIsDown(83)) {
-		pop.getRocketByIndex(0).physics.velocity.y += speed;
-	}
-	if (keyIsDown(68)) {
-		pop.getRocketByIndex(0).physics.velocity.x += speed;
+//Delete Rocket
+Rocket.prototype.deleteRocket = function()
+{
+	//Delete physics object
+	if(this.physics != null){
+		this.physics.deletePhysics();
+		this.physics = null;
 	}
 }
