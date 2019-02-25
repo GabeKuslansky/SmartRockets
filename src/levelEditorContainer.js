@@ -1,7 +1,7 @@
 function IconHolder(obstacle, x, y){
 	this.obstacle = obstacle;
 	this.x = x;
-	this.y - y;
+	this.y = y;
 }
 
 
