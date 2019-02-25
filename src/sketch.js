@@ -21,6 +21,7 @@ function draw() {
 	background(0, 100, 200);
 
   //Update Input
+  editor.update();
   
   //Update AI
   population.update();

@@ -40,9 +40,18 @@ LevelEditorContainer.prototype.draw = function() {
 }
 
 LevelEditorContainer.prototype.update = function() {
-    if (mouseIsPressed) {
-        //const touchingObject = this.obstacles.forEach(x => x.checkMouse())
-    }
+	
+	//Check if mouse is hovering
+	var hover = false;
+	for(var i = 0; i < this.obstacles.length && !hover; i++){
+		//Check if mouse clicked icon
+		if(eval(this.obstacles[i].obstacle + ".mouseIntersectsIcon(" + this.obstacles[i].x + ", " + this.obstacles[i].y + ")"))
+			hover = true;
+	}
+	if(hover)
+		cursor(HAND);
+	else
+		cursor(ARROW);
 }
 
 LevelEditorContainer.prototype.mousePressed = function(){
