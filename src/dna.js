@@ -13,8 +13,6 @@ function DNA(genes)
 		this.genes = genes;
 	}
 
-////////////////////////////////////
-
 }
 
 DNA.crossoverRandom = function(parentA, parentB)
@@ -34,6 +32,7 @@ DNA.crossoverRandom = function(parentA, parentB)
 	}
 	return new DNA(newgenes);
 }
+
 DNA.crossoverMidpoint = function(parentA, parentB)
 {
 	var newgenes = [];
@@ -44,7 +43,6 @@ DNA.crossoverMidpoint = function(parentA, parentB)
 		newgenes.push(parentB.genes[i]);
 	return new DNA(newgenes);
 }
-
 
 DNA.prototype.mutate = function()
 {

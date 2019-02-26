@@ -1,12 +1,12 @@
-
 function Rocket(x, y, DNA, target){
 
 	//Top Left coords
-	this.position = new createVector(x, y);
+    this.position = new createVector(x, y);
+    this.color = (random(255), random(255), random(255));
 	
 	//Dimensions
-	this.w = 50;
-	this.h = 50;
+	this.w = 25;
+	this.h = 25;
 	
 	//Physics Colliders
 	this.physics = new PhysicsObject(this.position, true, this, this.onCollision);
@@ -39,7 +39,6 @@ function Rocket(x, y, DNA, target){
 	//this.physics.force(-2, 0);
 }
 
-
 //Draw Rocket
 Rocket.prototype.draw = function(){
 	
@@ -48,14 +47,12 @@ Rocket.prototype.draw = function(){
 	translate(this.position.x + this.w/2, this.position.y + this.h/2);
 	rotate(this.angle);
 	rotate(PI/2);
-	fill(100, 144, 159);
+	fill(this.color, 145);
 	triangle(0, -this.h/2,
 			-this.w/2, this.h/2,
 			this.w/2, this.h/2);
 	pop();
 }
-
-
 
 //Update Rocket
 Rocket.prototype.update = function(){
@@ -84,14 +81,13 @@ Rocket.prototype.update = function(){
 			this.currentDNA++;
 		}
 	}
-	
 }
+
 //Collided
 Rocket.prototype.onCollision = function(object){
 	
 	object.crashed = true;
 }
-
 
 //Calculate Fitness
 Rocket.prototype.calcFitness = function()

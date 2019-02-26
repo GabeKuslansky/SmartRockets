@@ -1,4 +1,3 @@
-
 var boxScaleX = 1/3;
 var boxScaleY = .8;
 var boxOffsetX = 0;
