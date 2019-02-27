@@ -2,7 +2,7 @@ function Rocket(x, y, DNA, target){
 
 	//Top Left coords
     this.position = new createVector(x, y);
-    this.color = (random(255), random(255), random(255));
+    this.color = [random(255), random(255), random(255)];
 	
 	//Dimensions
 	this.w = 25;
@@ -50,7 +50,7 @@ Rocket.prototype.draw = function(){
 	translate(this.position.x + this.w/2, this.position.y + this.h/2);
 	rotate(this.angle);
 	rotate(PI/2);
-	fill(this.color, 145);
+	fill(...this.color, 145);
 	triangle(0, -this.h/2,
 			-this.w/2, this.h/2,
 			this.w/2, this.h/2);
@@ -95,6 +95,11 @@ Rocket.prototype.onCollision = function(object){
 //Calculate Fitness
 Rocket.prototype.calcFitness = function()
 {
+	
+	//Check if success. Rockets could make it on the last frame
+	if(dist(this.position.x + this.w/2, this.position.y + this.h/2, this.target.position.x, this.target.position.y) <= this.target.radius)
+		this.success = true;
+	
 	var d = dist(this.position.x+this.w/2, this.position.y+this.h/2, this.target.position.x, this.target.position.y);
 	if(this.success)
 		this.fitness = 1/this.target.radius;

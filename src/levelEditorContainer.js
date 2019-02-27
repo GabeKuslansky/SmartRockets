@@ -26,10 +26,13 @@ function LevelEditorContainer(width, height) {
 
 LevelEditorContainer.prototype.draw = function() {
     if (this.display) {
+		push();
         fill(...this.color, this.opacity);
         stroke(0)
         strokeWeight(this.borderWidth);
         rect(this.x, this.y, this.w, this.h);
+		pop();
+		
         this.drawObstacles();
 		
 		

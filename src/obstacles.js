@@ -9,11 +9,18 @@ function BoxObstacle(x, y){
 	this.position = createVector(x, y);
 	this.physics = new PhysicsObject(this.position, false);
 	this.physics.addColliderBox(0, 0, BoxObstacle.getWidth(), BoxObstacle.getHeight());
-	
+		
+}
+
+BoxObstacle.getColor = function(){
+	return [145, 156, 1];
 }
 
 BoxObstacle.prototype.draw = function(){
+	push();
+	fill(...BoxObstacle.getColor());
 	rect(this.position.x, this.position.y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
+	pop();
 }
 
 //Delete Obstacle
@@ -27,7 +34,10 @@ BoxObstacle.prototype.deleteObstacle = function()
 }
 
 BoxObstacle.drawIcon = function(x, y, useOffset){
+	push()
+	fill(...BoxObstacle.getColor());
 	rect(x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY);
+	pop();
 }
 
 BoxObstacle.mouseIntersectsIcon = function(boxPosX, boxPosY){
@@ -43,5 +53,8 @@ BoxObstacle.getHeight = function(){
 
 //Draw obstacle no reference to class
 BoxObstacle.draw = function(x, y){
+	push();
+	fill(...BoxObstacle.getColor());
 	rect(x, y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
+	pop();
 }

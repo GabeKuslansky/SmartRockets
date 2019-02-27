@@ -46,8 +46,11 @@ Population.prototype.draw = function(){
 	
 	push();
 	textSize(32);
-	fill(255, 145, 155);
-	text("Max Fitness: " + int(this.maxFitness*10000), 10, 30); 
+	fill(55, 145, 155);
+	if(this.maxFitness == 1/this.target.radius)
+		text("Max Fitness: MAX", 10, 30); 
+	else
+		text("Max Fitness: " + int(this.maxFitness*10000), 10, 30); 
 	pop();
 
 };
@@ -130,6 +133,8 @@ function Target(x, y, radius){
 }
 //Draw
 Target.prototype.draw = function(){
-	
+	push();
+	fill(200, 0, 0);
 	circle(this.position.x, this.position.y, this.radius);
+	pop();
 }

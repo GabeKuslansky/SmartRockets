@@ -5,9 +5,21 @@ let width = 600, height = 600;
 
 var arrayOfObjects = []
 
+var canvas;
+
+function centerCanvas() {
+  var x = (windowWidth - width) / 2;
+  var y = (windowHeight - height) / 2;
+  canvas.position(x, y);
+}
+
+function windowResized(){
+	centerCanvas();
+}
+
 function setup() {
-  createCanvas(width, height);
-  
+  canvas = createCanvas(width, height);
+  centerCanvas();
   //Create population
   population = new Population(50, 150, width/2, height-100);
   arrayOfObjects.push(new BoxObstacle(150, 250));
@@ -18,8 +30,10 @@ function setup() {
 function draw() {
 
 	//Clear
-	background(0, 100, 200);
+	background(204, 198, 198);
 
+	//Stroke weight
+	strokeWeight(5);
   //Update Input
   editor.update();
   
