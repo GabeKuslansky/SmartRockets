@@ -110,6 +110,7 @@ Population.prototype.nextGeneration = function(){
 		this.rockets[i].DNA.mutate();
 	}
 	
+	
 }
 
 
