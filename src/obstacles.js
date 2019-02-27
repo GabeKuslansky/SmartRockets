@@ -33,9 +33,13 @@ BoxObstacle.prototype.deleteObstacle = function()
 	}
 }
 
-BoxObstacle.drawIcon = function(x, y, useOffset){
+BoxObstacle.drawIcon = function(x, y){
 	push()
-	fill(...BoxObstacle.getColor());
+	var color = BoxObstacle.getColor();
+	if(pointInBox(mouseX, mouseY, x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY))
+		fill(color[0]+50, color[1]+50, color[2]+50);
+	else
+		fill(...color);
 	rect(x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY);
 	pop();
 }
