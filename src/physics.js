@@ -36,7 +36,6 @@ PhysicsObject.prototype.onCollision = function(){
 PhysicsObject.prototype.addColliderBox = function(x, y, w, h){
 	this.colliders.push(new ColliderBox(this.position, x, y, w, h));
 };
-
 PhysicsObject.prototype.addColliderCircle = function(x, y, r){
 	this.colliders.push(new ColliderCircle(this.position, x, y, r));
 };
@@ -48,14 +47,15 @@ PhysicsObject.prototype.applyForce = function(force){
 };
 
 //Delete from objects
-PhysicsObject.prototype.deletePhysics = function () {
-    for (var i = 0; i < physicsObjects.length; i++) {
-        if (this == physicsObjects[i]) {
-            physicsObjects.splice(i, 1);
-            break;
-        }
-    }
+PhysicsObject.prototype.deletePhysics = function(){
+	for(var i = 0; i < physicsObjects.length; i++){
+		if(this == physicsObjects[i]){
+			physicsObjects.splice(i, 1);
+			break;
+		}
+	}
 };
+
 
 //Types of Colliders
 var ColliderTypes = {
@@ -67,6 +67,7 @@ var ColliderTypes = {
 function pointInBox(pointX, pointY, boxX, boxY, boxW, boxH){
 	return (pointX < boxX+boxW && pointX > boxX && pointY > boxY && pointY < boxY+boxH);
 }
+
 
 //Compares different types of colliders for intersection
 function intersects(obj1, obj2){

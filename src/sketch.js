@@ -1,3 +1,4 @@
+
 var population;
 
 let width = 600, height = 600;
