@@ -9,7 +9,7 @@ function setup() {
   createCanvas(width, height);
   
   //Create population
-  population = new Population(50, 300, width/2, height-100);
+  population = new Population(50, 150, width/2, height-100);
   arrayOfObjects.push(new BoxObstacle(150, 250));
   editor = new LevelEditorContainer(width, height);
   

@@ -6,7 +6,7 @@ function Population(size, lifespan, startx, starty){
 	this.startx = startx;
 	this.starty = starty;
 	
-	this.target = new Target(300, 50, 20);
+	this.target = new Target(300, 50, 40);
 		
 	//Create population
 	this.createRandomPop();
@@ -47,7 +47,7 @@ Population.prototype.draw = function(){
 	push();
 	textSize(32);
 	fill(255, 145, 155);
-	text("Max Fitness: " + int(this.maxFitness*1000), 10, 30); 
+	text("Max Fitness: " + int(this.maxFitness*10000), 10, 30); 
 	pop();
 
 };

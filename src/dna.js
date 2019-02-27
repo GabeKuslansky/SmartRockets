@@ -1,4 +1,4 @@
-let mutateChance = 0.05;
+let mutateChance = 0.001;
 function DNA(genes) 
 {
 	//Generate random if passing in a number
