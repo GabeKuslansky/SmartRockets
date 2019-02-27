@@ -95,9 +95,9 @@ Rocket.prototype.calcFitness = function()
 	var d = dist(this.position.x+this.w/2, this.position.y+this.h/2, this.target.position.x, this.target.position.y);
 	this.fitness = 1/d;
 	if(this.crashed)
-		this.fitness /= 10;
+		this.fitness /= 1.5;
 	if(this.success){
-		this.fitness *= 10;
+		this.fitness *= 1.5;
 	}
 	
 }
