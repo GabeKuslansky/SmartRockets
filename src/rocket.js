@@ -18,6 +18,9 @@ function Rocket(x, y, DNA, target){
 	//If success
 	this.success = false;
 	
+	//If mating or not. used in population
+	this.mating = false;
+	
 	this.fitness = 0;
 		
 	//Index of DNA
@@ -97,7 +100,7 @@ Rocket.prototype.calcFitness = function()
 	if(this.crashed)
 		this.fitness /= 10;
 	if(this.success){
-		this.fitness *= 10;
+		this.fitness = 1/this.target.radius;
 	}
 	
 	

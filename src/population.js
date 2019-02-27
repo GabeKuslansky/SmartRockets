@@ -10,6 +10,8 @@ function Population(size, lifespan, startx, starty){
 		
 	//Create population
 	this.createRandomPop();
+	
+	this.maxFitness = 0;
 }
 
 //Create random population
@@ -41,6 +43,13 @@ Population.prototype.draw = function(){
 		this.rockets[i].draw();
 	}
 	this.target.draw();
+	
+	push();
+	textSize(32);
+	fill(255, 145, 155);
+	text("Max Fitness: " + int(this.maxFitness*1000), 10, 30); 
+	pop();
+
 };
 
 //Get rocket by index
@@ -51,22 +60,18 @@ Population.prototype.getRocketByIndex = function(index){
 //Create New Generation
 Population.prototype.nextGeneration = function(){
 	
-	//Calculate fitness
+	//Calculate fitness and max fitness
+	this.maxFitness = 0;
 	for(var i = 0; i < this.rockets.length; i++){
 		this.rockets[i].calcFitness();
+		if(this.maxFitness < this.rockets[i].fitness)
+			this.maxFitness = this.rockets[i].fitness;
 	}
-	
-	//Sort rockets by fitness value. 0 index the best
-	this.rockets.sort(function(a, b){return b.fitness - a.fitness});
-	
-	//Max fitness un-normalized
-	var maxFitness = this.rockets[0].fitness;
-	
-	//console.log(maxFitness);
+		
 	
 	//Normalize fitness
 	for(var i = 0; i < this.rockets.length; i++){
-		this.rockets[i].fitness /= maxFitness;
+		this.rockets[i].fitness /= this.maxFitness;
 	}
 	
 	
