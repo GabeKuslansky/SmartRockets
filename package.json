@@ -1,0 +1,35 @@
+{
+  "name": "smartrockets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "watch": "nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabekuslansky/smartrockets.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gabekuslansky/smartrockets/issues"
+  },
+  "homepage": "https://github.com/gabekuslansky/smartrockets#readme",
+  "dependencies": {
+    "koa": "^2.7.0",
+    "koa-router": "^7.4.0",
+    "nedb-promises": "^3.0.2",
+    "webpack": "^4.29.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^8.0.5",
+    "node-daemon": "0.0.15",
+    "nodemon": "^1.18.10",
+    "webpack-cli": "^3.2.3"
+  }
+}
