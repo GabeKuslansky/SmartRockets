@@ -1,14 +1,22 @@
-<div class='column'>
-    {{#each levels}}
-        <a href='/level/{{this._id}}'>
-	        <div class='levelPreview'>
-                <img src={{this.image}} alt='Level preview'/>
-		        <div id="icons">
-                    <i class='fa fas-person'></i>{{this.author}}
-                    <i class='fa fas-eye'></i>{{this.playCount}}
-                    <i class='fa fas-clock'></i>{{this.fastestCompletionTime}}
+<div class="container">
+        <h2 class='text-dark text-center mb-4'>Try community created levels</h2>
+    <div class="row justify-md-center">
+        {{#each levels}}
+        <div class="wow fadeInUp col-md-4 p-3" data-wow-delay="0.2s">
+            <a href='/level/{{this._id}}'>
+                <div class="card">
+                    <div class="view overlay">
+                        <img class="card-img-top" src='https://i.ytimg.com/vi/UxRbv9frRJs/maxresdefault.jpg' class='img-fluid' alt='img-fluid'/>
+                            <a href="/level/{{this._id}}">
+                                <div class="mask waves-effect waves-light rgba-white-slight"></div>
+                            </a>
+                    </div>
+                    <div class="card-body">
+                        <h4 class='card-text'>By: {{this.metadata.author}} <i class='fa fa-user'></i></h4>
+                    </div>
                 </div>
-	        </div>
-        </a>
-    {{/each}}
+            </a>
+        </div>
+        {{/each}}
+    </div>
 </div>

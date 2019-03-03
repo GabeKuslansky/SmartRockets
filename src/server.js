@@ -1,3 +1,4 @@
+
 const Koa = require('koa');
 const hbs = require('koa-hbs');
 const serve = require('koa-static');
@@ -11,7 +12,7 @@ const { levelRouter } = require('./routes');
 const errorHandler = async (ctx, next) => {
     try {
         await next();
-        const status = ctx.status || 404;
+        const status     = ctx.status || 404;
         if (status === 404) {
             ctx.throw(404);
         }
