@@ -1,11 +1,11 @@
 
 const Koa = require('koa');
 const hbs = require('koa-hbs');
-const serve = require('koa-static');
+const serve = require('koa-static-server');
 
 const app = new Koa();
 
-app.use(serve(__dirname + '/public/'));
+app.use(serve({rootDir: __dirname + '/public/', rootPath: '/public' }));
 
 const { levelRouter } = require('./routes');
 
