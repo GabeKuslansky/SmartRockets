@@ -1,5 +1,6 @@
 
 const Koa = require('koa');
+const bodyParser = require('koa-bodyparser');
 const hbs = require('koa-hbs');
 const serve = require('koa-static-server');
 
@@ -22,6 +23,8 @@ const errorHandler = async (ctx, next) => {
 }
 
 app.use(errorHandler);
+
+app.use(bodyParser());
 
 app.use(hbs.middleware({ viewPath: __dirname + '/views', layoutsPath: __dirname + '/views/layouts', defaultLayout: 'defaultLayout', partialsPath: __dirname + '/views/partials' }));
 

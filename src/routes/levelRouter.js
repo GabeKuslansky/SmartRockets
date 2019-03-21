@@ -14,7 +14,7 @@ router.get('/', async (ctx, next) => {
 })
 
 .post('/level', async(ctx, next) => {
-    const level = formatLevelObject(ctx.params);
+    const level = await formatLevelObject(ctx.request.body);
     await levelsRepository.insert(level);
 })
 
@@ -38,9 +38,9 @@ router.get('/', async (ctx, next) => {
     await levelsRepository.insert({ level });
 })
 
-const getLatestIndex = async() => await levelsRepository.findOne({}, {index: 1})
+const getLatestIndex = async() => await levelsRepository.findOne({}).projection({index: 1});
 
-const formatLevelObject = params => {
+const formatLevelObject = async params => {
     const { levelStructure, author } = params;
     
     const metadata = {
@@ -49,9 +49,9 @@ const formatLevelObject = params => {
         highestCompletionTime: 0,
     }
 
-    const index = ++getLatestIndex();
-
-    return { index, levelStructure, metadata, created: Date.now() };
+    const index = await getLatestIndex();
+    
+    return { index: ++index, levelStructure, metadata };
 }
 
 module.exports = router;
