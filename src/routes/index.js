@@ -1,3 +1,7 @@
+const combineRouters = require('koa-combine-routers')
+const homeRouter = require('./homeRouter');
 const levelRouter = require('./levelRouter');
 
-module.exports = { levelRouter }
+const router = combineRouters(homeRouter, levelRouter);
+
+module.exports = router;

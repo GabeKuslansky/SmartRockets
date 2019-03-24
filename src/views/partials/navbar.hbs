@@ -9,5 +9,12 @@
           </a>
         </li>
       </ul>
+      {{#unless user}}
+        <span>
+          <a href='auth'>
+            <img id='googleSignIn' src="/public/images/btn_google_signin_light_normal_web.png" alt="">
+          </a>
+      {{/unless}}
+      </span>
     </nav>
   

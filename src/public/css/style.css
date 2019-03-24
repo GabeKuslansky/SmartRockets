@@ -1,0 +1,8 @@
+#googleSignIn:hover {
+    background: url('/public/images/btn_google_signin_light_focus_web.png');
+    cursor: pointer;
+}
+
+#googleSignIn:active {
+    background: url('/public/images/btn_google_signin_light_pressed_web.png');
+}
