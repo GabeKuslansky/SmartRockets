@@ -16,7 +16,7 @@ router.post('/', async(ctx, next) => {
     await levelsRepository.update({ _id: levelId }, { highestCompletionTime: completetionTime});
 })
 
-.get('/:index', async(ctx, next) => await levelsRepository.find({index: {$gt: ctx.params.index, $lt: ctx.params.index+15}}))
+.get('/group/:index', async(ctx, next) => await levelsRepository.skip(15*ctx.params.index).find({}).sort({ index: 1 }).limit(15))
 
 .get('/:id', async (ctx, next) => {
     const level = await levelsRepository.findOne({_id: ctx.params.id});
