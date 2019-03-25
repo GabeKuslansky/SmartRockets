@@ -1,7 +1,7 @@
 
 var pop;
 
-let speed = 10;
+let speed = 5;
 
 let width = 600, height = 600;
 function setup() {
@@ -12,7 +12,10 @@ function setup() {
   pop.getIDs();
   
   phys = new PhysicsObject(createVector(width/2, 60), false)
-  phys.addColliderBox(0, 0, 55, 55);
+  phys.addColliderCircle(0, 0, 20);
+  
+  phys2 = new PhysicsObject(createVector(100, 100), false)
+  phys2.addColliderBox(0, 0, 50, 50);
 }
 
 function draw() {
@@ -44,7 +47,8 @@ function draw() {
   
   //Render
   pop.draw();
-  rect(width/2, 60, 55, 55);
+  circle(width/2, 60, 20);
+  rect(100, 100, 50, 50);
   
   
   //console.log(pop.getRocketByIndex(0).physics.velocity);

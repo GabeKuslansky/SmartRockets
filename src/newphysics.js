@@ -149,8 +149,8 @@ ColliderBox.prototype.getSATPoly = function(){
 }
 
 //x y in center
-function ColliderCircle(transform, x, y, r){
-	this.offsetX = offSetY;
+function ColliderCircle(transform, offsetX, offsetY, r){
+	this.offsetX = offsetX;
 	this.offsetY = offsetY;
 	this.r = r;
 	this.transform = transform;
@@ -159,7 +159,7 @@ function ColliderCircle(transform, x, y, r){
 }
 
 ColliderCircle.prototype.getSATCircle = function(){
-	return new SAT.createCirlce(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), this.r);
+	return new SAT.Circle(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), this.r);
 }
 /////////////////////////////////////////////////////////
 //Spatial Hashing
@@ -248,8 +248,8 @@ function updatePhysics(){
 			//Collision detected
 			
 			//Handle collision
-			physicsObjects[i].position.x += physicsObjects[i].velocity.x;
-			physicsObjects[i].position.y += physicsObjects[i].velocity.y;
+			physicsObjects[i].position.x -= response.overlapV.x;
+			physicsObjects[i].position.y -= response.overlapV.y;
 			physicsObjects[i].onCollision();
 		}		
 
@@ -269,12 +269,15 @@ function updatePhysics(){
 		if(checkCollision(rocketObjects[i], response)){
 			//Collision detected
 			//Handle collision
-			rocketObjects[i].position.x -= rocketObjects[i].velocity.x;
-			rocketObjects[i].position.y -= rocketObjects[i].velocity.y;
+			console.log(response.overlapV);
+			rocketObjects[i].position.x -= response.overlapV.x;
+			rocketObjects[i].position.y -= response.overlapV.y;
+			//rocketObjects[i].position.x -= rocketObjects[i].velocity.x;
+			//rocketObjects[i].position.y -= rocketObjects[i].velocity.y;
 			rocketObjects[i].onCollision();
 		}		
 
-	}			
+	}				
 }
 //////////////////////////////////////////////////////////////////////////////////
 function checkCollision(a, response){
@@ -305,18 +308,18 @@ function checkColliderCollision(colliderA, colliderB, response){
 	response.clear();
 	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.POLY){
 		//Poly Poly check
-		return SAT.testPolygonPolygon(colliderA.getSATPoly(), colliderB.getSATPoly(), response)
+		return SAT.testPolygonPolygon(colliderA.getSATPoly(), colliderB.getSATPoly(), response);
 	}
 	if(colliderA.type == ColliderTypes.CIRCLE && colliderB.type == ColliderTypes.POLY){
 		//Circle Poly check
-		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATPoly(), response)
+		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATPoly(), response);
 	}
 	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
 		//Poly Circle check
-		return SAT.testCirclePolygon(colliderB.getSATCircle(), colliderA.getSATPoly(), response)
+		return SAT.testPolygonCircle(colliderA.getSATPoly(), colliderB.getSATCircle(), response);
 	}
 	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
 		//Circle Circle check
-		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATCircle(), response)
+		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATCircle(), response);
 	}
 }
