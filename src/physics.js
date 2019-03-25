@@ -3,7 +3,13 @@ var physicsObjects = [];
 
 //Physics Object holds colliders and is used in the array of
 //physics objects
-function PhysicsObject(position, isRocket, callBack){
+//Arguments
+//	position: position of object
+//	isRocket: boolean of wheather object is a rockets
+//	ref:	reference to the object physicsObject is attatch to
+//	callback:	callback function on collision
+// ref and callback are optional.
+function PhysicsObject(position, isRocket, ref, callBack){
 	this.isRocket = isRocket;
 	this.colliders = [];
 	
@@ -11,6 +17,7 @@ function PhysicsObject(position, isRocket, callBack){
 	this.velocity = createVector();
 	this.acceleration = createVector();
 	
+	this.ref = ref;
 	this.callBack = callBack;
 	
 	//add to list
@@ -20,7 +27,8 @@ function PhysicsObject(position, isRocket, callBack){
 //Callback function
 PhysicsObject.prototype.onCollision = function(){
 	if(this.callBack){
-		this.callBack();
+		//pass in reference to callback function
+		this.callBack(this.ref);
 	}
 }
 
@@ -33,15 +41,16 @@ PhysicsObject.prototype.addColliderCircle = function(x, y, r){
 };
 
 //Force
-PhysicsObject.prototype.applyForce = function(x, y){
-	this.acceleration.add(createVector(x, y));
+//force : a p5 vector which is added to acceleration
+PhysicsObject.prototype.applyForce = function(force){
+	this.acceleration.add(force);
 };
 
 //Delete from objects
 PhysicsObject.prototype.deletePhysics = function(){
-	for(var i = 0; i < physicsObjects.size(); i++){
+	for(var i = 0; i < physicsObjects.length; i++){
 		if(this == physicsObjects[i]){
-			physics.splice(i, 1);
+			physicsObjects.splice(i, 1);
 			break;
 		}
 	}
@@ -53,6 +62,11 @@ var ColliderTypes = {
 	BOX: 0,
 	CIRCLE: 1
 };
+
+//find point in box
+function pointInBox(pointX, pointY, boxX, boxY, boxW, boxH){
+	return (pointX < boxX+boxW && pointX > boxX && pointY > boxY && pointY < boxY+boxH);
+}
 
 
 //Compares different types of colliders for intersection
