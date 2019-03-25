@@ -1,0 +1,1 @@
+axios.get('/level/VzDvqw0hyvNdFUbV').then(levelObj => level = levelObj);

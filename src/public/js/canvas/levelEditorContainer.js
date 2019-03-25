@@ -78,7 +78,7 @@ LevelEditorContainer.prototype.mouseReleased = function(){
 		if(checkCollision(obstacle.physics).collision)
 			obstacle.deleteObstacle();
 		else
-			arrayOfObjects.push(obstacle);
+			level.addObstacle(obstacle);
 		
 		this.isHoldingObject = false;
 	}

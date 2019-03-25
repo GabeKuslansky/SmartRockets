@@ -1,4 +1,4 @@
-const saveLevel = async() => {
-    const levelStructure = {}; //getLevelStructure();
-    await axios.post('/level', { levelStructure });
+const saveLevel = () => {
+   const levelStructure = level.serialize();
+    axios.post('/level', levelStructure);
 }

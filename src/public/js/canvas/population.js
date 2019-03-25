@@ -5,9 +5,7 @@ function Population(size, lifespan, startx, starty){
 	this.currentGene = 0;
 	this.startx = startx;
 	this.starty = starty;
-	
-	this.target = new Target(300, 50, 40);
-		
+			
 	//Create population
 	this.createRandomPop();
 	
@@ -18,7 +16,7 @@ function Population(size, lifespan, startx, starty){
 Population.prototype.createRandomPop = function(){
 	//Create population
 	for(var i = 0; i < this.size; i++){
-		this.rockets.push(new Rocket(this.startx, this.starty, new DNA(this.lifespan), this.target));
+		this.rockets.push(new Rocket(this.startx, this.starty, new DNA(this.lifespan), level.target));
 	}
 		
 }
@@ -42,12 +40,11 @@ Population.prototype.draw = function(){
 	for(var i = 0; i < this.rockets.length; i++){
 		this.rockets[i].draw();
 	}
-	this.target.draw();
 	
 	push();
 	textSize(32);
 	fill(55, 145, 155);
-	if(this.maxFitness == 1/this.target.radius)
+	if(this.maxFitness == 1/level.target.radius)
 		text("Max Fitness: MAX", 10, 30); 
 	else
 		text("Max Fitness: " + int(this.maxFitness*10000), 10, 30); 
@@ -109,7 +106,7 @@ Population.prototype.nextGeneration = function(){
 		while(parentA != parentB)
 			parentB = int(random(0, this.size-1));
 		
-		this.rockets.push(new Rocket(this.startx, this.starty, DNA.crossoverMidpoint(matingPool[parentA].DNA, matingPool[parentB].DNA), this.target));
+		this.rockets.push(new Rocket(this.startx, this.starty, DNA.crossoverMidpoint(matingPool[parentA].DNA, matingPool[parentB].DNA), level.target));
 	}
 	
 	
@@ -119,22 +116,4 @@ Population.prototype.nextGeneration = function(){
 	}
 	
 	
-}
-
-
-
-
-
-function Target(x, y, radius){
-	
-	this.position = createVector(x, y);
-	this.radius = radius;
-	
-}
-//Draw
-Target.prototype.draw = function(){
-	push();
-	fill(200, 0, 0);
-	circle(this.position.x, this.position.y, this.radius);
-	pop();
 }

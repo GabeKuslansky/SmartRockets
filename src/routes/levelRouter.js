@@ -23,25 +23,19 @@ router.post('/', async(ctx, next) => {
     ctx.render('playLevel', {title: `Running ${level.metadata.author}'s level`, level})
 })
 
-.get('/addFakeLevel', async (ctx, next) => {
-    const level = formatLevelObject({levelStructure: {}})
-    await levelsRepository.insert({ level });
-})
-
 const getLatestIndex = async() => await levelsRepository.findOne({}).projection({index: 1});
 
-const formatLevelObject = async params => {
-    const { levelStructure, author } = params;
-    
+const formatLevelObject = async levelStructure => {
+    console.log(levelStructure)
     const metadata = {
         views: 0,
-        author: author || 'someone',
+        author: 'someone',
         highestCompletionTime: 0,
     }
 
     const index = await getLatestIndex();
     
-    return { index: ++index, levelStructure, metadata };
+    return { index: 0, levelStructure, metadata };
 }
 
 module.exports = router;
