@@ -45,7 +45,6 @@ DNA.crossoverMidpoint = function(parentA, parentB)
 	return new DNA(newgenes);
 }
 
-
 DNA.prototype.mutate = function()
 {
 	for (var i = 0; i < this.genes.length; i++)

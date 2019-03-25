@@ -105,15 +105,13 @@ Population.prototype.nextGeneration = function(){
 }
 
 
-
-
-
 function Target(x, y, radius){
 	
 	this.position = createVector(x, y);
 	this.radius = radius;
 	
 }
+
 //Draw
 Target.prototype.draw = function(){
 	

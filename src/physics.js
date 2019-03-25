@@ -36,6 +36,7 @@ PhysicsObject.prototype.onCollision = function(){
 PhysicsObject.prototype.addColliderBox = function(x, y, w, h){
 	this.colliders.push(new ColliderBox(this.position, x, y, w, h));
 };
+
 PhysicsObject.prototype.addColliderCircle = function(x, y, r){
 	this.colliders.push(new ColliderCircle(this.position, x, y, r));
 };
@@ -56,7 +57,6 @@ PhysicsObject.prototype.deletePhysics = function(){
 	}
 };
 
-
 //Types of Colliders
 var ColliderTypes = {
 	BOX: 0,
@@ -67,7 +67,6 @@ var ColliderTypes = {
 function pointInBox(pointX, pointY, boxX, boxY, boxW, boxH){
 	return (pointX < boxX+boxW && pointX > boxX && pointY > boxY && pointY < boxY+boxH);
 }
-
 
 //Compares different types of colliders for intersection
 function intersects(obj1, obj2){
@@ -208,7 +207,6 @@ function checkCollision(obj1){
 	return new CollisionDetails(false, null, null);
 }
 
-
 //x y in top left corner
 function ColliderBox(transform, offsetX, offsetY, w, h){
 	this.offsetX = offsetX;
@@ -219,6 +217,7 @@ function ColliderBox(transform, offsetX, offsetY, w, h){
 	
 	this.type = ColliderTypes.BOX;
 }
+
 ColliderBox.prototype.getPosition = function(){
 	return createVector(this.offsetX + this.transform.x, this.offsetY + this.transform.y);
 }

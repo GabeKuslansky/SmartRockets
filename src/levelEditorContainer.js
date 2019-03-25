@@ -4,7 +4,6 @@ function IconHolder(obstacle, x, y){
 	this.y = y;
 }
 
-
 function LevelEditorContainer(width, height) {
     this.x = 0;
     this.y = height-100;
@@ -65,7 +64,8 @@ LevelEditorContainer.prototype.mousePressed = function(){
 		}
 	}
 	
-}  
+} 
+ 
 LevelEditorContainer.prototype.mouseReleased = function(){
 	
 	if(this.isHoldingObject){

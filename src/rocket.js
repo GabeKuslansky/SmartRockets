@@ -39,7 +39,6 @@ function Rocket(x, y, DNA, target){
 	//this.physics.force(-2, 0);
 }
 
-
 //Draw Rocket
 Rocket.prototype.draw = function(){
 	
@@ -54,8 +53,6 @@ Rocket.prototype.draw = function(){
 			this.w/2, this.h/2);
 	pop();
 }
-
-
 
 //Update Rocket
 Rocket.prototype.update = function(){
@@ -86,12 +83,12 @@ Rocket.prototype.update = function(){
 	}
 	
 }
+
 //Collided
 Rocket.prototype.onCollision = function(object){
 	
 	object.crashed = true;
 }
-
 
 //Calculate Fitness
 Rocket.prototype.calcFitness = function()
