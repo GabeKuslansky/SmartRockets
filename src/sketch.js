@@ -11,7 +11,7 @@ function setup() {
   pop = new Population(1, 100, width/4, 0);
   pop.getIDs();
   
-  phys = new PhysicsObject(createVector(width/2, 40), false)
+  phys = new PhysicsObject(createVector(width/2, 60), false)
   phys.addColliderBox(0, 0, 55, 55);
 }
 
@@ -44,7 +44,7 @@ function draw() {
   
   //Render
   pop.draw();
-  rect(width/2, 40, 55, 55);
+  rect(width/2, 60, 55, 55);
   
   
   //console.log(pop.getRocketByIndex(0).physics.velocity);

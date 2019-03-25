@@ -1,6 +1,6 @@
 //all physics objects
 var physicsObjects = [];
-var rocketObjects[];
+var rocketObjects = [];
 
 //box helper function corner coords
 //r : right x coordinate
@@ -40,6 +40,15 @@ function PhysicsObject(position, isRocket, ref, callBack){
 	this.boundingBox = null;
 };
 
+//Get bounding box
+PhysicsObject.prototype.getBoundingBoxGlobal = function(){
+	return {x: this.boundingBox.x+this.position.x,
+			y: this.boundingBox.y+this.position.y,
+			w: Math.abs(this.boundingBox.r - this.boundingBox.x),
+			h: Math.abs(this.boundingBox.b - this.boundingBox.y)
+			};
+}
+
 //Delete from objects
 PhysicsObject.prototype.deletePhysics = function(){
 	if(this.isRocket == true){
@@ -75,9 +84,9 @@ PhysicsObject.prototype.onCollision = function(){
 }
 
 //Add colliders
+//x and y are offsets from position
 PhysicsObject.prototype.addColliderBox = function(x, y, w, h){
 	this.colliders.push(new ColliderBox(this.position, x, y, w, h));
-	
 	//reset bounding box
 	if(this.boundingBox == null){
 		this.boundingBox = new boundingBox(x, y, x+w, y+h);
@@ -94,6 +103,7 @@ PhysicsObject.prototype.addColliderBox = function(x, y, w, h){
 			this.boundingBox.b = y+h;
 	}
 };
+//x and y are offsets from position
 PhysicsObject.prototype.addColliderCircle = function(x, y, r){
 	this.colliders.push(new ColliderCircle(this.position, x, y, r));
 	
@@ -119,7 +129,7 @@ PhysicsObject.prototype.addColliderCircle = function(x, y, r){
 //Colliders
 //Types of Colliders
 var ColliderTypes = {
-	BOX: 0,
+	POLY: 0,
 	CIRCLE: 1
 };
 
@@ -131,10 +141,11 @@ function ColliderBox(transform, offsetX, offsetY, w, h){
 	this.h = h;
 	this.transform = transform;
 	
-	this.type = ColliderTypes.BOX;
+	this.type = ColliderTypes.POLY;
 }
-ColliderBox.prototype.getPosition = function(){
-	return createVector(this.offsetX + this.transform.x, this.offsetY + this.transform.y);
+ColliderBox.prototype.getSATPoly = function(){
+	let box = new SAT.Box(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), this.w, this.h)
+	return box.toPolygon();
 }
 
 //x y in center
@@ -147,8 +158,8 @@ function ColliderCircle(transform, x, y, r){
 	this.type = ColliderTypes.CIRCLE;
 }
 
-ColliderCircle.prototype.getPosition = function(){
-	return createVector(this.offsetX + this.transform.x, this.offsetY + this.transform.y);
+ColliderCircle.prototype.getSATCircle = function(){
+	return new SAT.createCirlce(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), this.r);
 }
 /////////////////////////////////////////////////////////
 //Spatial Hashing
@@ -162,17 +173,17 @@ function SpatialHash (cellSize){
 //added value is assumed to be a physics object
 SpatialHash.prototype.add = function(obj){
 	
-	//create bounding box in x y w h format
-	var bb = obj.boundingBox;
+	//get bounding box in x y right bottom format
+	var bb = obj.getBoundingBoxGlobal();
 
 
 	//add to all cells
-	for(let i = Math.floor(bb.x/this.cellSize) * this.cellSize; i <= Math.floor(bb.r/this.cellSize) * this.cellSize; i = i + this.cellSize){
-		for(let j = Math.floor(bb.y/this.cellSize) * this.cellSize; j < Math.floor(bb.b/this.cellSize) * this.cellSize; Y = Y + this.cellSize){;
+	for(let i = Math.floor(bb.x/this.cellSize) * this.cellSize; i <= Math.floor((bb.x+bb.w)/this.cellSize) * this.cellSize; i = i + this.cellSize){
+		for(let j = Math.floor(bb.y/this.cellSize) * this.cellSize; j <= Math.floor((bb.y+bb.h)/this.cellSize) * this.cellSize; j = j + this.cellSize){
 			var key = i + "," + j;
 			if(this.spatialHash[key] == undefined)
 				this.spatialHash[key] = [];
-			this.spatialHash[key].push(obj)
+			this.spatialHash[key].push(obj);
 		}
 	}
 }
@@ -181,65 +192,131 @@ SpatialHash.prototype.add = function(obj){
 SpatialHash.prototype.at = function(x, y){
 	var newX = Math.floor(x/this.cellSize) * this.cellSize;
 	var newY = Math.floor(y/this.cellSize) * this.cellSize;
-	return spatialHash[newX+","+newY];
+	return this.spatialHash[newX+","+newY];
 }
 
 //return list of all objects in same buckets
 SpatialHash.prototype.getBuckets = function(obj){
 	
-	//create bounding box in x y w h format
-	var bb = obj.boundingBox;
+	//get bounding box in x y right bottom format
+	var bb = obj.getBoundingBoxGlobal();
 	var buckets = [];
-
-	//add to all cells
-	for(let i = Math.floor(bb.x/this.cellSize) * this.cellSize; i <= Math.floor(bb.r/this.cellSize) * this.cellSize; i = i + this.cellSize){
-		for(let j = Math.floor(bb.y/this.cellSize) * this.cellSize; j < Math.floor(bb.b/this.cellSize) * this.cellSize; Y = Y + this.cellSize){;
+	
+	//loop through all cells
+	for(let i = Math.floor(bb.x/this.cellSize) * this.cellSize; i <= Math.floor((bb.x+bb.w)/this.cellSize) * this.cellSize; i = i + this.cellSize){
+		for(let j = Math.floor(bb.y/this.cellSize) * this.cellSize; j <= Math.floor((bb.y+bb.h)/this.cellSize) * this.cellSize; j = j + this.cellSize){
 			var key = i + "," + j;
-			if(this.spatialHash[key] == undefined)
-				this.spatialHash[key] = [];
-			var bucket = spatialHash[key];
+			var bucket = this.spatialHash[key];
 			if(bucket != undefined)
 				buckets = buckets.concat(bucket);
 
 		}
 	}
+	return buckets;
 }
 
 //get list o
 ///////////////////////////////////////////////////////////////////////////////
 //Update physics each frame
+let spatialHashObjects = null;
 function updatePhysics(){
 	
 	spatialHashObjects = new SpatialHash(120);
-	spatialHashRockets = new SpatialHash(120);
 	
 	//ObstacleHash
 	for(let i = 0; i < physicsObjects.length; i++){
-		//Since we're looping might as well do the physics stuff
+		//physics stuff
 		physicsObjects[i].velocity.add(physicsObjects[i].acceleration);
 		physicsObjects[i].acceleration.mult(0);
 		
 		//Handle position
 		physicsObjects[i].position.x += physicsObjects[i].velocity.x;
 		physicsObjects[i].position.y += physicsObjects[i].velocity.y;
+		
+		//Add to hash map
 		spatialHashObjects.add(physicsObjects[i]);
+	}
+	
+	///////////////////////
+	//Collision Detection and Resolution
+	//Object collision detection
+	let response = new SAT.Response();
+	for(let i = 0; i < physicsObjects.length; i++){
+		
+		//Check Collision
+		if(checkCollision(physicsObjects[i], response)){
+			//Collision detected
+			
+			//Handle collision
+			physicsObjects[i].position.x += physicsObjects[i].velocity.x;
+			physicsObjects[i].position.y += physicsObjects[i].velocity.y;
+			physicsObjects[i].onCollision();
+		}		
 
 	}
-	//RocketHash
+	
+	//Rocket collision detection
 	for(let i = 0; i < rocketObjects.length; i++){
-		//Since we're looping might as well do the physics stuff
+		//physics stuff
 		rocketObjects[i].velocity.add(rocketObjects[i].acceleration);
 		rocketObjects[i].acceleration.mult(0);
 		
 		//Handle position
 		rocketObjects[i].position.x += rocketObjects[i].velocity.x;
-		rocketObjects[i].position.y += physicsObjects[i].velocity.y;
-		spatialHashRockets.add(rocketObjects[i]);
+		rocketObjects[i].position.y += rocketObjects[i].velocity.y;
+		
+		//Check Collision
+		if(checkCollision(rocketObjects[i], response)){
+			//Collision detected
+			//Handle collision
+			rocketObjects[i].position.x -= rocketObjects[i].velocity.x;
+			rocketObjects[i].position.y -= rocketObjects[i].velocity.y;
+			rocketObjects[i].onCollision();
+		}		
 
-	}
-	
-	//Collision Detection and Resolution
-
-			
+	}			
 }
 //////////////////////////////////////////////////////////////////////////////////
+function checkCollision(a, response){
+	
+	//Get buckets to compare
+	let buckets = spatialHashObjects.getBuckets(a);
+	for(let i = 0; i < buckets.length; i++){
+		let b = buckets[i];
+		//Make sure not comparing yourself
+		if(a != b){
+			//Check colliders of each
+			for(let colliderA = 0; colliderA < a.colliders.length; colliderA++){
+				for(let colliderB = 0; colliderB < b.colliders.length; colliderB++){
+					
+					//Check collider A with collider B
+					let collided = checkColliderCollision(a.colliders[colliderA], b.colliders[colliderB], response)
+					if(collided == true)
+						return true;
+				}
+			}
+		}
+
+	}
+	return false;
+}
+/////////////////////////////
+function checkColliderCollision(colliderA, colliderB, response){
+	response.clear();
+	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.POLY){
+		//Poly Poly check
+		return SAT.testPolygonPolygon(colliderA.getSATPoly(), colliderB.getSATPoly(), response)
+	}
+	if(colliderA.type == ColliderTypes.CIRCLE && colliderB.type == ColliderTypes.POLY){
+		//Circle Poly check
+		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATPoly(), response)
+	}
+	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
+		//Poly Circle check
+		return SAT.testCirclePolygon(colliderB.getSATCircle(), colliderA.getSATPoly(), response)
+	}
+	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
+		//Circle Circle check
+		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATCircle(), response)
+	}
+}
