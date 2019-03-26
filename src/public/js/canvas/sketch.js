@@ -1,16 +1,13 @@
 
-let canvas, level;
+let canvas, level = new Level();
 
 const width = 600, height = 600, arrayOfObjects = [];
 
 function setup() {
 	canvas = createCanvas(width, height);
-	level = new Level();
-	level.initLevel();
 	organizeCanvasForDOM();
-	//Create population
+	level.initLevel();
 	editor = new LevelEditorContainer(width, height);
-
 }
 
 function draw() {

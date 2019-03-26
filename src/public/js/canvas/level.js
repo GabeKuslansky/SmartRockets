@@ -12,33 +12,16 @@ Target.prototype.draw = function(){
 	pop();
 }
 
-function Level(Json) {
-    if(!Json){
-        this.obstacles = [new BoxObstacle(150, 250)];
-        this.width = 600;
-        this.height = 600;
-        this.spawnCoordinate = {x: this.width/2, y: this.height-100};
-        this.populationSize = 50;
-        this.lifespan = 150;
-        this.population = null;
-        this.target = new Target(300, 50, 40);
-
-    }
-    else{
-        const { obstacles, width, height, spawnCoordinate, populationSize, lifespan, target} = Json;
-        var obstacleArray = obstacles;
-        this.obstacles = [];
-        for(var i = 0; i < obstacleArray.length; i++){
-            this.obstacles.push(eval("new " + this.obstacleArray[i].name + "(" + this.obstacleArray[i].x + ", " + this.obstacleArray[i].y + ")"));
-        }
-        this.width = width;
-        this.height = height;
-        this.spawnCoordinate = spawnCoordinate;
-        this.populationSize = populationSize;
-        this.lifespan = lifespan;
-        this.target = new Target(target.x, target.y, target.r);
-        this.population = null;
-    }
+function Level() {
+    this.initialized = false;
+    this.obstacles = [];
+    this.width = 600;
+    this.height = 600;
+    this.spawnCoordinate = {x: this.width/2, y: this.height-100};
+    this.populationSize = 50;
+    this.lifespan = 150;
+    this.population = null;
+    this.target = null;
 }
 
 Level.prototype.addObstacle = function(object) {
@@ -46,7 +29,25 @@ Level.prototype.addObstacle = function(object) {
 }
 
 Level.prototype.initLevel = function(){
+
+    const { obstacles, width, height, spawnCoordinate, populationSize, lifespan, target} = levelStructure;
+
+    const obstacleArray = obstacles;
+
+    for(let i = 0; i < obstacleArray.length; i++){
+        this.obstacles.push(eval("new " + obstacleArray[i].name + "(" + obstacleArray[i].x + ", " + obstacleArray[i].y + ")"));
+    }
+
+    this.width = width;
+    this.height = height;
+    this.spawnCoordinate = spawnCoordinate;
+    this.populationSize = populationSize;
+    this.lifespan = lifespan;
+    this.target = new Target(target.x, target.y, target.r);
+
+
     this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.x, this.spawnCoordinate.y);
+    this.initialized = true;
 }
 
 Level.prototype.draw = function() {
