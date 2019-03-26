@@ -34,6 +34,7 @@ DNA.crossoverRandom = function(parentA, parentB)
 	}
 	return new DNA(newgenes);
 }
+
 DNA.crossoverMidpoint = function(parentA, parentB)
 {
 	var newgenes = [];

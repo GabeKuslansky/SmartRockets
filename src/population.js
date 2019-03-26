@@ -16,7 +16,7 @@ function Population(size, lifespan, startx, starty){
 Population.prototype.createRandomPop = function(){
 	//Create population
 	for(var i = 0; i < this.size; i++){
-		this.rockets.push(new Rocket(this.startx, this.starty, new DNA(this.lifespan), this.target));
+		this.rockets.push(new Rocket(this.startx, this.starty, new DNA(this.lifespan), this.target, this.lifespan));
 	}
 		
 }

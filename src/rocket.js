@@ -1,5 +1,5 @@
 
-function Rocket(x, y, DNA, target){
+function Rocket(x, y, DNA, target, lifespan){
 
 	//Top Left coords
 	this.position = new createVector(x, y);
@@ -33,6 +33,9 @@ function Rocket(x, y, DNA, target){
 	
 	this.angle = 0;
 	
+	//needed for fitness evaluation
+	this.lifespan = lifespan;
+
 	//Testing
 	//this.physics.velocity = p5.Vector.random2D();
 	//this.physics.velocity = createVector(1, 0);
@@ -90,18 +93,87 @@ Rocket.prototype.onCollision = function(object){
 	object.crashed = true;
 }
 
-//Calculate Fitness
+//Calculate Fitness on distance only
 Rocket.prototype.calcFitness = function()
 {
 	var d = dist(this.position.x+this.w/2, this.position.y+this.h/2, this.target.position.x, this.target.position.y);
-	this.fitness = 1/d;
-	if(this.crashed)
-		this.fitness /= 100;
-	if(this.success){
-		this.fitness *= 100;
+	this.fitness = pow(1/d, 2);
+};
+
+//Calculate Fitness on ditance and finished/crashed
+Rocket.prototype.calcFitness = function()
+{
+	var d = dist(this.position.x+this.w/2, this.position.y+this.h/2, this.target.position.x, this.target.position.y);
+	this.fitness = pow(1/d, 2);
+	if(this.crashed){
+		this.fitness /= 10;
 	}
-	
-}
+	if(this.success){
+		this.fitness *= 10;
+	}
+};
+
+//Calculate Fitness on time only
+Rocket.prototype.calcFitness = function()
+{	
+	var low = this.lifespan/4;
+	var middle = low + low;
+	var mostly = middle + low;
+	if(this.crashed){
+		this.fitness *= 10;
+		if(this.currentDNA > mostly)
+		{
+			this.fitness *= 2;
+		}
+	}
+	if(this.success){
+		this.fitness *= 10;
+		if(this.currentDNA < low)
+		{
+			this.fitness *= 5;
+		}
+		else if(this.currentDNA < middle)
+		{
+			this.fitness *= 4;
+		}
+		else if(this.currentDNA < mostly)
+		{
+			this.fitness *= 3;
+		}
+		else
+		this.fitness *= 2;
+	}
+};
+
+//Calculate Fitness on distance and time
+Rocket.prototype.calcFitness = function()
+{
+	var low = this.lifespan/4;
+	var middle = low + low;
+	var mostly = middle + low;
+	var d = dist(this.position.x+this.w/2, this.position.y+this.h/2, this.target.position.x, this.target.position.y);
+	this.fitness = pow(1/d, 2);
+	if(this.crashed){
+		this.fitness /= 10;
+	}
+	if(this.success){
+		this.fitness *= 10;
+		if(this.currentDNA < low)
+		{
+			this.fitness *= 5;
+		}
+		else if(this.currentDNA < middle)
+		{
+			this.fitness *= 4;
+		}
+		else if(this.currentDNA < mostly)
+		{
+			this.fitness *= 3;
+		}
+		else
+		this.fitness *= 2;
+	}
+};
 
 //Delete Rocket
 Rocket.prototype.deleteRocket = function()
