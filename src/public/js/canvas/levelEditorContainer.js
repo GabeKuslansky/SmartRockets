@@ -45,8 +45,8 @@ LevelEditorContainer.prototype.draw = function() {
 LevelEditorContainer.prototype.update = function() {
 	
 	//Check if mouse is hovering
-	var hover = false;
-	for(var i = 0; i < this.obstacles.length && !hover; i++){
+	let hover = false;
+	for(let i = 0; i < this.obstacles.length && !hover; i++){
 		//Check if mouse clicked icon
 		if(eval(this.obstacles[i].obstacle + ".mouseIntersectsIcon(" + this.obstacles[i].x + ", " + this.obstacles[i].y + ")"))
 			hover = true;
@@ -59,7 +59,7 @@ LevelEditorContainer.prototype.update = function() {
 
 LevelEditorContainer.prototype.mousePressed = function(){
 	
-	for(var i = 0; i < this.obstacles.length && !this.isHoldingObject; i++){
+	for(let i = 0; i < this.obstacles.length && !this.isHoldingObject; i++){
 		
 		//Check if mouse clicked icon
 		if(eval(this.obstacles[i].obstacle + ".mouseIntersectsIcon(" + this.obstacles[i].x + ", " + this.obstacles[i].y + ")")){
@@ -74,7 +74,7 @@ LevelEditorContainer.prototype.mouseReleased = function(){
 	if(this.isHoldingObject){
 		
 		
-		var obstacle = eval("new " + this.obstacles[this.heldIndex].obstacle + "(" + mouseX + ", " + mouseY + ")");
+		let obstacle = eval("new " + this.obstacles[this.heldIndex].obstacle + "(" + mouseX + ", " + mouseY + ")");
 		if(checkCollision(obstacle.physics).collision)
 			obstacle.deleteObstacle();
 		else
@@ -95,6 +95,8 @@ LevelEditorContainer.prototype.getObstacles = function() {
 	
 	//Push new obstacles in here
 	this.obstacles.push(new IconHolder('BoxObstacle'));
+	this.obstacles.push(new IconHolder('CircleObstacle'));
+	this.obstacles.push(new IconHolder('TriangleObstacle'));
 }
 
 LevelEditorContainer.prototype.generateSpawnPoints = function() {

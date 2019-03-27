@@ -57,7 +57,11 @@ Level.prototype.draw = function() {
 }
 
 Level.prototype.update = function() {
-
+	
+	for(let i = 0; i < this.obstacles.length; i++){
+		if(this.obstacles[i].update)
+			this.obstacles[i].update();
+	}
     this.population.update();
 }
 
