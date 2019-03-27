@@ -97,17 +97,6 @@ function CircleObstacle(x, y){
 }
 
 
-CircleObstacle.prototype.update = function(){
-	let rockets = level.population.rockets;
-	for(let i = 0; i < rockets.length; i++){
-		if(dist(this.position.x, this.position.y, rockets[i].position.x, rockets[i].position.y) < 1000){
-			if(rockets[i].physics != null)
-				rockets[i].physics.applyForce(createVector(this.position.x - rockets[i].position.x, this.position.y - rockets[i].position.y).normalize().mult(.1)); //apply force inward to circle
-		}
-	}
-}
-
-
 
 CircleObstacle.getColor = function(){
 	return [145, 156, 1];
@@ -165,7 +154,94 @@ CircleObstacle.draw = function(x, y){
 
 
 
+////////////////////////////////////////////////////
+//BLACK HOLE
 
+
+//
+let blackHoleScale = 1.5;
+let blackHoleOffsetX = 10;
+let blackHoleOffsetY = 30;
+
+function BlackHoleObstacle(x, y){
+	
+	this.name = "BlackHoleObstacle";
+	this.position = createVector(x, y);
+	this.physics = new PhysicsObject(this.position, false);
+	this.physics.addColliderCircle(0, 0, BlackHoleObstacle.getRadius());
+		
+}
+
+
+BlackHoleObstacle.prototype.update = function(){
+	let rockets = level.population.rockets;
+	for(let i = 0; i < rockets.length; i++){
+		if(dist(this.position.x, this.position.y, rockets[i].position.x, rockets[i].position.y) < BlackHoleObstacle.getAttractionRadius()){
+			if(rockets[i].physics != null)
+				rockets[i].physics.applyForce(createVector(this.position.x - rockets[i].position.x, this.position.y - rockets[i].position.y).normalize().mult(BlackHoleObstacle.getForce())); //apply force inward to circle
+		}
+	}
+}
+
+BlackHoleObstacle.getForce = function(){
+	return 1;
+}
+
+BlackHoleObstacle.getColor = function(){
+	return [0, 0, 0];
+}
+
+BlackHoleObstacle.prototype.draw = function(){
+	push();
+	strokeWeight(0);
+	var color = BlackHoleObstacle.getColor();
+	fill(color[0]+100, color[1]+100, color[2]+100);
+	circle(this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius());
+	fill(color);
+	circle(this.position.x, this.position.y, BlackHoleObstacle.getRadius());
+	pop();
+}
+
+//Delete Obstacle
+BlackHoleObstacle.prototype.deleteObstacle = function()
+{
+	//Delete physics object
+	if(this.physics != null){
+		this.physics.deletePhysics();
+		this.physics = null;
+	}
+}
+
+//Draw icon at x y coord
+BlackHoleObstacle.drawIcon = function(x, y){
+	push()
+	var color = BlackHoleObstacle.getColor();
+	if(pointInCircle(mouseX, mouseY, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale))
+		fill(color[0]+50, color[1]+50, color[2]+50);
+	else
+		fill(...color);
+	circle(x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
+	pop();
+}
+
+BlackHoleObstacle.mouseIntersectsIcon = function(blackHolePosX, blackHolePosY){
+	return pointInCircle(mouseX, mouseY, blackHolePosX+blackHoleOffsetX, blackHolePosY+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
+}
+
+BlackHoleObstacle.getRadius = function(){
+	return 10;
+}
+BlackHoleObstacle.getAttractionRadius = function(){
+	return 100;
+}
+
+//Draw obstacle no reference to class
+BlackHoleObstacle.draw = function(x, y){
+	push();
+	fill(...BlackHoleObstacle.getColor());
+	circle(x, y, BlackHoleObstacle.getRadius());
+	pop();
+}
 
 
 
@@ -180,7 +256,7 @@ CircleObstacle.draw = function(x, y){
 
 
 let triangleScale = 2/3;
-let triangleOffsetX = 0;
+let triangleOffsetX = 10;
 let triangleOffsetY = 30;
 
 

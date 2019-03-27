@@ -12,7 +12,7 @@ function LevelEditorContainer(width, height) {
     this.h = 100;
     this.isHoldingObject = false;
 	this.heldIndex = 0;
-    this.marginX = 120;
+    this.marginX = 160;
     this.marginY = 20;
     this.offsetX = 15;
     this.color = [150, 155, 155];
@@ -97,6 +97,7 @@ LevelEditorContainer.prototype.getObstacles = function() {
 	this.obstacles.push(new IconHolder('BoxObstacle'));
 	this.obstacles.push(new IconHolder('CircleObstacle'));
 	this.obstacles.push(new IconHolder('TriangleObstacle'));
+	this.obstacles.push(new IconHolder('BlackHoleObstacle'));
 }
 
 LevelEditorContainer.prototype.generateSpawnPoints = function() {

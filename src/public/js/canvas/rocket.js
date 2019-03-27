@@ -100,7 +100,8 @@ Rocket.prototype.calcFitness = function()
 	if(dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y) <= this.target.radius)
 		this.success = true;
 	
-	var d = dist(this.position, this.position.y, this.target.position.x, this.target.position.y);
+	var d = dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y);
+
 	if(this.success)
 		this.fitness = 1/this.target.radius;
 	else
