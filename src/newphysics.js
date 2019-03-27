@@ -3,13 +3,11 @@ var physicsObjects = [];
 var rocketObjects = [];
 
 //box helper function corner coords
-//r : right x coordinate
-//b : bottom y coordinate
-function boundingBox(x, y, r, b){
+function boundingBox(x, y, w, h){
 	this.x = x;
 	this.y = y;
-	this.r = r;
-	this.b = b;
+	this.w = w;
+	this.h = h;
 }
 
 //Physics Object holds colliders and is used in the array of
@@ -44,8 +42,8 @@ function PhysicsObject(position, isRocket, ref, callBack){
 PhysicsObject.prototype.getBoundingBoxGlobal = function(){
 	return {x: this.boundingBox.x+this.position.x,
 			y: this.boundingBox.y+this.position.y,
-			w: Math.abs(this.boundingBox.r - this.boundingBox.x),
-			h: Math.abs(this.boundingBox.b - this.boundingBox.y)
+			w: this.boundingBox.w,
+			h: this.boundingBox.h
 			};
 }
 
@@ -83,25 +81,27 @@ PhysicsObject.prototype.onCollision = function(){
 	}
 }
 
+PhysicsObject.prototype.updateBoundingBoxPoly = function(square){
+		if(square.x < this.boundingBox.x)
+			this.boundingBox.x = square.x;
+		if(square.x + square.w > this.boundingBox.x + this.boundingBox.w)
+			this.boundingBox.w += Math.abs(square.w - this.boundingBox.w);
+		if(square.y < this.boundingBox.y)
+			this.boundingBox.y = square.y;
+		if(square.y+square.h > this.boundingBox.y + this.boundingBox.y)
+			this.boundingBox.h += Math.abs(square.h - this.boundingBox.h);
+}
+
 //Add colliders
 //x and y are offsets from position
 PhysicsObject.prototype.addColliderBox = function(x, y, w, h){
 	this.colliders.push(new ColliderBox(this.position, x, y, w, h));
 	//reset bounding box
-	if(this.boundingBox == null){
-		this.boundingBox = new boundingBox(x, y, x+w, y+h);
-	}
+	if(this.boundingBox == null)
+		this.boundingBox = new boundingBox(x, y, w, h);
 	//update bounding box
-	else{
-		if(x < this.boundingBox.x)
-			this.boundingBox.x = x;
-		else if(x + w > this.boundingBox.r)
-			this.boundingBox.r = x+w;
-		else if(y < this.boundingBox.y)
-			this.boundingBox.y = y;
-		else if(y+h > this.boundingBox.b)
-			this.boundingBox.b = y+h;
-	}
+	else
+		this.updateBoundingBoxPoly({x:x, y:y, w:w, h:h});
 };
 //x and y are offsets from position
 PhysicsObject.prototype.addColliderCircle = function(x, y, r){
@@ -109,18 +109,35 @@ PhysicsObject.prototype.addColliderCircle = function(x, y, r){
 	
 	//reset bounding box
 	if(this.boundingBox == null){
-		this.boundingBox = new boundingBox(x-r, y-r, x+r, y+r);
+		this.boundingBox = new boundingBox(x-r, y-r, x+r+r, y+r+r);
 	}
 	//update bounding box
 	else{
-		if(x-r < this.boundingBox.x)
-			this.boundingBox.x = x-r;
-		else if(x + r > this.boundingBox.r)
-			this.boundingBox.r = x+r;
-		else if(y-r < this.boundingBox.y)
-			this.boundingBox.y = y-r;
-		else if(y+r > this.boundingBox.b)
-			this.boundingBox.b = y+r;
+		this.updateBoundingBoxPoly({x:x-r, y:y-r, w:r+r, h:r+r});
+	}
+};
+//x and y are offsets from position
+//DEFINE IN CLOCKWISE DIRECTION
+PhysicsObject.prototype.addColliderPolygon = function(x, y, points){
+	var collider = new ColliderPolygon(this.position, x, y, points);
+	this.colliders.push(collider);
+	
+	//Get bounding box of polygon
+	let bb = collider.getSATPolygon().getAABB();
+	//getAABB defines in a weird way. converting to corner coords
+	let betterbb = new boundingBox(bb.pos.x, bb.pos.y, bb.points[1].x, bb.points[3].y);
+	
+	//Set from global to local coords
+	betterbb.x -= this.position.x;
+	betterbb.y -= this.position.y;	
+	
+	//reset bounding box
+	if(this.boundingBox == null){
+		this.boundingBox = new boundingBox(betterbb.x, betterbb.y, betterbb.w, betterbb.h);
+	}
+	//update bounding box
+	else{
+		this.updateBoundingBoxPoly(betterbb);
 	}
 };
 
@@ -143,7 +160,7 @@ function ColliderBox(transform, offsetX, offsetY, w, h){
 	
 	this.type = ColliderTypes.POLY;
 }
-ColliderBox.prototype.getSATPoly = function(){
+ColliderBox.prototype.getSATPolygon = function(){
 	let box = new SAT.Box(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), this.w, this.h)
 	return box.toPolygon();
 }
@@ -161,6 +178,20 @@ function ColliderCircle(transform, offsetX, offsetY, r){
 ColliderCircle.prototype.getSATCircle = function(){
 	return new SAT.Circle(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), this.r);
 }
+
+//x y in top left corner
+function ColliderPolygon(transform, offsetX, offsetY, points){
+	this.offsetX = offsetX;
+	this.offsetY = offsetY;
+	this.points = points;
+	this.transform = transform;
+	
+	this.type = ColliderTypes.POLY;
+}
+ColliderPolygon.prototype.getSATPolygon = function(){
+	return new SAT.Polygon(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), this.points);
+}
+
 /////////////////////////////////////////////////////////
 //Spatial Hashing
 function SpatialHash (cellSize){
@@ -175,7 +206,6 @@ SpatialHash.prototype.add = function(obj){
 	
 	//get bounding box in x y right bottom format
 	var bb = obj.getBoundingBoxGlobal();
-
 
 	//add to all cells
 	for(let i = Math.floor(bb.x/this.cellSize) * this.cellSize; i <= Math.floor((bb.x+bb.w)/this.cellSize) * this.cellSize; i = i + this.cellSize){
@@ -269,7 +299,6 @@ function updatePhysics(){
 		if(checkCollision(rocketObjects[i], response)){
 			//Collision detected
 			//Handle collision
-			console.log(response.overlapV);
 			rocketObjects[i].position.x -= response.overlapV.x;
 			rocketObjects[i].position.y -= response.overlapV.y;
 			//rocketObjects[i].position.x -= rocketObjects[i].velocity.x;
@@ -284,6 +313,7 @@ function checkCollision(a, response){
 	
 	//Get buckets to compare
 	let buckets = spatialHashObjects.getBuckets(a);
+
 	for(let i = 0; i < buckets.length; i++){
 		let b = buckets[i];
 		//Make sure not comparing yourself
@@ -308,15 +338,15 @@ function checkColliderCollision(colliderA, colliderB, response){
 	response.clear();
 	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.POLY){
 		//Poly Poly check
-		return SAT.testPolygonPolygon(colliderA.getSATPoly(), colliderB.getSATPoly(), response);
+		return SAT.testPolygonPolygon(colliderA.getSATPolygon(), colliderB.getSATPolygon(), response);
 	}
 	if(colliderA.type == ColliderTypes.CIRCLE && colliderB.type == ColliderTypes.POLY){
 		//Circle Poly check
-		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATPoly(), response);
+		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATPolygon(), response);
 	}
 	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
 		//Poly Circle check
-		return SAT.testPolygonCircle(colliderA.getSATPoly(), colliderB.getSATCircle(), response);
+		return SAT.testPolygonCircle(colliderA.getSATPolygon(), colliderB.getSATCircle(), response);
 	}
 	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
 		//Circle Circle check

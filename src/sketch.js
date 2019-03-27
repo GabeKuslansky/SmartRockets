@@ -3,6 +3,8 @@ var pop;
 
 let speed = 5;
 
+
+
 let width = 600, height = 600;
 function setup() {
   createCanvas(width, height);
@@ -16,6 +18,11 @@ function setup() {
   
   phys2 = new PhysicsObject(createVector(100, 100), false)
   phys2.addColliderBox(0, 0, 50, 50);
+  
+  phys3 = new PhysicsObject(createVector(300, 300), false);
+  phys3.addColliderPolygon(0, 0, [new SAT.Vector(0, 50), new SAT.Vector(-50, 0), new SAT.Vector(50, 0)]);
+  
+
 }
 
 function draw() {
@@ -49,7 +56,7 @@ function draw() {
   pop.draw();
   circle(width/2, 60, 20);
   rect(100, 100, 50, 50);
-  
+  triangle(300, 350, 250, 300, 350, 300);  
   
   //console.log(pop.getRocketByIndex(0).physics.velocity);
 }
