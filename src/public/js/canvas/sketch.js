@@ -1,5 +1,5 @@
 
-let canvas, level = new Level();
+let canvas, level = new Level(), editor;
 
 const width = 600, height = 600, arrayOfObjects = [];
 
@@ -7,7 +7,8 @@ function setup() {
 	canvas = createCanvas(width, height);
 	organizeCanvasForDOM();
 	level.initLevel();
-	editor = new LevelEditorContainer(width, height);
+	if(editing)
+		editor = new LevelEditorContainer(width, height);
 }
 
 function draw() {
@@ -18,7 +19,8 @@ function draw() {
 	strokeWeight(5);
 	
 	//Update Input
-	editor.update();
+	if(editing)
+		editor.update();
 
 	//update level
 	level.update();
@@ -28,8 +30,9 @@ function draw() {
 
 	//Render
 	level.draw();
-
-	editor.draw();
+	
+	if(editing)
+		editor.draw();
 }	
 
 function mousePressed(){
