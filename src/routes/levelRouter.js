@@ -16,32 +16,23 @@ router.post('/', async(ctx, next) => {
     await levelsRepository.update({ _id: levelId }, { highestCompletionTime: completetionTime});
 })
 
-.get('/group/:index', async(ctx, next) => await levelsRepository.skip(15*ctx.params.index).find({}).sort({ index: 1 }).limit(15))
 
 .get('/:id', async (ctx, next) => {
     const level = await levelsRepository.findOne({_id: ctx.params.id});
-    ctx.render('playLevel', {title: `Running ${level.metadata.author}'s level`, level})
+    ctx.render('playLevel', {title: `Running ${level.metadata.author}'s level`, level, play: true})
 })
 
-.get('/addFakeLevel', async (ctx, next) => {
-    const level = formatLevelObject({levelStructure: {}})
-    await levelsRepository.insert({ level });
-})
 
-const getLatestIndex = async() => await levelsRepository.findOne({}).projection({index: 1});
+const getLatestIndex = async() => await levelsRepository.findOne({}, { sort: {index: 1 }, limit: 1})
 
-const formatLevelObject = async params => {
-    const { levelStructure, author } = params;
-    
+const formatLevelObject = async levelStructure => {
     const metadata = {
         views: 0,
-        author: author || 'someone',
+        author: 'someone',
         highestCompletionTime: 0,
     }
-
-    const index = await getLatestIndex();
-    
-    return { index: ++index, levelStructure, metadata };
+//    const index = await getLatestIndex();
+    return { index: 0, levelStructure, metadata };
 }
 
 module.exports = router;

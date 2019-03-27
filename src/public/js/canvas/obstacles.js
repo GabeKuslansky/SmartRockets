@@ -6,6 +6,7 @@ var boxOffsetY = 20;
 
 function BoxObstacle(x, y){
 	
+	this.name = "BoxObstacle";
 	this.position = createVector(x, y);
 	this.physics = new PhysicsObject(this.position, false);
 	this.physics.addColliderBox(0, 0, BoxObstacle.getWidth(), BoxObstacle.getHeight());

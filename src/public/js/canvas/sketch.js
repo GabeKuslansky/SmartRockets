@@ -1,16 +1,13 @@
 
-let population, canvas;
+let canvas, level = new Level();
 
 const width = 600, height = 600, arrayOfObjects = [];
 
 function setup() {
 	canvas = createCanvas(width, height);
 	organizeCanvasForDOM();
-	//Create population
-	population = new Population(50, 150, width/2, height-100);
-	arrayOfObjects.push(new BoxObstacle(150, 250));
+	level.initLevel();
 	editor = new LevelEditorContainer(width, height);
-
 }
 
 function draw() {
@@ -22,17 +19,16 @@ function draw() {
 	
 	//Update Input
 	editor.update();
-	
-	//Update AI
-	population.update();
 
+	//update level
+	level.update();
+	
 	//Update Physics
 	updatePhysics()
 
 	//Render
-	population.draw();
-	for(var i = 0; i < arrayOfObjects.length; i++)
-	arrayOfObjects[i].draw();
+	level.draw();
+
 	editor.draw();
 }	
 
