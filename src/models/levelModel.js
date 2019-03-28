@@ -5,7 +5,7 @@ const levelsRepository = DataStore.create({
     autoload: true,
     timestampData: true,
 });
-
+    
 levelsRepository.ensureIndex({ fieldName: '_id', unique: true });
 
 module.exports = levelsRepository;

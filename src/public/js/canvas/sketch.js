@@ -6,7 +6,8 @@ const width = 600, height = 600, arrayOfObjects = [];
 function setup() {
 	canvas = createCanvas(width, height);
 	organizeCanvasForDOM();
-	level.initLevel();
+	if(createLevel)
+		level.initLevel();
 	if(editing)
 		editor = new LevelEditorContainer(width, height);
 }
@@ -15,24 +16,26 @@ function draw() {
 	//Clear
 	background(204, 198, 198);
 
-	//Stroke weight
-	strokeWeight(5);
-	
-	//Update Input
-	if(editing)
-		editor.update();
+	if(level.initialized){
+		//Stroke weight
+		strokeWeight(5);
+		
+		//Update Input
+		if(editing)
+			editor.update();
 
-	//update level
-	level.update();
-	
-	//Update Physics
-	updatePhysics()
+		//update level
+		level.update();
+		
+		//Update Physics
+		updatePhysics()
 
-	//Render
-	level.draw();
-	
-	if(editing)
-		editor.draw();
+		//Render
+		level.draw();
+		
+		if(editing)
+			editor.draw();
+	}
 }	
 
 function mousePressed(){
