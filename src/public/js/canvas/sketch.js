@@ -40,12 +40,11 @@ function draw() {
 		  cameraPosition.x -= cameraSpeed;
 		}
 		//update level
-		if(!gamePaused){
+		if(!gamePaused)
 			level.update();
 		
 		//Update Physics
-			updatePhysics();
-		}
+		updatePhysics();
 
 		//Render
 		//camera pos
