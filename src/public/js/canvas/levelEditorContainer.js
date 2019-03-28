@@ -75,7 +75,7 @@ LevelEditorContainer.prototype.mouseReleased = function(){
 		
 		
 		let obstacle = eval("new " + this.obstacles[this.heldIndex].obstacle + "(" + mouseX + ", " + mouseY + ")");
-		if(checkCollision(obstacle.physics).collision)
+		if(checkCollision(obstacle.physics, null))
 			obstacle.deleteObstacle();
 		else
 			level.addObstacle(obstacle);
