@@ -1,5 +1,5 @@
 
-let canvas, level = new Level(), editor, cameraSpeed = 10, cameraPosition;
+let canvas, level = new Level(), editor, cameraSpeed = 10, cameraPosition, gamePaused;
 
 const width = 600, height = 600, arrayOfObjects = [];
 const rocketFrameRate = 60;
@@ -39,12 +39,13 @@ function draw() {
 		if(keyIsDown(68)){
 		  cameraPosition.x -= cameraSpeed;
 		}
-		
 		//update level
-		level.update();
+		if(!gamePaused){
+			level.update();
 		
 		//Update Physics
-		updatePhysics()
+			updatePhysics();
+		}
 
 		//Render
 		//camera pos
