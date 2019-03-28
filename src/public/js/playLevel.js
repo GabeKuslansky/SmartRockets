@@ -4,5 +4,5 @@ const editing = false;
 const createLevel = false;
 axios.get(`/api/level/${levelId}`).then(levelObj => {
     levelStructure = levelObj.data.levelStructure;
-    level.initLevel();
+    levelShouldLoad = true;
 });

@@ -1,5 +1,5 @@
 
-let canvas, level = new Level(), editor, cameraSpeed = 10, cameraPosition, gamePaused;
+let canvas, level = new Level(), editor, cameraSpeed = 10, cameraPosition, gamePaused, levelShouldLoad = false;
 
 const width = 600, height = 600, arrayOfObjects = [];
 const rocketFrameRate = 60;
@@ -54,6 +54,10 @@ function draw() {
 		
 		if(editing)
 			editor.draw();
+	}
+	if(levelShouldLoad){
+		level.initLevel();
+		levelShouldLoad = false;
 	}
 }	
 

@@ -32,9 +32,6 @@ Level.prototype.initLevel = function(){
     
     const { obstacles, width, height, spawnCoordinate, populationSize, lifespan, target} = levelStructure;
     const obstacleArray = obstacles;
-
-    var B = BoxObstacle;
-    console.log(B);
     
     for(let i = 0; i < obstacleArray.length; i++){
         this.obstacles.push(eval("new " + obstacleArray[i].name + "(" + obstacleArray[i].x + ", " + obstacleArray[i].y + ")"));
