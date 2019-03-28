@@ -112,7 +112,18 @@ Population.prototype.nextGeneration = function(){
 	
 	
 	//Mutate DNA
+	let lifespanDif = this.lifespan-this.rockets.length;
 	for(var i = 0; i < this.rockets.length; i++){
+		//Resize DNA if needed
+		if(lifespanDif > 0){
+			for(let j = 0; j < lifespanDif; j++)
+				this.rockets[i].DNA.genes.push(p5.Vector.random2D());
+		}
+		else if(lifespanDif < 0){
+			for(let j = 0; j > lifespanDif; j--)
+				this.rockets[i].DNA.genes.pop();
+		}
+		
 		this.rockets[i].DNA.mutate();
 	}
 	
