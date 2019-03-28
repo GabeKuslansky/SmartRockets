@@ -46,9 +46,9 @@ Population.prototype.draw = function(){
 	textSize(32);
 	fill(55, 145, 155);
 	if(this.maxFitness == 1/level.target.radius)
-		text("Max Fitness: MAX", 10, 30); 
+		$('#maxFitnessValue').text('MAX'); 
 	else
-		text("Max Fitness: " + int(this.maxFitness*10000), 10, 30); 
+		$('#maxFitnessValue').text(int(this.maxFitness*10000), 10, 30); 
 	pop();
 
 };

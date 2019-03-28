@@ -82,6 +82,6 @@ function mouseReleased(){
 
 function organizeCanvasForDOM() {
 	const htmlCanvas = document.getElementById('defaultCanvas0');
-	$(htmlCanvas).appendTo('#canvasContainer');
+	$(htmlCanvas).appendTo('#canvasContainer').addClass('border border-dark border-rounded');
 	$(htmlCanvas).css({position: '', left: '', top: ''}).addClass('');
 }
