@@ -2,6 +2,7 @@
 let canvas, level = new Level(), editor, cameraSpeed = 10, cameraPosition;
 
 const width = 600, height = 600, arrayOfObjects = [];
+const rocketFrameRate = 30;
 
 function setup() {
 	canvas = createCanvas(width, height);
@@ -11,6 +12,7 @@ function setup() {
 	if(editing)
 		editor = new LevelEditorContainer(width, height);
 	cameraPosition = createVector(0, 0);
+	frameRate(rocketFrameRate);
 }
 
 function draw() {
