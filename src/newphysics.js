@@ -10,6 +10,7 @@ function boundingBox(x, y, w, h){
 	this.h = h;
 }
 
+
 //Physics Object holds colliders and is used in the array of
 //physics objects
 //Arguments
@@ -36,7 +37,35 @@ function PhysicsObject(position, isRocket, ref, callBack){
 		physicsObjects.push(this);
 	
 	this.boundingBox = null;
+	
 };
+
+//angle in degrees
+//point to rotate about globally
+PhysicsObject.prototype.rotate = function(angle, point){
+	
+	
+	//convert to radians
+	let radians = angle*Math.PI/180;
+	
+	//translate by negative point
+	this.position.sub(point);
+	let oldPos = createVector(this.position.x, this.position.y);
+
+	
+	//rotate position
+	this.position.x = Math.cos(radians)*oldPos.x - Math.sin(radians)*oldPos.y;
+	this.position.y = Math.sin(radians)*oldPos.x + Math.cos(radians)*oldPos.y;
+	
+	//translate by position point
+	this.position.add(point);
+	
+	//rotate colliders
+	for(let i = 0; i < this.colliders.length; i++){
+		this.colliders[i].rotate(radians);
+		this.updateBoundingBoxPoly(this.colliders[i].getBoundingBox());
+	}
+}
 
 //Get bounding box
 PhysicsObject.prototype.getBoundingBoxGlobal = function(){
@@ -156,13 +185,30 @@ function ColliderBox(transform, offsetX, offsetY, w, h){
 	this.offsetY = offsetY;
 	this.w = w;
 	this.h = h;
-	this.transform = transform;
+	this.transform = transform;	
+	this.angle = 0;
 	
 	this.type = ColliderTypes.POLY;
 }
 ColliderBox.prototype.getSATPolygon = function(){
-	let box = new SAT.Box(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), this.w, this.h)
-	return box.toPolygon();
+	let poly = new SAT.Polygon(new SAT.Vector(this.transform.x+this.offsetX, this.transform.y+this.offsetY),
+							[new SAT.Vector(0, 0),
+							new SAT.Vector(this.w, 0),
+							new SAT.Vector(this.w, this.h),
+							new SAT.Vector(0, this.h)]);
+	poly.rotate(this.angle);
+	return poly;
+}
+//receives radians
+ColliderBox.prototype.rotate = function(angle){
+	this.angle = angle;
+}
+//xywh format
+ColliderBox.prototype.getBoundingBox = function(){
+	//Get bounding box of polygon
+	let bb = this.getSATPolygon().getAABB();
+	//getAABB defines in a weird way. converting to corner coords
+	return new boundingBox(bb.pos.x, bb.pos.y, bb.points[1].x, bb.points[3].y);
 }
 
 //x y in center

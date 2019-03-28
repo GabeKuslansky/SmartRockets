@@ -1,62 +1,72 @@
 
-var pop;
+var population;
 
 let speed = 5;
 
-
+function Rectangle(x, y, w, h){
+	this.position = createVector(x, y);
+	this.w = w;
+	this.h = h;
+	//this.physics = new PhysicsObject(this.position, false);
+	//this.physics.addColliderBox(0, 0, w, h);
+}
+Rectangle.prototype.draw = function(){
+	rect(this.position.x, this.position.y, this.w, this.h);
+}
 
 let width = 600, height = 600;
+let rectangle;
 function setup() {
   createCanvas(width, height);
   
   //Create population
-  pop = new Population(1, 100, width/4, 0);
-  pop.getIDs();
+  population = new Population(1, 100, width/4, 0);
+  population.getIDs();
   
-  phys = new PhysicsObject(createVector(width/2, 60), false)
-  phys.addColliderCircle(0, 0, 20);
   
-  phys2 = new PhysicsObject(createVector(100, 100), false)
-  phys2.addColliderBox(0, 0, 50, 50);
+  rect1 = new Rectangle(100, 100, 50, 50)
   
-  phys3 = new PhysicsObject(createVector(300, 300), false);
-  phys3.addColliderPolygon(0, 0, [new SAT.Vector(0, 50), new SAT.Vector(-50, 0), new SAT.Vector(50, 0)]);
   
 
 }
-
+let angle = 0;
 function draw() {
 
 	//Clear
 	background(0, 100, 200);
 
   //Update Input
-	pop.getRocketByIndex(0).physics.velocity.x = 0;
-	pop.getRocketByIndex(0).physics.velocity.y = 0;
+	population.getRocketByIndex(0).physics.velocity.x = 0;
+	population.getRocketByIndex(0).physics.velocity.y = 0;
   if(keyIsDown(87)){
-	  pop.getRocketByIndex(0).physics.velocity.y -= speed;
+	  population.getRocketByIndex(0).physics.velocity.y -= speed;
   }
   if(keyIsDown(65)){
-	  pop.getRocketByIndex(0).physics.velocity.x -= speed;
+	  population.getRocketByIndex(0).physics.velocity.x -= speed;
   }
   if(keyIsDown(83)){
-	  pop.getRocketByIndex(0).physics.velocity.y += speed;
+	  population.getRocketByIndex(0).physics.velocity.y += speed;
   }
   if(keyIsDown(68)){
-	  pop.getRocketByIndex(0).physics.velocity.x += speed;
+	  population.getRocketByIndex(0).physics.velocity.x += speed;
   }
   
   //Update AI
-  pop.update();
+  population.update();
   
   //Update Physics
-  updatePhysics()
+  //updatePhysics()
   
   //Render
-  pop.draw();
-  circle(width/2, 60, 20);
-  rect(100, 100, 50, 50);
-  triangle(300, 350, 250, 300, 350, 300);  
+  population.draw();
+  angle = angle + .001;
+  //rect1.physics.rotate(5, createVector(rect1.position.x, rect1.position.y));
+  push();
+  translate(rect1.position.x+rect1.w/2, rect1.position.y+rect1.h/2);
+  rotate(angle);
+  //translate(-rect1.position.x-rect1.w/2, -rect1.position.y-rect1.h/2);
+  rect1.draw();
+  pop();
   
   //console.log(pop.getRocketByIndex(0).physics.velocity);
 }

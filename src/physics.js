@@ -24,14 +24,6 @@ function PhysicsObject(position, isRocket, ref, callBack){
 	physicsObjects.push(this);
 };
 
-//TODO
-//rotate about a points a certain degrees
-PhysicsObject.prototype.rotate = function(point, degrees){
-	let radians  degrees/(Math.PI/180);
-	
-	for(let i = 0; i < this.colliders; i++)
-		this.colliders[i].rotate(point, degrees);
-}
 
 //Callback function
 PhysicsObject.prototype.onCollision = function(){
