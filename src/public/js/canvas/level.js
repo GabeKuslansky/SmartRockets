@@ -31,8 +31,9 @@ Level.prototype.addObstacle = function(object) {
 Level.prototype.initLevel = function(){
 
     const { obstacles, width, height, spawnCoordinate, populationSize, lifespan, target} = levelStructure;
-
     const obstacleArray = obstacles;
+	
+	while(levelStructure == undefined); //wait to receive level
 
     for(let i = 0; i < obstacleArray.length; i++){
         this.obstacles.push(eval("new " + obstacleArray[i].name + "(" + obstacleArray[i].x + ", " + obstacleArray[i].y + ")"));
@@ -57,7 +58,11 @@ Level.prototype.draw = function() {
 }
 
 Level.prototype.update = function() {
-
+	
+	for(let i = 0; i < this.obstacles.length; i++){
+		if(this.obstacles[i].update)
+			this.obstacles[i].update();
+	}
     this.population.update();
 }
 
