@@ -3,7 +3,7 @@ const editing = true;
 const createLevel = true;
 const saveLevel = async () => {
    const levelStructure = level.serialize();
+   $('#createLevelBtn').attr('disabled', 'disabled').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
     await axios.post('/level', levelStructure);
-    $('#createLevelBtn').attr('disabled', 'disabled').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...')
-      window.location.href = '/';
+    window.location.href = '/';
 }
