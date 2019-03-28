@@ -245,10 +245,11 @@ SpatialHash.prototype.getBuckets = function(obj){
 	return buckets;
 }
 
+
 //get list o
 ///////////////////////////////////////////////////////////////////////////////
 //Update physics each frame
-let spatialHashObjects = null;
+let spatialHashObjects = new SpatialHash(120);
 function updatePhysics(){
 	
 	spatialHashObjects = new SpatialHash(120);
@@ -335,7 +336,8 @@ function checkCollision(a, response){
 }
 /////////////////////////////
 function checkColliderCollision(colliderA, colliderB, response){
-	response.clear();
+	if(response)
+		response.clear();
 	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.POLY){
 		//Poly Poly check
 		return SAT.testPolygonPolygon(colliderA.getSATPolygon(), colliderB.getSATPolygon(), response);
@@ -352,4 +354,20 @@ function checkColliderCollision(colliderA, colliderB, response){
 		//Circle Circle check
 		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATCircle(), response);
 	}
+}
+/////////////////////////////////
+//Helper funtions
+
+function pointInBox(px, py, x, y, w, h){
+	//find point in box
+	return (px < x+w && px > x && py > y && py < y+h);
+}
+
+function pointInCircle(px, py, x, y, r){
+	//find point in circle
+	return dist(px, py, x, y) < r;
+}
+
+function pointInPolygon(px, py, poly){
+	return SAT.pointInPolygon(new SAT.Vector(px, py), poly);
 }
