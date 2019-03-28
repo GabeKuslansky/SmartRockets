@@ -6,11 +6,13 @@ function Population(size, lifespan, startx, starty){
 	this.currentGene = 0;
 	this.startx = startx;
 	this.starty = starty;
+	this.maxRocket = null;
 			
 	//Create population
 	this.createRandomPop();
 	
 	this.maxFitness = 0;
+	this.displayFitness = 0;
 }
 
 //Create random population
@@ -34,6 +36,8 @@ Population.prototype.update = function(){
 		this.rockets[i].update();
 	}
 	this.currentGene++;
+	
+	this.calcMaxFitness();
 };
 
 //Draw
@@ -45,10 +49,10 @@ Population.prototype.draw = function(){
 	push();
 	textSize(32);
 	fill(55, 145, 155);
-	if(this.maxFitness == 1/level.target.radius)
+	if(this.displayFitness == 1/level.target.radius)
 		$('#maxFitnessValue').text('MAX'); 
 	else
-		$('#maxFitnessValue').text(int(this.maxFitness*10000), 10, 30); 
+		$('#maxFitnessValue').text(int(this.displayFitness*10000), 10, 30); 
 	pop();
 
 };
@@ -58,18 +62,23 @@ Population.prototype.getRocketByIndex = function(index){
 	return this.rockets[index];
 }
 
-//Create New Generation
-Population.prototype.nextGeneration = function(){
-	
+Population.prototype.calcMaxFitness = function(){
 	//Calculate fitness and max fitness
 	this.maxFitness = 0;
+	let index = null;
 	for(var i = 0; i < this.rockets.length; i++){
 		this.rockets[i].calcFitness();
-		if(this.maxFitness < this.rockets[i].fitness)
+		if(this.maxFitness < this.rockets[i].fitness){
 			this.maxFitness = this.rockets[i].fitness;
+			this.maxRocket = this.rockets[i];
+		}
 	}
+}
+
+//Create New Generation
+Population.prototype.nextGeneration = function(){
 		
-	
+	this.displayFitness = this.maxFitness;
 	//Normalize fitness
 	for(var i = 0; i < this.rockets.length; i++){
 		this.rockets[i].fitness /= this.maxFitness;
