@@ -5,4 +5,5 @@ const createLevel = false;
 axios.get(`/api/level/${levelId}`).then(levelObj  => {
     levelStructure = levelObj.data.levelStructure;
     level.initLevel();
+    console.log(levelStructure)
 });
