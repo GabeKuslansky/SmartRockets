@@ -249,7 +249,7 @@ SpatialHash.prototype.getBuckets = function(obj){
 //get list o
 ///////////////////////////////////////////////////////////////////////////////
 //Update physics each frame
-let spatialHashObjects = null;
+let spatialHashObjects = new SpatialHash(120);
 function updatePhysics(){
 	
 	spatialHashObjects = new SpatialHash(120);

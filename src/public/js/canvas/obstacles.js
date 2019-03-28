@@ -191,11 +191,15 @@ BlackHoleObstacle.getColor = function(){
 	return [0, 0, 0];
 }
 
+BlackHoleObstacle.getOpacity = function(){
+	return 150;
+}
+
 BlackHoleObstacle.prototype.draw = function(){
 	push();
 	strokeWeight(0);
 	var color = BlackHoleObstacle.getColor();
-	fill(color[0]+100, color[1]+100, color[2]+100);
+	fill(color[0]+100, color[1]+100, color[2]+100, BlackHoleObstacle.getOpacity());
 	circle(this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius());
 	fill(color);
 	circle(this.position.x, this.position.y, BlackHoleObstacle.getRadius());
