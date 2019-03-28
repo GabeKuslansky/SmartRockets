@@ -1,9 +1,10 @@
 
-let canvas, level = new Level(), editor, cameraSpeed = 10, cameraPosition, gamePaused, levelShouldLoad = false, followRocket = true;
+let canvas, level = new Level(), editor, cameraPosition, cameraTarget, gamePaused, levelShouldLoad = false, followRocket = true;
 
 const width = 600, height = 600, arrayOfObjects = [];
 const rocketFrameRate = 60;
 const lerpDist = 0.05;
+const cameraSpeed = 10;
 
 function setup() {
 	canvas = createCanvas(width, height);
@@ -13,6 +14,7 @@ function setup() {
 	if(editing)
 		editor = new LevelEditorContainer(width, height);
 	cameraPosition = createVector(0, 0);
+	cameraTarget = createVector(0, 0);
 	frameRate(rocketFrameRate);
 }
 
@@ -32,33 +34,36 @@ function draw() {
 			if(level.initialized){
 				let rocket = level.population.maxRocket;
 				if(rocket != null){
-					cameraPosition.x = lerp(cameraPosition.x, -rocket.position.x + width/2, lerpDist);
-					cameraPosition.y = lerp(cameraPosition.y, -rocket.position.y + height/2, lerpDist);
+					cameraTarget.x = -rocket.position.x + width/2;
+					cameraTarget.y = -rocket.position.y + height/2
 				}
 			}
 		}
-		else{
-			//W
-			if(keyIsDown(87)){
-			  cameraPosition.y += cameraSpeed;
-			}
-			//A
-			if(keyIsDown(65)){
-			  cameraPosition.x += cameraSpeed;
-			}
-			//S
-			if(keyIsDown(83)){
-			  cameraPosition.y -= cameraSpeed;
-			}
-			//D
-			if(keyIsDown(68)){
-			  cameraPosition.x -= cameraSpeed;
-			}
-			//SpaceBar
-			if(keyIsDown(32)){
-			  cameraPosition.x = 0;
-			  cameraPosition.y = 0;
-			}
+		//W
+		if(keyIsDown(87)){
+			cameraTarget.y += cameraSpeed;
+			followRocket = false;
+		}
+		//A
+		if(keyIsDown(65)){
+			cameraTarget.x += cameraSpeed;
+			followRocket = false;
+		}
+		//S
+		if(keyIsDown(83)){
+			cameraTarget.y -= cameraSpeed;
+			followRocket = false;
+		}
+		//D
+		if(keyIsDown(68)){
+			cameraTarget.x -= cameraSpeed;
+			followRocket = false;
+		}
+		//SpaceBar
+		if(keyIsDown(32)){
+			cameraTarget.x = 0;
+			cameraTarget.y = 0;
+			followRocket = false;
 		}
 		//update level
 		if(!gamePaused){
@@ -70,6 +75,8 @@ function draw() {
 
 		//Render
 		//camera pos
+		cameraPosition.x = lerp(cameraPosition.x, cameraTarget.x, lerpDist);
+		cameraPosition.y = lerp(cameraPosition.y, cameraTarget.y, lerpDist);
 		translate(cameraPosition.x, cameraPosition.y);
 		level.draw();
 		

@@ -29,3 +29,11 @@ function togglePause(val){
     const btn = $('#togglePauseBtn');
     gamePaused ? btn.removeClass('btn-danger').addClass('btn-success').html('Play <i class="fa fa-play"></i>') : btn.addClass('btn-danger').removeClass('btn-success').html('Pause <i class="fa fa-pause"></i>');
 }
+
+function setFollow(){
+    
+    followRocket = true;
+ 
+    const btn = $('#togglePauseBtn');
+    gamePaused ? btn.removeClass('btn-danger').addClass('btn-success').html('Play <i class="fa fa-play"></i>') : btn.addClass('btn-danger').removeClass('btn-success').html('Pause <i class="fa fa-pause"></i>');
+}
