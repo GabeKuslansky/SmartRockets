@@ -1,6 +1,7 @@
 function Population(size, lifespan, startx, starty){
 	this.size = size;
 	this.lifespan = lifespan;
+	this.DNAlength = lifespan;
 	this.rockets = [];
 	this.currentGene = 0;
 	this.startx = startx;
@@ -24,7 +25,7 @@ Population.prototype.createRandomPop = function(){
 //Update
 Population.prototype.update = function(){
 	
-	if(this.currentGene >= this.rockets.length){
+	if(this.currentGene >= this.DNAlength){
 		//Generation lifespan over
 		this.nextGeneration();
 		this.currentGene = 0;
@@ -112,7 +113,8 @@ Population.prototype.nextGeneration = function(){
 	
 	
 	//Mutate DNA
-	let lifespanDif = this.lifespan-this.rockets.length;
+	this.DNAlength = this.lifespan;
+	let lifespanDif = this.DNAlength-this.rockets.length;
 	for(var i = 0; i < this.rockets.length; i++){
 		//Resize DNA if needed
 		if(lifespanDif > 0){
