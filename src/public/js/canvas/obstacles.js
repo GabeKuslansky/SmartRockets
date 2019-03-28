@@ -37,7 +37,7 @@ BoxObstacle.prototype.deleteObstacle = function()
 BoxObstacle.drawIcon = function(x, y){
 	push()
 	var color = BoxObstacle.getColor();
-	if(pointInBox(mouseX, mouseY, x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY))
+	if(pointInBox(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY))
 		fill(color[0]+50, color[1]+50, color[2]+50);
 	else
 		fill(...color);
@@ -46,7 +46,7 @@ BoxObstacle.drawIcon = function(x, y){
 }
 
 BoxObstacle.mouseIntersectsIcon = function(boxPosX, boxPosY){
-	return pointInBox(mouseX, mouseY, boxPosX+boxOffsetX, boxPosY+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY);
+	return pointInBox(mouseX-cameraPosition.x, mouseY-cameraPosition.y, boxPosX+boxOffsetX, boxPosY+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY);
 }
 
 BoxObstacle.getWidth = function(){
@@ -123,7 +123,7 @@ CircleObstacle.prototype.deleteObstacle = function()
 CircleObstacle.drawIcon = function(x, y){
 	push()
 	var color = CircleObstacle.getColor();
-	if(pointInCircle(mouseX, mouseY, x+circleOffsetX, y+circleOffsetY, CircleObstacle.getRadius()*circleScale))
+	if(pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+circleOffsetX, y+circleOffsetY, CircleObstacle.getRadius()*circleScale))
 		fill(color[0]+50, color[1]+50, color[2]+50);
 	else
 		fill(...color);
@@ -132,7 +132,7 @@ CircleObstacle.drawIcon = function(x, y){
 }
 
 CircleObstacle.mouseIntersectsIcon = function(circlePosX, circlePosY){
-	return pointInCircle(mouseX, mouseY, circlePosX+circleOffsetX, circlePosY+circleOffsetY, CircleObstacle.getRadius()*circleScale);
+	return pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, circlePosX+circleOffsetX, circlePosY+circleOffsetY, CircleObstacle.getRadius()*circleScale);
 }
 
 CircleObstacle.getRadius = function(){
@@ -216,7 +216,7 @@ BlackHoleObstacle.prototype.deleteObstacle = function()
 BlackHoleObstacle.drawIcon = function(x, y){
 	push()
 	var color = BlackHoleObstacle.getColor();
-	if(pointInCircle(mouseX, mouseY, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale))
+	if(pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale))
 		fill(color[0]+50, color[1]+50, color[2]+50);
 	else
 		fill(...color);
@@ -225,7 +225,7 @@ BlackHoleObstacle.drawIcon = function(x, y){
 }
 
 BlackHoleObstacle.mouseIntersectsIcon = function(blackHolePosX, blackHolePosY){
-	return pointInCircle(mouseX, mouseY, blackHolePosX+blackHoleOffsetX, blackHolePosY+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
+	return pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, blackHolePosX+blackHoleOffsetX, blackHolePosY+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
 }
 
 BlackHoleObstacle.getRadius = function(){
@@ -306,7 +306,7 @@ TriangleObstacle.drawIcon = function(x, y){
 					new SAT.Vector(TriangleObstacle.getLength()*triangleScale, TriangleObstacle.getLength()*triangleScale),
 					new SAT.Vector(-TriangleObstacle.getLength()*triangleScale, TriangleObstacle.getLength()*triangleScale)	
 	])
-	if(pointInPolygon(mouseX, mouseY, poly))
+	if(pointInPolygon(mouseX-cameraPosition.x, mouseY-cameraPosition.y, poly))
 		fill(color[0]+50, color[1]+50, color[2]+50);
 	else
 		fill(...color);
@@ -323,7 +323,7 @@ TriangleObstacle.mouseIntersectsIcon = function(trianglePosX, trianglePosY){
 					new SAT.Vector(TriangleObstacle.getLength()*triangleScale, TriangleObstacle.getLength()*triangleScale),
 					new SAT.Vector(-TriangleObstacle.getLength()*triangleScale, TriangleObstacle.getLength()*triangleScale)	
 	])
-	return pointInPolygon(mouseX, mouseY, poly)
+	return pointInPolygon(mouseX-cameraPosition.x, mouseY-cameraPosition.y, poly)
 }
 
 TriangleObstacle.getLength = function(){

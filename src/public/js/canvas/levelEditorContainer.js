@@ -37,7 +37,7 @@ LevelEditorContainer.prototype.draw = function() {
 		
 		
 		if(this.isHoldingObject){
-			eval(this.obstacles[this.heldIndex].obstacle + ".draw(" + mouseX + ", " + mouseY + ")");
+			eval(this.obstacles[this.heldIndex].obstacle + ".draw(" + (mouseX-cameraPosition.x) + ", " + (mouseY-cameraPosition.y) + ")");
 		}
     }
 }
@@ -74,7 +74,7 @@ LevelEditorContainer.prototype.mouseReleased = function(){
 	if(this.isHoldingObject){
 		
 		
-		let obstacle = eval("new " + this.obstacles[this.heldIndex].obstacle + "(" + mouseX + ", " + mouseY + ")");
+		let obstacle = eval("new " + this.obstacles[this.heldIndex].obstacle + "(" + (mouseX-cameraPosition.x) + ", " + (mouseY-cameraPosition.y) + ")");
 		if(checkCollision(obstacle.physics, null))
 			obstacle.deleteObstacle();
 		else

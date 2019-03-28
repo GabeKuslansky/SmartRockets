@@ -1,5 +1,5 @@
 
-let canvas, level = new Level(), editor;
+let canvas, level = new Level(), editor, cameraSpeed = 10, cameraPosition;
 
 const width = 600, height = 600, arrayOfObjects = [];
 
@@ -10,6 +10,7 @@ function setup() {
 		level.initLevel();
 	if(editing)
 		editor = new LevelEditorContainer(width, height);
+	cameraPosition = createVector(0, 0);
 }
 
 function draw() {
@@ -24,6 +25,20 @@ function draw() {
 		if(editing)
 			editor.update();
 
+		
+		if(keyIsDown(87)){
+		  cameraPosition.y += cameraSpeed;
+		}
+		if(keyIsDown(65)){
+		  cameraPosition.x += cameraSpeed;
+		}
+		if(keyIsDown(83)){
+		  cameraPosition.y -= cameraSpeed;
+		}
+		if(keyIsDown(68)){
+		  cameraPosition.x -= cameraSpeed;
+		}
+		
 		//update level
 		level.update();
 		
@@ -31,6 +46,8 @@ function draw() {
 		updatePhysics()
 
 		//Render
+		//camera pos
+		translate(cameraPosition.x, cameraPosition.y);
 		level.draw();
 		
 		if(editing)
