@@ -1,3 +1,4 @@
+
 $('#populationSlider').change(function() {
     const value = $(this).val()
     level.population.size = value;
@@ -6,12 +7,14 @@ $('#populationSlider').change(function() {
 
 $('#mutationSlider').change(function() {
     const value = $(this).val();
-    mutationChance = value/100;
+    mutateChance = value/100;
     $('#mutationValue').text(value);
 });
 
 $('#lifespanSlider').change(function() {
     const value = $(this).val();
     level.population.lifespan = value;
-    $('#lifespanValue').text(value);
+
+    const displayValue = (value/rocketFrameRate).toFixed(1)
+    $('#lifespanValue').text(displayValue);
 });

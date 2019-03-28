@@ -2,7 +2,7 @@
 let canvas, level = new Level(), editor, cameraSpeed = 10, cameraPosition;
 
 const width = 600, height = 600, arrayOfObjects = [];
-const rocketFrameRate = 30;
+const rocketFrameRate = 60;
 
 function setup() {
 	canvas = createCanvas(width, height);
@@ -18,7 +18,6 @@ function setup() {
 function draw() {
 	//Clear
 	background(204, 198, 198);
-
 	if(level.initialized){
 		//Stroke weight
 		strokeWeight(5);

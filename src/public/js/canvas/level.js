@@ -19,7 +19,7 @@ function Level() {
     this.height = 600;
     this.spawnCoordinate = {x: this.width/2, y: this.height-100};
     this.populationSize = 50;
-    this.lifespan = 150;
+    this.lifespan = 360;
     this.population = null;
     this.target = null;
 }
@@ -41,10 +41,7 @@ Level.prototype.initLevel = function(){
     this.width = width;
     this.height = height;
     this.spawnCoordinate = spawnCoordinate;
-    this.populationSize = populationSize;
-    this.lifespan = lifespan;
     this.target = new Target(target.x, target.y, target.r);
-
 
     this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.x, this.spawnCoordinate.y);
     this.initialized = true;
