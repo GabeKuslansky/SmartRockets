@@ -13,6 +13,7 @@ function Population(size, lifespan, startx, starty){
 	
 	this.maxFitness = 0;
 	this.displayFitness = 0;
+
 }
 
 //Create random population
@@ -77,6 +78,9 @@ Population.prototype.calcMaxFitness = function(){
 
 //Create New Generation
 Population.prototype.nextGeneration = function(){
+
+	//reset camera follow
+	canSwap = true;
 		
 	this.displayFitness = this.maxFitness;
 	//Normalize fitness

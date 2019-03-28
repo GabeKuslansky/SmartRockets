@@ -1,10 +1,11 @@
 
-let canvas, level = new Level(), editor, cameraPosition, cameraTarget, gamePaused, levelShouldLoad = false, followRocket = true;
+let canvas, level = new Level(), editor, cameraPosition, cameraTarget, gamePaused, levelShouldLoad = false, followRocket = true, trackedRocket, canSwap = true;
 
 const width = 800, height = 800, arrayOfObjects = [];
 const rocketFrameRate = 60;
-const lerpDist = 0.05;
+const lerpDist = 0.08;
 const cameraSpeed = 10;
+const swapPeriod = 3000;
 
 function setup() {
 	canvas = createCanvas(width, height);
@@ -32,10 +33,14 @@ function draw() {
 		if(followRocket){
 			//check if we have a population
 			if(level.initialized){
-				let rocket = level.population.maxRocket;
-				if(rocket != null){
-					cameraTarget.x = -rocket.position.x + width/2;
-					cameraTarget.y = -rocket.position.y + height/2
+				if(canSwap){
+					canSwap = false;
+					setTimeout(function(){ canSwap = true;}, swapPeriod);
+					trackedRocket = level.population.maxRocket;
+				}
+				if(trackedRocket != null){
+					cameraTarget.x = -trackedRocket.position.x + width/2;
+					cameraTarget.y = -trackedRocket.position.y + height/2
 				}
 			}
 		}
