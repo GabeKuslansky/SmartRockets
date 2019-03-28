@@ -26,18 +26,26 @@ function draw() {
 		if(editing)
 			editor.update();
 
-		
+		//W
 		if(keyIsDown(87)){
 		  cameraPosition.y += cameraSpeed;
 		}
+		//A
 		if(keyIsDown(65)){
 		  cameraPosition.x += cameraSpeed;
 		}
+		//S
 		if(keyIsDown(83)){
 		  cameraPosition.y -= cameraSpeed;
 		}
+		//D
 		if(keyIsDown(68)){
 		  cameraPosition.x -= cameraSpeed;
+		}
+		//SpaceBar
+		if(keyIsDown(32)){
+		  cameraPosition.x = 0;
+		  cameraPosition.y = 0;
 		}
 		//update level
 		if(!gamePaused){
