@@ -57,11 +57,13 @@ function draw() {
 
 function mousePressed(){
 	
-	editor.mousePressed();
+	if(editing)
+		editor.mousePressed();
 }
 
 function mouseReleased(){
-	editor.mouseReleased();
+	if(editing)
+		editor.mouseReleased();
 }
 
 function organizeCanvasForDOM() {
