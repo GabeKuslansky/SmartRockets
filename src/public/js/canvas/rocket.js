@@ -73,7 +73,7 @@ Rocket.prototype.update = function(){
 		//Update Logic//
 		
 		//Check if center of rocket is within radius of target
-		if(dist(this.position.x + this.w/2, this.position.y + this.h/2, this.target.position.x, this.target.position.y) <= this.target.radius){
+		if(dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y) <= this.target.radius){
 			this.success = true;
 			this.deleteRocket();
 		}

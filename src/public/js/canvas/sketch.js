@@ -1,7 +1,7 @@
 
 let canvas, level = new Level(), editor, cameraPosition, cameraTarget, gamePaused, levelShouldLoad = false, followRocket = true;
 
-const width = 600, height = 600, arrayOfObjects = [];
+const width = 800, height = 800, arrayOfObjects = [];
 const rocketFrameRate = 60;
 const lerpDist = 0.05;
 const cameraSpeed = 10;
