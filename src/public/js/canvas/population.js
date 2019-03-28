@@ -97,14 +97,15 @@ Population.prototype.nextGeneration = function(){
 
 	//Create population
 	var newPop = [];
-	for(var i = 0; i < this.size; i++){
+	let size = this.size;
+	for(var i = 0; i < size; i++){
 		//Get indexes of parents
 		var parentA = int(random(0, matingPool.length-1));
 		var parentB = int(random(0, matingPool.length-1));
 		
 		//Make sure parents dont equal each other. Need to have at least 2 rockets
-		while(parentA != parentB)
-			parentB = int(random(0, this.size-1));
+		while(parentA == parentB && matingPool.length != 1)
+			parentB = int(random(0, matingPool.length-1));
 		
 		this.rockets.push(new Rocket(this.startx, this.starty, DNA.crossoverMidpoint(matingPool[parentA].DNA, matingPool[parentB].DNA), level.target));
 	}
