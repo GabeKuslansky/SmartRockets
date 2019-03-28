@@ -22,7 +22,9 @@
                 <option>Distance & Time</option>
             </select>
                     <button id='togglePauseBtn' class='btn btn-success mt-3' onclick='togglePause()'><span id='pauseState'>Play</span> level <i class='fas fa-play'></i></button>
+                    {{#if create}}
                     <button id='createLevelBtn' class='btn btn-primary mt' onclick='saveLevel()'>Upload level <i class='fas fa-cloud-upload-alt'></i></button>
+                    {{/if}}
             </div>
         </div>
     </div>
