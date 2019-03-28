@@ -24,7 +24,7 @@ Population.prototype.createRandomPop = function(){
 //Update
 Population.prototype.update = function(){
 	
-	if(this.currentGene >= this.lifespan){
+	if(this.currentGene >= this.rockets.length){
 		//Generation lifespan over
 		this.nextGeneration();
 		this.currentGene = 0;
