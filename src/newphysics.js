@@ -185,16 +185,16 @@ function ColliderBox(transform, offsetX, offsetY, w, h){
 }
 //GLOBAL
 ColliderBox.prototype.getSATPolygon = function(){
-	let poly = new SAT.Polygon(new SAT.Vector(this.transform.x+this.offsetX, this.transform.y+this.offsetY),
-							[new SAT.Vector(0, 0),
-							new SAT.Vector(this.w, 0),
-							new SAT.Vector(this.w, this.h),
-							new SAT.Vector(0, this.h)]);
+	let poly = new SAT.Polygon(new SAT.Vector(this.transform.x+this.offsetX+this.w/2, this.transform.y+this.offsetY+this.h/2),
+							[new SAT.Vector(-this.w/2, -this.h/2),
+							new SAT.Vector(this.w/2, -this.h/2),
+							new SAT.Vector(this.w/2, this.h/2),
+							new SAT.Vector(-this.w/2, this.h/2)]);
 	poly.rotate(this.angle);
 	let points = poly.calcPoints; // relative to poly position
 	beginShape();
 	for(let i = 0; i < points.length; i++)
-		vertex(points[i].x + this.transform.x+this.offsetX, points[i].y + this.transform.y+this.offsetY);
+		vertex(points[i].x + this.transform.x+this.offsetX+this.w/2, points[i].y + this.transform.y+this.offsetY+this.h/2);
 	endShape(CLOSE);
 	
 	return poly;

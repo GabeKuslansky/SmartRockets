@@ -11,7 +11,7 @@ function Rocket(x, y, id, DNA){
 	
 	//Physics Colliders
 	this.physics = new PhysicsObject(this.position, true, this.onCollision);
-	this.physics.addColliderBox(0, 0, this.w, this.h);
+	this.physics.addColliderBox(-this.w/2, -this.h/2, this.w, this.h);
 	
 	this.crashed = false;
 	
