@@ -36,6 +36,7 @@ function PhysicsObject(position, isRocket, ref, callBack){
 	else
 		physicsObjects.push(this);
 	
+	//relative to position
 	this.boundingBox = null;
 	
 };
@@ -50,15 +51,15 @@ PhysicsObject.prototype.rotate = function(angle, point){
 	
 	//translate by negative point
 	this.position.sub(point);
-	let oldPos = createVector(this.position.x, this.position.y);
-
-	
+	print(this.position);
 	//rotate position
-	this.position.x = Math.cos(radians)*oldPos.x - Math.sin(radians)*oldPos.y;
-	this.position.y = Math.sin(radians)*oldPos.x + Math.cos(radians)*oldPos.y;
-	
+	this.position.rotate(radians);
+	print(this.position);
 	//translate by position point
 	this.position.add(point);
+	print(this.position);
+	//reset bounding box
+	this.boundingBox = null;
 	
 	//rotate colliders
 	for(let i = 0; i < this.colliders.length; i++){
@@ -110,27 +111,35 @@ PhysicsObject.prototype.onCollision = function(){
 	}
 }
 
+//using offset
 PhysicsObject.prototype.updateBoundingBoxPoly = function(square){
+		if(this.boundingBox == null){
+			this.boundingBox = new boundingBox(square.x, square.y, square.w, square.h);
+			return;
+		}
 		if(square.x < this.boundingBox.x)
 			this.boundingBox.x = square.x;
 		if(square.x + square.w > this.boundingBox.x + this.boundingBox.w)
-			this.boundingBox.w += Math.abs(square.w - this.boundingBox.w);
-		if(square.y < this.boundingBox.y)
+			this.boundingBox.w = Math.abs(square.x + square.w - this.boundingBox.x);
+		if(square.y > this.boundingBox.y)
 			this.boundingBox.y = square.y;
-		if(square.y+square.h > this.boundingBox.y + this.boundingBox.y)
-			this.boundingBox.h += Math.abs(square.h - this.boundingBox.h);
+		if(square.y+square.h > this.boundingBox.y + this.boundingBox.h)
+			this.boundingBox.h = Math.abs(square.y + square.h - this.boundingBox.y);
 }
 
 //Add colliders
 //x and y are offsets from position
 PhysicsObject.prototype.addColliderBox = function(x, y, w, h){
-	this.colliders.push(new ColliderBox(this.position, x, y, w, h));
+	let collider = new ColliderBox(this.position, x, y, w, h);
+	this.colliders.push(collider);
+	
+	let bb = collider.getBoundingBox();
 	//reset bounding box
 	if(this.boundingBox == null)
-		this.boundingBox = new boundingBox(x, y, w, h);
+		this.boundingBox = new boundingBox(bb.x, bb.y, bb.w, bb.h);
 	//update bounding box
 	else
-		this.updateBoundingBoxPoly({x:x, y:y, w:w, h:h});
+		this.updateBoundingBoxPoly(collider.getBoundingBox());
 };
 //x and y are offsets from position
 PhysicsObject.prototype.addColliderCircle = function(x, y, r){
@@ -151,22 +160,15 @@ PhysicsObject.prototype.addColliderPolygon = function(x, y, points){
 	var collider = new ColliderPolygon(this.position, x, y, points);
 	this.colliders.push(collider);
 	
-	//Get bounding box of polygon
-	let bb = collider.getSATPolygon().getAABB();
-	//getAABB defines in a weird way. converting to corner coords
-	let betterbb = new boundingBox(bb.pos.x, bb.pos.y, bb.points[1].x, bb.points[3].y);
-	
-	//Set from global to local coords
-	betterbb.x -= this.position.x;
-	betterbb.y -= this.position.y;	
+	let bb = collider.getBoundingBox();
 	
 	//reset bounding box
 	if(this.boundingBox == null){
-		this.boundingBox = new boundingBox(betterbb.x, betterbb.y, betterbb.w, betterbb.h);
+		this.boundingBox = new boundingBox(bb.x, bb.y, bb.w, bb.h);
 	}
 	//update bounding box
 	else{
-		this.updateBoundingBoxPoly(betterbb);
+		this.updateBoundingBoxPoly(bb);
 	}
 };
 
@@ -190,25 +192,41 @@ function ColliderBox(transform, offsetX, offsetY, w, h){
 	
 	this.type = ColliderTypes.POLY;
 }
+//GLOBAL
 ColliderBox.prototype.getSATPolygon = function(){
-	let poly = new SAT.Polygon(new SAT.Vector(this.transform.x+this.offsetX, this.transform.y+this.offsetY),
-							[new SAT.Vector(0, 0),
-							new SAT.Vector(this.w, 0),
-							new SAT.Vector(this.w, this.h),
-							new SAT.Vector(0, this.h)]);
+	let poly = new SAT.Polygon(new SAT.Vector(this.transform.x+this.offsetX+this.w/2, this.transform.y+this.offsetY+this.h/2),
+							[new SAT.Vector(-this.w/2, -this.h/2),
+							new SAT.Vector(this.w/2, -this.h/2),
+							new SAT.Vector(this.w/2, this.h/2),
+							new SAT.Vector(-this.w/2, this.h/2)]);
 	poly.rotate(this.angle);
+	/*let points = poly.calcPoints; // ignores position
+	beginShape();
+	for(let i = 0; i < points.length; i++)
+		vertex(points[i].x+this.transform.x+this.offsetX+this.w/2, points[i].y+this.transform.y+this.offsetY+this.h/2);
+	endShape(CLOSE);*/
+	
 	return poly;
 }
 //receives radians
 ColliderBox.prototype.rotate = function(angle){
 	this.angle = angle;
 }
+
 //xywh format
+//LOCAL TO TRANSFORM
 ColliderBox.prototype.getBoundingBox = function(){
+	
 	//Get bounding box of polygon
 	let bb = this.getSATPolygon().getAABB();
 	//getAABB defines in a weird way. converting to corner coords
-	return new boundingBox(bb.pos.x, bb.pos.y, bb.points[1].x, bb.points[3].y);
+	let betterbb = new boundingBox(bb.pos.x, bb.pos.y, bb.points[1].x, bb.points[3].y);
+	
+	//Set from global to local coords
+	betterbb.x -= this.transform.x;
+	betterbb.y -= this.transform.y;	
+		
+	return betterbb;
 }
 
 //x y in center

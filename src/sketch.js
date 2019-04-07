@@ -5,10 +5,11 @@ let speed = 5;
 
 function Rectangle(x, y, w, h){
 	this.position = createVector(x, y);
+	this.initialPosition = createVector(x, y);
 	this.w = w;
 	this.h = h;
-	//this.physics = new PhysicsObject(this.position, false);
-	//this.physics.addColliderBox(0, 0, w, h);
+	this.physics = new PhysicsObject(this.position, false);
+	this.physics.addColliderBox(0, 0, w, h);
 }
 Rectangle.prototype.draw = function(){
 	rect(this.position.x, this.position.y, this.w, this.h);
@@ -26,8 +27,6 @@ function setup() {
   
   rect1 = new Rectangle(100, 100, 50, 50)
   
-  
-
 }
 let angle = 0;
 function draw() {
@@ -55,16 +54,17 @@ function draw() {
   population.update();
   
   //Update Physics
-  //updatePhysics()
+  updatePhysics()
   
   //Render
   population.draw();
-  angle = angle + .001;
-  //rect1.physics.rotate(5, createVector(rect1.position.x, rect1.position.y));
+  angle = angle + 1;
+  
   push();
   translate(rect1.position.x+rect1.w/2, rect1.position.y+rect1.h/2);
-  rotate(angle);
-  //translate(-rect1.position.x-rect1.w/2, -rect1.position.y-rect1.h/2);
+  rect1.physics.rotate(angle, createVector(rect1.initialPosition.x+rect1.w/2, rect1.initialPosition.y+rect1.h/2));
+  rotate(radians(angle));
+  translate(-rect1.position.x-rect1.w/2, -rect1.position.y-rect1.h/2);
   rect1.draw();
   pop();
   
