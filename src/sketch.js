@@ -5,18 +5,38 @@ let speed = 5;
 
 function Rectangle(x, y, w, h){
 	this.position = createVector(x, y);
-	this.initialPosition = createVector(x, y);
 	this.w = w;
 	this.h = h;
+	this.rotation = 0; //degrees
+	this.step = 0;
+	this.rotationPoint = createVector(x, y);
 	this.physics = new PhysicsObject(this.position, false);
 	this.physics.addColliderBox(0, 0, w, h);
 }
 Rectangle.prototype.draw = function(){
+	this.rotation += this.step;
+	push();
+	translate(this.position.x, this.position.y);
+	rotate(radians(this.rotation));
+	translate(-this.position.x, -this.position.y);
 	rect(this.position.x, this.position.y, this.w, this.h);
+	pop();
+}
+Rectangle.prototype.setRotation = function(angle){
+	//undo current rotation
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(-this.rotation));
+	this.position.add(this.rotationPoint);
+	//rotate
+	this.rotation = angle;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.rotation));
+	this.position.add(this.rotationPoint);
+	this.physics.rotate(this.rotation);
 }
 
 let width = 600, height = 600;
-let rectangle;
+let angle = 0;
 function setup() {
   createCanvas(width, height);
   
@@ -26,9 +46,11 @@ function setup() {
   
   
   rect1 = new Rectangle(100, 100, 50, 50)
+  rect1.setRotation(70);
+  //rect1.step = 1;
   
 }
-let angle = 0;
+
 function draw() {
 
 	//Clear
@@ -55,17 +77,14 @@ function draw() {
   
   //Update Physics
   updatePhysics()
-  
   //Render
   population.draw();
-  angle = angle + 1;
-  
-  push();
-  translate(rect1.position.x+rect1.w/2, rect1.position.y+rect1.h/2);
-  rect1.physics.rotate(angle, createVector(rect1.initialPosition.x+rect1.w/2, rect1.initialPosition.y+rect1.h/2));
-  rotate(radians(angle));
-  translate(-rect1.position.x-rect1.w/2, -rect1.position.y-rect1.h/2);
+  rect1.setRotation(angle);
+  angle++;
   rect1.draw();
+  push();
+  fill(13, 14, 41);
+  //rect(100, 100, 50, 50)
   pop();
   
   //console.log(pop.getRocketByIndex(0).physics.velocity);

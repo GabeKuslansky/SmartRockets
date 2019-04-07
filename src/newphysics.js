@@ -43,21 +43,12 @@ function PhysicsObject(position, isRocket, ref, callBack){
 
 //angle in degrees
 //point to rotate about globally
-PhysicsObject.prototype.rotate = function(angle, point){
+PhysicsObject.prototype.rotate = function(angle){
 	
 	
 	//convert to radians
 	let radians = angle*Math.PI/180;
 	
-	//translate by negative point
-	this.position.sub(point);
-	print(this.position);
-	//rotate position
-	this.position.rotate(radians);
-	print(this.position);
-	//translate by position point
-	this.position.add(point);
-	print(this.position);
 	//reset bounding box
 	this.boundingBox = null;
 	
@@ -194,17 +185,17 @@ function ColliderBox(transform, offsetX, offsetY, w, h){
 }
 //GLOBAL
 ColliderBox.prototype.getSATPolygon = function(){
-	let poly = new SAT.Polygon(new SAT.Vector(this.transform.x+this.offsetX+this.w/2, this.transform.y+this.offsetY+this.h/2),
-							[new SAT.Vector(-this.w/2, -this.h/2),
-							new SAT.Vector(this.w/2, -this.h/2),
-							new SAT.Vector(this.w/2, this.h/2),
-							new SAT.Vector(-this.w/2, this.h/2)]);
+	let poly = new SAT.Polygon(new SAT.Vector(this.transform.x+this.offsetX, this.transform.y+this.offsetY),
+							[new SAT.Vector(0, 0),
+							new SAT.Vector(this.w, 0),
+							new SAT.Vector(this.w, this.h),
+							new SAT.Vector(0, this.h)]);
 	poly.rotate(this.angle);
-	/*let points = poly.calcPoints; // ignores position
+	let points = poly.calcPoints; // relative to poly position
 	beginShape();
 	for(let i = 0; i < points.length; i++)
-		vertex(points[i].x+this.transform.x+this.offsetX+this.w/2, points[i].y+this.transform.y+this.offsetY+this.h/2);
-	endShape(CLOSE);*/
+		vertex(points[i].x + this.transform.x+this.offsetX, points[i].y + this.transform.y+this.offsetY);
+	endShape(CLOSE);
 	
 	return poly;
 }
