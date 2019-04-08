@@ -39,6 +39,45 @@ Rectangle.prototype.setRotation = function(angle){
 }
 
 
+//DEFINE CLOCKWISE
+function Polygon(centerx, centery, points){
+	this.position = createVector(centerx, centery); //center
+	this.points = points;
+	this.rotation = 0; //degrees
+	this.step = 0;
+	this.rotationPoint = createVector(centerx+50, centery+40);
+	this.physics = new PhysicsObject(this.position, false);
+	this.physics.addColliderPolygon(0, 0, points);
+}
+Polygon.prototype.draw = function(){
+	this.rotation += this.step;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.step));
+	this.position.add(this.rotationPoint);	
+	this.physics.rotate(this.rotation);
+	push();
+	translate(this.position.x, this.position.y);
+	rotate(radians(this.rotation));
+	translate(-this.position.x, -this.position.y);
+	beginShape();
+	for(let i = 0; i < this.points.length; i++)
+		vertex(this.points[i].x + this.position.x, this.points[i].y + this.position.y);
+	endShape(CLOSE);
+	pop();
+}
+Polygon.prototype.setRotation = function(angle){
+	//undo current rotation
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(-this.rotation));
+	this.position.add(this.rotationPoint);
+	//rotate
+	this.rotation = angle;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.rotation));
+	this.position.add(this.rotationPoint);
+}
+
+
 
 
 
@@ -99,6 +138,11 @@ function setup() {
   circle1 = new Circle(300, 200, 30);
   circle1.setRotation(0);
   circle1.step = 1;
+  
+  
+  poly = new Polygon(400, 100, [new SAT.Vector(0, -70), new SAT.Vector(70, 70), new SAT.Vector(-70, 70)]);
+  poly.setRotation(0);
+  poly.step = 1;
 }
 
 function draw() {
@@ -131,6 +175,7 @@ function draw() {
   population.draw();
   rect1.draw();
   circle1.draw();
+  poly.draw();
   push();
   fill(0);
   pop();
