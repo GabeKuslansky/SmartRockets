@@ -191,8 +191,8 @@ ColliderBox.prototype.getSATPolygon = function(){
 							new SAT.Vector(this.w/2, this.h/2),
 							new SAT.Vector(-this.w/2, this.h/2)]);
 	poly.rotate(this.angle);
-	let points = poly.calcPoints; // relative to poly position
-	/*beginShape();
+	/*let points = poly.calcPoints; // relative to poly position
+	beginShape();
 	for(let i = 0; i < points.length; i++)
 		vertex(points[i].x + this.transform.x+this.offsetX+this.w/2, points[i].y + this.transform.y+this.offsetY+this.h/2);
 	endShape(CLOSE);*/
