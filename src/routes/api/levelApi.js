@@ -1,10 +1,10 @@
 const Router = require('koa-router');
-const levelsRepository = require('../../models/levelModel')
+const levelService = require('../../services/levelService').default;
 
 const router = new Router({ prefix: '/api/level' })
 
 router.get('/:id', async(ctx, next) => {
-    const level = await levelsRepository.findOne({ _id: ctx.params.id });
+    const level = await levelService.findById(ctx.params.id)
     ctx.response.status = 200;
     ctx.body = level;
 })

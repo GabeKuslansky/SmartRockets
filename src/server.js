@@ -5,17 +5,19 @@ const hbs = require('koa-hbs');
 const serve = require('koa-static-server');
 const session = require('koa-session');
 const passport = require('koa-passport');
-const User = require('./models/userModel');
+const levelService = require('./services/levelService').default;
 const router = require('./routes');
+require('./auth');
 
 const app = new Koa();
+const _levelService = new levelService();
 
-app.use(serve({rootDir: __dirname + '/public/', rootPath: '/public' }));
-
-app.use(session({}, app));
-
+app.use(session({}, app))
+app.keys = config.get('sessionSecret');
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(serve({rootDir: __dirname + '/public/', rootPath: '/public' }));
 
 const errorHandler = async (ctx, next) => {
     try {
@@ -26,6 +28,7 @@ const errorHandler = async (ctx, next) => {
         }
     } catch(error) {
         ctx.render('error', { error: error.stack });
+        console.error(error)
     }
 }
 
@@ -36,4 +39,7 @@ app.use(bodyParser());
 app.use(hbs.middleware({ viewPath: __dirname + '/views', layoutsPath: __dirname + '/views/layouts', defaultLayout: 'defaultLayout', partialsPath: __dirname + '/views/partials' }));
 app.use(router())
 
-app.listen(3000, () => console.log("Listening on port 3000"));
+console.log(levelService)
+levelService.populateLatestLevels().then(_ => {
+    app.listen(3000, () => console.log("Listening on port 3000"));
+});

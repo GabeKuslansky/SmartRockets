@@ -31,7 +31,7 @@ const formatLevelObject = async levelStructure => {
         author: 'someone',
         highestCompletionTime: 0,
     }
-//    const index = await getLatestIndex();
+    const index = await getLatestIndex();
     return { index: 0, levelStructure, metadata };
 }
 

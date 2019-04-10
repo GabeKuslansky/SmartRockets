@@ -4,16 +4,21 @@
       </a>
       <ul class='navbar-nav mr-auto'>
         <li class='nav-item active'>
-          <a href='/create' class='nav-link p-2 border border-0'>Create <i class='fa fa-plus'></i>
-            <span class="sr-only">(current)</span>
-          </a>
+          <a href='/create' class='nav-link p-2 border border-0'>Create <i class='fa fa-plus'></i></a>
         </li>
       </ul>
       {{#unless user}}
         <span>
-          <a href='auth'>
+          <a href='/auth/google'>
             <img id='googleSignIn' src="/public/images/btn_google_signin_light_normal_web.png" alt="">
           </a>
+        {{else}}
+        <ul class='navbar-nav mr-auto'>
+          <li class='nav-item'>
+            <a href='/levels/{{user.id}}'>My levels</a>
+          </li>
+        </ul>
+          <img class='img-fluid rounded-circle' src="{{user.image.url}}"/>
       {{/unless}}
       </span>
     </nav>
