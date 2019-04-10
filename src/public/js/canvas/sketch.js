@@ -1,4 +1,4 @@
-
+let img;
 let canvas, level = new Level(), editor, cameraPosition, cameraTarget, gamePaused, levelShouldLoad = false, followRocket = true, trackedRocket, canSwap = true;
 
 const width = 800, height = 800, arrayOfObjects = [];
@@ -6,6 +6,10 @@ const rocketFrameRate = 60;
 const lerpDist = 0.08;
 const cameraSpeed = 10;
 const swapPeriod = 3000;
+
+function preload(){
+	img = loadImage('/public/images/assets/SpaceBackground.jpg');
+}
 
 function setup() {
 	canvas = createCanvas(width, height);
@@ -21,15 +25,17 @@ function setup() {
 
 function draw() {
 	//Clear
-	background(204, 198, 198);
+	//background(204, 198, 198);
+	image(img, 0, 0, width, height);
 	if(level.initialized){
 		//Stroke weight
 		strokeWeight(5);
 		
 		//Update Input
-		if(editing)
+		if(editing){
 			editor.update();
-
+		}
+		
 		if(followRocket){
 			//check if we have a population
 			if(level.initialized){

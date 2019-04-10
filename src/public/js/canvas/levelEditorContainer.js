@@ -106,4 +106,4 @@ LevelEditorContainer.prototype.generateSpawnPoints = function() {
         obstacle.x = (i * marginX) + offsetX;
         obstacle.y = y + marginY;
     });
-}
+} 
