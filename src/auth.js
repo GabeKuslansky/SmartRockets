@@ -20,8 +20,7 @@ passport.use(new GoogleStrategy({
     callbackURL: config.get('frontURL')
 },
 function(token, tokenSecret, profile, done) {
-    //done(null, profile);
-    done(null, profile.id)
+    done(null, profile)
 }));
 
 router.get('/auth/google', passport.authenticate('google'));
