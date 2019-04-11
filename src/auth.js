@@ -1,5 +1,4 @@
 const config = require('config');
-const Koa = require('koa');
 const passport = require('koa-passport');
 const Router = require('koa-router');
 const GoogleStrategy = require('passport-google-auth').Strategy;
