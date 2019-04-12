@@ -21,7 +21,7 @@ BoxObstacle.prototype.draw = function(){
 	push();
 	fill(...BoxObstacle.getColor());
 	//imageMode(CENTER);
-	//image(clipSatellite,BoxObstacle.getWidth(), BoxObstacle.getHeight());
+	//image(clipSatellite, this.position.x, this.position.y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
 	rect(this.position.x, this.position.y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
 	pop();
 }
@@ -38,12 +38,22 @@ BoxObstacle.prototype.deleteObstacle = function()
 
 BoxObstacle.drawIcon = function(x, y){
 	push()
+	/*
+	if(pointInBox(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY))
+		image(clipSatellite, this.position.x, this.position.y);
+	else
+		image(clipSatellite, this.position.x, this.position.y);
+		rect(x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY);
+	*/
+	
 	var color = BoxObstacle.getColor();
 	if(pointInBox(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY))
 		fill(color[0]+50, color[1]+50, color[2]+50);
 	else
+		//image(clipSatellite, this.position.x, this.position.y);
 		fill(...color);
 	rect(x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY);
+	
 	pop();
 }
 
@@ -191,8 +201,10 @@ BlackHoleObstacle.getForce = function(){
 }
 
 BlackHoleObstacle.getColor = function(){
+	//return image(clipBlack, x, y);
 	return [0, 0, 0];
 }
+
 
 BlackHoleObstacle.getOpacity = function(){
 	return 150;
@@ -201,11 +213,13 @@ BlackHoleObstacle.getOpacity = function(){
 BlackHoleObstacle.prototype.draw = function(){
 	push();
 	strokeWeight(0);
+	//image(clipBlack, this.position.x, this.position.y);
 	var color = BlackHoleObstacle.getColor();
 	fill(color[0]+100, color[1]+100, color[2]+100, BlackHoleObstacle.getOpacity());
 	circle(this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius());
 	fill(color);
 	circle(this.position.x, this.position.y, BlackHoleObstacle.getRadius());
+	
 	pop();
 }
 
@@ -228,6 +242,7 @@ BlackHoleObstacle.drawIcon = function(x, y){
 	else
 		fill(...color);
 	circle(x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
+	
 	pop();
 }
 
@@ -247,6 +262,8 @@ BlackHoleObstacle.draw = function(x, y){
 	push();
 	fill(...BlackHoleObstacle.getColor());
 	circle(x, y, BlackHoleObstacle.getRadius());
+	//imageMode(CENTER);
+	//image(clipBlack, x, y, BlackHoleObstacle.getRadius(), BlackHoleObstacle.getRadius());
 	pop();
 }
 

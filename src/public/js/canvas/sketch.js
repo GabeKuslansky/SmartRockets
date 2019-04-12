@@ -19,8 +19,8 @@ function preload(){
 	//clipBlack = loadImage('/public/images/assets/blackHole.png');
 	clipEarth = loadImage('/public/images/assets/earth.png');
 	//clipMars = loadImage('/public/images/assets/clipMars.png');
-	//clipRocket = loadImage('/public/images/assets/rockets.png');
-	//clipSatellite = loadImage('/public/images/assets/sattellitle.png');
+	clipRocket = loadImage('/public/images/assets/rockets.png');
+	//clipSatellite = loadImage('/public/images/assets/SAT.png');
 	//clipAsteroid = loadImage('/public/images/assets/aseroid.png');
 }
 
