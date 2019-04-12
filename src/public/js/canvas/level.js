@@ -6,10 +6,11 @@ function Target(x, y, radius){
 }
 //Draw
 Target.prototype.draw = function(){
-	push();
-	fill(200, 0, 0);
-	circle(this.position.x, this.position.y, this.radius);
-	pop();
+    push();
+    //fill(255);
+    //circle(this.position.x, this.position.y, this.radius);
+    image(clipEarth, this.position.x, this.position.y, this.radius, this.radius);
+    pop();
 }
 
 function Level() {

@@ -20,6 +20,8 @@ BoxObstacle.getColor = function(){
 BoxObstacle.prototype.draw = function(){
 	push();
 	fill(...BoxObstacle.getColor());
+	//imageMode(CENTER);
+	//image(clipSatellite,BoxObstacle.getWidth(), BoxObstacle.getHeight());
 	rect(this.position.x, this.position.y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
 	pop();
 }
@@ -60,6 +62,7 @@ BoxObstacle.getHeight = function(){
 BoxObstacle.draw = function(x, y){
 	push();
 	fill(...BoxObstacle.getColor());
+	//image(clipSatellite, BoxObstacle.getWidth(), BoxObstacle.getHeight());
 	rect(x, y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
 	pop();
 }
