@@ -2,7 +2,7 @@ function Rocket(x, y, DNA, target){
 
 	//Middle Coords
     this.position = new createVector(x, y);
-    this.color = [random(255), random(255), random(255)];
+    //this.color = [random(255), random(255), random(255)];
 	
 	//Dimensions
 	this.w = 25;

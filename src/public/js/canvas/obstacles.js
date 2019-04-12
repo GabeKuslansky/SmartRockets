@@ -19,10 +19,7 @@ BoxObstacle.getColor = function(){
 
 BoxObstacle.prototype.draw = function(){
 	push();
-	fill(...BoxObstacle.getColor());
-	//imageMode(CENTER);
-	//image(clipSatellite, this.position.x, this.position.y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
-	rect(this.position.x, this.position.y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
+	image(clipSatellite, this.position.x, this.position.y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
 	pop();
 }
 
@@ -38,19 +35,10 @@ BoxObstacle.prototype.deleteObstacle = function()
 
 BoxObstacle.drawIcon = function(x, y){
 	push()
-	/*
-	if(pointInBox(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY))
-		image(clipSatellite, this.position.x, this.position.y);
-	else
-		image(clipSatellite, this.position.x, this.position.y);
-		rect(x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY);
-	*/
-	
 	var color = BoxObstacle.getColor();
 	if(pointInBox(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY))
 		fill(color[0]+50, color[1]+50, color[2]+50);
 	else
-		//image(clipSatellite, this.position.x, this.position.y);
 		fill(...color);
 	rect(x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY);
 	
@@ -65,15 +53,14 @@ BoxObstacle.getWidth = function(){
 	return 300;
 }
 BoxObstacle.getHeight = function(){
-	return 20;
+	return 50;
 }
 
 //Draw obstacle no reference to class
 BoxObstacle.draw = function(x, y){
 	push();
-	fill(...BoxObstacle.getColor());
-	//image(clipSatellite, BoxObstacle.getWidth(), BoxObstacle.getHeight());
-	rect(x, y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
+	imageMode(CENTER);
+	image(clipSatellite, x, y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
 	pop();
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,15 +72,7 @@ BoxObstacle.draw = function(x, y){
 
 
 
-/////				
-//			//////			/////
-					/////
-		//						///
-		///////////////////////////
-
-
-
-
+///////////////////////////////////////////////////////
 
 
 let circleScale = 1/2;
@@ -108,7 +87,6 @@ function CircleObstacle(x, y){
 	this.physics.addColliderCircle(0, 0, CircleObstacle.getRadius());
 		
 }
-
 
 
 CircleObstacle.getColor = function(){
@@ -160,11 +138,6 @@ CircleObstacle.draw = function(x, y){
 	circle(x, y, CircleObstacle.getRadius());
 	pop();
 }
-
-
-
-
-
 
 
 ////////////////////////////////////////////////////
@@ -237,11 +210,16 @@ BlackHoleObstacle.prototype.deleteObstacle = function()
 BlackHoleObstacle.drawIcon = function(x, y){
 	push()
 	var color = BlackHoleObstacle.getColor();
-	if(pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale))
-		fill(color[0]+50, color[1]+50, color[2]+50);
+	if(pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale)){
+		imageMode(CENTER);	
+		image(clipBlack, mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
+		//fill(color[0]+50, color[1]+50, color[2]+50);
+		}
 	else
-		fill(...color);
+		image(clipBlack);
+		//fill(...color);
 	circle(x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
+	//image(clipBlack, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
 	
 	pop();
 }
@@ -303,11 +281,10 @@ TriangleObstacle.getColor = function(){
 
 TriangleObstacle.prototype.draw = function(){
 	push();
-	fill(...TriangleObstacle.getColor());
-	triangle(this.position.x, this.position.y - TriangleObstacle.getLength(),
+	image(clipSign, this.position.x, this.position.y - TriangleObstacle.getLength(),
 			this.position.x + TriangleObstacle.getLength(), this.position.y + TriangleObstacle.getLength(),
 			this.position.x - TriangleObstacle.getLength(), this.position.y + TriangleObstacle.getLength()
-			);
+	);
 	pop();
 }
 
@@ -358,8 +335,8 @@ TriangleObstacle.getLength = function(){
 //Draw obstacle no reference to class
 TriangleObstacle.draw = function(x, y){
 	push();
-	fill(...TriangleObstacle.getColor());
-		triangle(x, y - TriangleObstacle.getLength(),
+	imageMode(CENTER);
+		image(clipSign, x, y - TriangleObstacle.getLength(),
 			x + TriangleObstacle.getLength(), y + TriangleObstacle.getLength(),
 			x - TriangleObstacle.getLength(), y + TriangleObstacle.getLength()
 			);

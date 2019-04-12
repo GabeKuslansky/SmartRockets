@@ -1,10 +1,11 @@
 let backimg;
 let clipBlack;
 let clipEarth;
-let clipMars;
+//let clipMars;
 let clipRocket;
 let clipSatellite;
 let clipAsteroid;
+let clipSign;
 
 let canvas, level = new Level(), editor, cameraPosition, cameraTarget, gamePaused, levelShouldLoad = false, followRocket = true, trackedRocket, canSwap = true;
 
@@ -16,12 +17,13 @@ const swapPeriod = 3000;
 
 function preload(){
 	backimg = loadImage('/public/images/assets/SpaceBackground.jpg');
-	//clipBlack = loadImage('/public/images/assets/blackHole.png');
+	clipBlack = loadImage('/public/images/assets/blackHole.png');
 	clipEarth = loadImage('/public/images/assets/earth.png');
 	//clipMars = loadImage('/public/images/assets/clipMars.png');
 	clipRocket = loadImage('/public/images/assets/rockets.png');
-	//clipSatellite = loadImage('/public/images/assets/SAT.png');
-	//clipAsteroid = loadImage('/public/images/assets/aseroid.png');
+	clipSatellite = loadImage('/public/images/assets/sattelite.png');
+	//clipAsteroid = loadImage('/public/images/assets/asteroid.png');
+	clipSign = loadImage('/public/images/assets/ufoSign.png');
 }
 
 function setup() {
