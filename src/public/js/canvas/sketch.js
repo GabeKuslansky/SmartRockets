@@ -22,7 +22,7 @@ function preload(){
 	//clipMars = loadImage('/public/images/assets/clipMars.png');
 	clipRocket = loadImage('/public/images/assets/rockets.png');
 	clipSatellite = loadImage('/public/images/assets/sattelite.png');
-	//clipAsteroid = loadImage('/public/images/assets/asteroid.png');
+	clipAsteroid = loadImage('/public/images/assets/asteroidFixed.png');
 	clipSign = loadImage('/public/images/assets/ufoSign.png');
 }
 

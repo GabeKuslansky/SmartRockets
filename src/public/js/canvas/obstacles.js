@@ -95,8 +95,7 @@ CircleObstacle.getColor = function(){
 
 CircleObstacle.prototype.draw = function(){
 	push();
-	fill(...CircleObstacle.getColor());
-	circle(this.position.x, this.position.y, CircleObstacle.getRadius());
+	image(clipAsteroid, this.position.x, this.position.y, CircleObstacle.getRadius(), CircleObstacle.getRadius());
 	pop();
 }
 
@@ -134,8 +133,8 @@ CircleObstacle.getRadius = function(){
 //Draw obstacle no reference to class
 CircleObstacle.draw = function(x, y){
 	push();
-	fill(...CircleObstacle.getColor());
-	circle(x, y, CircleObstacle.getRadius());
+	imageMode(CENTER);
+	image(clipAsteroid, x, y, CircleObstacle.getRadius(),CircleObstacle.getRadius());
 	pop();
 }
 
