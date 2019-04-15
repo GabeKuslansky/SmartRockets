@@ -59,7 +59,6 @@ BoxObstacle.getHeight = function(){
 //Draw obstacle no reference to class
 BoxObstacle.draw = function(x, y){
 	push();
-	imageMode(CENTER);
 	image(clipSatellite, x, y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
 	pop();
 }
@@ -184,12 +183,12 @@ BlackHoleObstacle.getOpacity = function(){
 BlackHoleObstacle.prototype.draw = function(){
 	push();
 	strokeWeight(0);
-	//image(clipBlack, this.position.x, this.position.y);
 	var color = BlackHoleObstacle.getColor();
 	fill(color[0]+100, color[1]+100, color[2]+100, BlackHoleObstacle.getOpacity());
 	circle(this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius());
 	fill(color);
-	circle(this.position.x, this.position.y, BlackHoleObstacle.getRadius());
+	//circle(this.position.x, this.position.y, BlackHoleObstacle.getRadius());
+	image(clipBlack, this.position.x, this.position.y, BlackHoleObstacle.getRadius()*2, BlackHoleObstacle.getRadius()*2);
 	
 	pop();
 }
@@ -208,16 +207,12 @@ BlackHoleObstacle.prototype.deleteObstacle = function()
 BlackHoleObstacle.drawIcon = function(x, y){
 	push()
 	var color = BlackHoleObstacle.getColor();
-	if(pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale)){
-		imageMode(CENTER);	
-		image(clipBlack, mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
-		//fill(color[0]+50, color[1]+50, color[2]+50);
+	if(pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale)){	
+		fill(color[0]+50, color[1]+50, color[2]+50);
 		}
 	else
-		image(clipBlack);
-		//fill(...color);
+		fill(...color);
 	circle(x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
-	//image(clipBlack, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
 	
 	pop();
 }
@@ -238,7 +233,6 @@ BlackHoleObstacle.draw = function(x, y){
 	push();
 	fill(...BlackHoleObstacle.getColor());
 	circle(x, y, BlackHoleObstacle.getRadius());
-	//imageMode(CENTER);
 	//image(clipBlack, x, y, BlackHoleObstacle.getRadius(), BlackHoleObstacle.getRadius());
 	pop();
 }
@@ -333,7 +327,6 @@ TriangleObstacle.getLength = function(){
 //Draw obstacle no reference to class
 TriangleObstacle.draw = function(x, y){
 	push();
-	imageMode(CENTER);
 		image(clipSign, x, y - TriangleObstacle.getLength(),
 			x + TriangleObstacle.getLength(), y + TriangleObstacle.getLength(),
 			x - TriangleObstacle.getLength(), y + TriangleObstacle.getLength()
