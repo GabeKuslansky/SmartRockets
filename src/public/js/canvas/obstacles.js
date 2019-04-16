@@ -59,7 +59,6 @@ BoxObstacle.getHeight = function(){
 //Draw obstacle no reference to class
 BoxObstacle.draw = function(x, y){
 	push();
-	imageMode(CENTER);
 	image(clipSatellite, x, y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
 	pop();
 }
@@ -95,6 +94,7 @@ CircleObstacle.getColor = function(){
 
 CircleObstacle.prototype.draw = function(){
 	push();
+	imageMode(CENTER);
 	image(clipAsteroid, this.position.x, this.position.y, CircleObstacle.getRadius()*2, CircleObstacle.getRadius()*2);
 	pop();
 }
@@ -185,6 +185,7 @@ BlackHoleObstacle.getOpacity = function(){
 BlackHoleObstacle.prototype.draw = function(){
 	push();
 	strokeWeight(0);
+	imageMode(CENTER);
 	//var color = BlackHoleObstacle.getColor();
 	//fill(color[0]+100, color[1]+100, color[2]+100, BlackHoleObstacle.getOpacity());
 	image(clipBlack, this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius(), BlackHoleObstacle.getAttractionRadius());
@@ -237,7 +238,7 @@ BlackHoleObstacle.draw = function(x, y){
 	imageMode(CENTER);
 	//fill(...BlackHoleObstacle.getColor());
 	//circle(x, y, BlackHoleObstacle.getRadius());
-	image(clipBlack, x, y, BlackHoleObstacle.getRadius(), BlackHoleObstacle.getRadius());
+	image(clipBlack, x, y, BlackHoleObstacle.getAttractionRadius(), BlackHoleObstacle.getAttractionRadius());
 	pop();
 }
 
@@ -277,9 +278,9 @@ TriangleObstacle.getColor = function(){
 
 TriangleObstacle.prototype.draw = function(){
 	push();
-	image(clipSign, this.position.x, this.position.y - TriangleObstacle.getLength(),
-			this.position.x + TriangleObstacle.getLength(), this.position.y + TriangleObstacle.getLength(),
-			this.position.x - TriangleObstacle.getLength()//, this.position.y + TriangleObstacle.getLength()
+	imageMode(CENTER);
+	image(clipSign, x - TriangleObstacle.getLength(), y - TriangleObstacle.getLength(),
+		2*TriangleObstacle.getLength(), 2*TriangleObstacle.getLength()
 	);
 	pop();
 }
@@ -332,9 +333,8 @@ TriangleObstacle.getLength = function(){
 TriangleObstacle.draw = function(x, y){
 	push();
 	//imageMode(CENTER);
-		image(clipSign, x, y - TriangleObstacle.getLength(),
-		x + TriangleObstacle.getLength(), y + TriangleObstacle.getLength(),
-		x - TriangleObstacle.getLength()//, y + TriangleObstacle.getLength()
+		image(clipSign, x - TriangleObstacle.getLength(), y - TriangleObstacle.getLength(),
+		2*TriangleObstacle.getLength(), 2*TriangleObstacle.getLength()
 		);
 	pop();
 }
