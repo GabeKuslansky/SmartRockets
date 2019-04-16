@@ -59,6 +59,7 @@ BoxObstacle.getHeight = function(){
 //Draw obstacle no reference to class
 BoxObstacle.draw = function(x, y){
 	push();
+	imageMode(CENTER);
 	image(clipSatellite, x, y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
 	pop();
 }
@@ -132,6 +133,7 @@ CircleObstacle.getRadius = function(){
 //Draw obstacle no reference to class
 CircleObstacle.draw = function(x, y){
 	push();
+	imageMode(CENTER);
 	image(clipAsteroid, x, y, CircleObstacle.getRadius()*2,CircleObstacle.getRadius()*2);
 	pop();
 }
@@ -185,10 +187,11 @@ BlackHoleObstacle.prototype.draw = function(){
 	strokeWeight(0);
 	var color = BlackHoleObstacle.getColor();
 	fill(color[0]+100, color[1]+100, color[2]+100, BlackHoleObstacle.getOpacity());
+	//image(clipBlack, this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius(), BlackHoleObstacle.getAttractionRadius());
 	circle(this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius());
 	fill(color);
-	//circle(this.position.x, this.position.y, BlackHoleObstacle.getRadius());
-	image(clipBlack, this.position.x, this.position.y, BlackHoleObstacle.getRadius()*2, BlackHoleObstacle.getRadius()*2);
+	circle(this.position.x, this.position.y, BlackHoleObstacle.getRadius());
+	//image(clipBlack, this.position.x, this.position.y, BlackHoleObstacle.getRadius()*2, BlackHoleObstacle.getRadius()*2);
 	
 	pop();
 }
@@ -231,6 +234,7 @@ BlackHoleObstacle.getAttractionRadius = function(){
 //Draw obstacle no reference to class
 BlackHoleObstacle.draw = function(x, y){
 	push();
+	imageMode(CENTER);
 	fill(...BlackHoleObstacle.getColor());
 	circle(x, y, BlackHoleObstacle.getRadius());
 	//image(clipBlack, x, y, BlackHoleObstacle.getRadius(), BlackHoleObstacle.getRadius());
@@ -275,7 +279,7 @@ TriangleObstacle.prototype.draw = function(){
 	push();
 	image(clipSign, this.position.x, this.position.y - TriangleObstacle.getLength(),
 			this.position.x + TriangleObstacle.getLength(), this.position.y + TriangleObstacle.getLength(),
-			this.position.x - TriangleObstacle.getLength(), this.position.y + TriangleObstacle.getLength()
+			this.position.x - TriangleObstacle.getLength()//, this.position.y + TriangleObstacle.getLength()
 	);
 	pop();
 }
@@ -320,16 +324,17 @@ TriangleObstacle.mouseIntersectsIcon = function(trianglePosX, trianglePosY){
 }
 
 TriangleObstacle.getLength = function(){
-	return 30;
+	return 20;
 }
 
 
 //Draw obstacle no reference to class
 TriangleObstacle.draw = function(x, y){
 	push();
+	//imageMode(CENTER);
 		image(clipSign, x, y - TriangleObstacle.getLength(),
-			x + TriangleObstacle.getLength(), y + TriangleObstacle.getLength(),
-			x - TriangleObstacle.getLength(), y + TriangleObstacle.getLength()
-			);
+		x + TriangleObstacle.getLength(), y + TriangleObstacle.getLength(),
+		x - TriangleObstacle.getLength()//, y + TriangleObstacle.getLength()
+		);
 	pop();
 }

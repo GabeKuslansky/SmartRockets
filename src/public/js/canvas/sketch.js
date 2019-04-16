@@ -17,7 +17,7 @@ const swapPeriod = 3000;
 
 function preload(){
 	backimg = loadImage('/public/images/assets/SpaceBackground.jpg');
-	clipBlack = loadImage('/public/images/assets/blackHole.png');
+	clipBlack = loadImage('/public/images/assets/Black_hole.png');
 	clipEarth = loadImage('/public/images/assets/earth.png');
 	//clipMars = loadImage('/public/images/assets/clipMars.png');
 	clipRocket = loadImage('/public/images/assets/rockets.png');
