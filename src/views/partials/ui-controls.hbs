@@ -1,6 +1,6 @@
 <div class='col-sm'>
     <div class="row">
-        <div class='col-6 border-left'>
+        <div class='col-sm border-left'>
 
             {{!-- Population Slider --}}
             <label for="populationSlider">Population Size: <span id='populationValue'>50</span></label>
@@ -18,20 +18,29 @@
             <button id='setFollowBtn' class='btn btn-primary mt' onclick='setFollow()'>Follow</button>
         </div>
         
-        <div class="col-6">
+        <div class="col-sm">
             <span>Fitness Algorithm</span>
-            <select class='browser-default custom-select'>
-                <option selected hidden disabled>Please Select</option>
-                <option>Distance</option>
-                <option>Distance & Time</option>
-            </select>
-                    <button id='togglePauseBtn' class='btn btn-success mt-3' onclick='togglePause()'><span id='pauseState'>Play</span> level <i class='fas fa-play'></i></button>
-                    {{#if create}}
-                    <button id='createLevelBtn' class='btn btn-primary mt' onclick='saveLevel()'>Upload level <i class='fas fa-cloud-upload-alt'></i></button>
-                    {{/if}}
+            <div class='row'>
+                <select id='fitnessSelect' class='browser-default custom-select'>
+                    <option selected hidden disabled>Please Select</option>
+                    <option>Distance</option>
+                    <option>Distance & Time</option>
+                </select>
+            </div>
+            <div class="row">
+                <button id='togglePauseBtn' class='btn btn-success mt-3' onclick='togglePause()'><span id='pauseState'>Play</span> <i class='fas fa-play'></i></button>
+                {{#if create}}
+                    {{#unless user}}
+                        <button id='createLevelBtn' disabled='disabled' class='btn btn-primary mt-3'>Not logged in <i class='fas fa-cloud-upload-alt'></i></button>
+                    {{else}}
+                        <button id='createLevelBtn' class='btn btn-primary mt-3' onclick='saveLevel()'>Upload level <i class='fas fa-cloud-upload-alt'></i></button>                        
+                    {{/unless}}
+                {{/if}}
+            </div>
             </div>
         </div>
     </div>
 </div>
 
+<script src='/public/js/constants.js'></script>
 <script src='/public/js/ui-controls.js'></script>

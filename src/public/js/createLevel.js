@@ -4,6 +4,11 @@ const createLevel = true;
 const saveLevel = async () => {
    const levelStructure = level.serialize();
    $('#createLevelBtn').attr('disabled', 'disabled').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...');
-    await axios.post('/level', levelStructure);
-    window.location.href = '/';
+   try {
+       await axios.post(API.level, levelStructure);
+       window.location.href = '/';
+    } catch (error) {
+        alert(error);
+    }
+
 }

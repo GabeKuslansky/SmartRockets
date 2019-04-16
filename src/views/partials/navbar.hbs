@@ -8,18 +8,23 @@
         </li>
       </ul>
       {{#unless user}}
-        <span>
           <a href='/auth/google'>
             <img id='googleSignIn' src="/public/images/btn_google_signin_light_normal_web.png" alt="">
           </a>
         {{else}}
-        <ul class='navbar-nav mr-auto'>
-          <li class='nav-item'>
-            <a href='/levels/{{user.id}}'>My levels</a>
+        <ul class='navbar-nav mr-2 float-right'>
+          <li class='nav-item dropdown'>
+            <a class='nav-link dropdown-toggle' id='navbarDropDownMenuLink' data-toggle='dropdown' aria-haspopup="true" aria-expanded="false">
+              <img class='img-fluid rounded-circle mr-2' src="{{user.avatar}}"/> {{user.name}}
+            </a>
+            <div class='dropdown-menu dropdown-primary' aria-labelledby='navbarDropdownMenuLink'>
+            <a class='dropdown-item' href='/levels/{{user.id}}' >My levels</a>
+            <a class='dropdown-item' href='/logout' >Logout</a>
+            </div>
           </li>
+          
         </ul>
-          <img class='img-fluid rounded-circle' src="{{user.image.url}}"/>
+          
       {{/unless}}
-      </span>
     </nav>
   
