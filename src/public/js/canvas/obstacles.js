@@ -185,12 +185,12 @@ BlackHoleObstacle.getOpacity = function(){
 BlackHoleObstacle.prototype.draw = function(){
 	push();
 	strokeWeight(0);
-	var color = BlackHoleObstacle.getColor();
-	fill(color[0]+100, color[1]+100, color[2]+100, BlackHoleObstacle.getOpacity());
-	//image(clipBlack, this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius(), BlackHoleObstacle.getAttractionRadius());
-	circle(this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius());
-	fill(color);
-	circle(this.position.x, this.position.y, BlackHoleObstacle.getRadius());
+	//var color = BlackHoleObstacle.getColor();
+	//fill(color[0]+100, color[1]+100, color[2]+100, BlackHoleObstacle.getOpacity());
+	image(clipBlack, this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius(), BlackHoleObstacle.getAttractionRadius());
+	//circle(this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius());
+	//fill(color);
+	//circle(this.position.x, this.position.y, BlackHoleObstacle.getRadius());
 	//image(clipBlack, this.position.x, this.position.y, BlackHoleObstacle.getRadius()*2, BlackHoleObstacle.getRadius()*2);
 	
 	pop();
@@ -235,9 +235,9 @@ BlackHoleObstacle.getAttractionRadius = function(){
 BlackHoleObstacle.draw = function(x, y){
 	push();
 	imageMode(CENTER);
-	fill(...BlackHoleObstacle.getColor());
-	circle(x, y, BlackHoleObstacle.getRadius());
-	//image(clipBlack, x, y, BlackHoleObstacle.getRadius(), BlackHoleObstacle.getRadius());
+	//fill(...BlackHoleObstacle.getColor());
+	//circle(x, y, BlackHoleObstacle.getRadius());
+	image(clipBlack, x, y, BlackHoleObstacle.getRadius(), BlackHoleObstacle.getRadius());
 	pop();
 }
 
