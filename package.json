@@ -30,6 +30,7 @@
     "koa-static-server": "^1.4.0",
     "moment": "^2.24.0",
     "nedb-promises": "^3.0.2",
+    "passport-google-auth": "^1.0.2",
     "webpack": "^4.29.6"
   },
   "devDependencies": {
