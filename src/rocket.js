@@ -1,6 +1,7 @@
 
 function Rocket(x, y, id, DNA){
 	this.id = id;
+	
 
 	//Top Left coords
 	this.position = new createVector(x, y);
@@ -16,6 +17,7 @@ function Rocket(x, y, id, DNA){
 	this.crashed = false;
 	
 	
+	
 	//Testing
 	//this.physics.force(-2, 0);
 }
@@ -27,7 +29,10 @@ Rocket.prototype.getID = function(){
 
 //Draw Rocket
 Rocket.prototype.draw = function(){
+	push()
+	rectMode(CENTER);
 	rect(this.position.x, this.position.y, this.w, this.h);
+	pop()
 };
 
 //Update Rocket

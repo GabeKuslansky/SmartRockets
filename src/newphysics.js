@@ -1,6 +1,7 @@
 //all physics objects
 var physicsObjects = [];
 var rocketObjects = [];
+let spatialHashObjects = new SpatialHash(120);
 
 //box helper function corner coords
 function boundingBox(x, y, w, h){
@@ -252,8 +253,8 @@ ColliderPolygon.prototype.getSATPolygon = function(){
 		newpoints.push(new SAT.Vector(this.points[i].x, this.points[i].y));
 	let poly = new SAT.Polygon(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), newpoints);
 	poly.rotate(this.angle);
-	let points = poly.calcPoints; // relative to poly position
-	/*beginShape();
+	/*let points = poly.calcPoints; // relative to poly position
+	beginShape();
 	for(let i = 0; i < points.length; i++)
 		vertex(points[i].x + this.transform.x+this.offsetX, points[i].y + this.transform.y+this.offsetY);
 	endShape(CLOSE);*/
@@ -314,7 +315,7 @@ SpatialHash.prototype.at = function(x, y){
 
 //return list of all objects in same buckets
 SpatialHash.prototype.getBuckets = function(obj){
-	
+		
 	//get bounding box in x y right bottom format
 	var bb = obj.getBoundingBoxGlobal();
 	var buckets = [];
@@ -331,17 +332,31 @@ SpatialHash.prototype.getBuckets = function(obj){
 	}
 	return buckets;
 }
+//bb is bounding box in top left format
+SpatialHash.prototype.getBucketsFromBox = function(bb){		
+	var buckets = [];
+	
+	//loop through all cells
+	for(let i = Math.floor(bb.x/this.cellSize) * this.cellSize; i <= Math.floor((bb.x+bb.w)/this.cellSize) * this.cellSize; i = i + this.cellSize){
+		for(let j = Math.floor(bb.y/this.cellSize) * this.cellSize; j <= Math.floor((bb.y+bb.h)/this.cellSize) * this.cellSize; j = j + this.cellSize){
+			var key = i + "," + j;
+			var bucket = this.spatialHash[key];
+			if(bucket != undefined)
+				buckets = buckets.concat(bucket);
+
+		}
+	}
+	return buckets;
+}
 
 
-//get list o
 ///////////////////////////////////////////////////////////////////////////////
 //Update physics each frame
-let spatialHashObjects = new SpatialHash(120);
 function updatePhysics(){
 	
 	spatialHashObjects = new SpatialHash(120);
 	
-	//ObstacleHash
+	//ObstacleHash and Movement
 	for(let i = 0; i < physicsObjects.length; i++){
 		//physics stuff
 		physicsObjects[i].velocity.add(physicsObjects[i].acceleration);
@@ -354,26 +369,18 @@ function updatePhysics(){
 		//Add to hash map
 		spatialHashObjects.add(physicsObjects[i]);
 	}
-	
+		
 	///////////////////////
 	//Collision Detection and Resolution
 	//Object collision detection
-	let response = new SAT.Response();
 	for(let i = 0; i < physicsObjects.length; i++){
 		
 		//Check Collision
-		if(checkCollision(physicsObjects[i], response)){
-			//Collision detected
-			
-			//Handle collision
-			physicsObjects[i].position.x -= response.overlapV.x;
-			physicsObjects[i].position.y -= response.overlapV.y;
-			physicsObjects[i].onCollision();
-		}		
+		checkCollisionAndRespond(physicsObjects[i]);	
 
 	}
 	
-	//Rocket collision detection
+	//Rocket collision detection and movement
 	for(let i = 0; i < rocketObjects.length; i++){
 		//physics stuff
 		rocketObjects[i].velocity.add(rocketObjects[i].acceleration);
@@ -384,15 +391,7 @@ function updatePhysics(){
 		rocketObjects[i].position.y += rocketObjects[i].velocity.y;
 		
 		//Check Collision
-		if(checkCollision(rocketObjects[i], response)){
-			//Collision detected
-			//Handle collision
-			rocketObjects[i].position.x -= response.overlapV.x;
-			rocketObjects[i].position.y -= response.overlapV.y;
-			//rocketObjects[i].position.x -= rocketObjects[i].velocity.x;
-			//rocketObjects[i].position.y -= rocketObjects[i].velocity.y;
-			rocketObjects[i].onCollision();
-		}		
+		checkCollisionAndRespond(rocketObjects[i])
 
 	}				
 }
@@ -412,14 +411,79 @@ function checkCollision(a, response){
 					
 					//Check collider A with collider B
 					let collided = checkColliderCollision(a.colliders[colliderA], b.colliders[colliderB], response)
-					if(collided == true)
+					if(collided == true){ 
 						return true;
+					}
 				}
 			}
 		}
 
 	}
 	return false;
+}
+function checkCollisionAndRespond(a){
+
+	//Get buckets to compare
+	let buckets = spatialHashObjects.getBuckets(a);
+	let response = new SAT.Response();
+	
+	let therewasacollsion = false;
+	let collided = false;
+
+	for(let i = 0; i < buckets.length; i++){
+		let b = buckets[i];
+		//Make sure not comparing yourself
+		if(a != b){
+			//Check colliders of each
+			for(let colliderA = 0; colliderA < a.colliders.length; colliderA++){
+				for(let colliderB = 0; colliderB < b.colliders.length; colliderB++){
+					
+					//Check collider A with collider B
+					collided = checkColliderCollision(a.colliders[colliderA], b.colliders[colliderB], response)
+					if(collided == true){ 
+						//Handle collision
+						a.position.x -= response.overlapV.x;
+						a.position.y -= response.overlapV.y;
+						collided = false;
+					}
+				}
+			}
+		}
+
+	}
+	if(therewasacollsion)
+		a.onCollision();
+	return therewasacollsion;	
+		
+}
+function pointIntersectObstacle(px, py){
+	//Get buckets to compare
+	let buckets = spatialHashObjects.getBucketsFromBox({x:px, y:py, w:1, h:1});
+	let point = new SAT.Vector(px, py);
+	let collided = false;
+	
+	for(let i = 0; i < buckets.length; i++){
+		let obstacle = buckets[i];
+		//Check colliders of obstacle
+		for(let collider = 0; collider < obstacle.colliders.length; collider++){					
+			//Check collider against point
+			collided = checkPointCollision(point, obstacle.colliders[collider])
+			if(collided == true)
+				return obstacle;
+		}
+	}
+	
+	return null;
+}
+////////////////////////////////
+function checkPointCollision(point, collider){
+	if(collider.type == ColliderTypes.POLY)
+		return SAT.pointInPolygon(point, collider.getSATPolygon());
+	else if(collider.type == ColliderTypes.CIRCLE)
+		return SAT.pointInCircle(point, collider.getSATCircle());
+	else
+		throw "No Polygon Type Detected!";
+	
 }
 /////////////////////////////
 function checkColliderCollision(colliderA, colliderB, response){
@@ -429,17 +493,21 @@ function checkColliderCollision(colliderA, colliderB, response){
 		//Poly Poly check
 		return SAT.testPolygonPolygon(colliderA.getSATPolygon(), colliderB.getSATPolygon(), response);
 	}
-	if(colliderA.type == ColliderTypes.CIRCLE && colliderB.type == ColliderTypes.POLY){
+	else if(colliderA.type == ColliderTypes.CIRCLE && colliderB.type == ColliderTypes.POLY){
 		//Circle Poly check
 		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATPolygon(), response);
 	}
-	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
+	else if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
 		//Poly Circle check
 		return SAT.testPolygonCircle(colliderA.getSATPolygon(), colliderB.getSATCircle(), response);
 	}
-	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
+	else if(colliderA.type == ColliderTypes.CIRCLE && colliderB.type == ColliderTypes.CIRCLE){
 		//Circle Circle check
-		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATCircle(), response);
+		return SAT.testCircleCircle(colliderA.getSATCircle(), colliderB.getSATCircle(), response);
+	}
+	else{
+		console.log("Failed collsion against ", colliderA, colliderB);
+		throw "No Polygon Type Detected!";
 	}
 }
 /////////////////////////////////
