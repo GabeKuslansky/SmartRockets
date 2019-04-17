@@ -1,6 +1,6 @@
 function Rocket(x, y, DNA, target){
 
-	//Top Left coords
+	//Middle Coords
     this.position = new createVector(x, y);
     this.color = [random(255), random(255), random(255)];
 	
@@ -10,7 +10,7 @@ function Rocket(x, y, DNA, target){
 	
 	//Physics Colliders
 	this.physics = new PhysicsObject(this.position, true, this, this.onCollision);
-	this.physics.addColliderBox(0, 0, this.w, this.h);
+	this.physics.addColliderBox(-this.w/2, -this.h/2, this.w, this.h);
 	
 	//If crashed
 	this.crashed = false;
@@ -45,15 +45,15 @@ function Rocket(x, y, DNA, target){
 //Draw Rocket
 Rocket.prototype.draw = function(){
 	
-	
 	push();
-	translate(this.position.x + this.w/2, this.position.y + this.h/2);
+	translate(this.position.x, this.position.y);
 	rotate(this.angle);
 	rotate(PI/2);
 	fill(...this.color, 145);
 	triangle(0, -this.h/2,
 			-this.w/2, this.h/2,
 			this.w/2, this.h/2);
+			
 	pop();
 }
 
@@ -73,7 +73,7 @@ Rocket.prototype.update = function(){
 		//Update Logic//
 		
 		//Check if center of rocket is within radius of target
-		if(dist(this.position.x + this.w/2, this.position.y + this.h/2, this.target.position.x, this.target.position.y) <= this.target.radius){
+		if(dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y) <= this.target.radius){
 			this.success = true;
 			this.deleteRocket();
 		}
@@ -97,10 +97,11 @@ Rocket.prototype.calcFitness = function()
 {
 	
 	//Check if success. Rockets could make it on the last frame
-	if(dist(this.position.x + this.w/2, this.position.y + this.h/2, this.target.position.x, this.target.position.y) <= this.target.radius)
+	if(dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y) <= this.target.radius)
 		this.success = true;
 	
-	var d = dist(this.position.x+this.w/2, this.position.y+this.h/2, this.target.position.x, this.target.position.y);
+	var d = dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y);
+
 	if(this.success)
 		this.fitness = 1/this.target.radius;
 	else

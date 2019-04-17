@@ -1,24 +1,26 @@
 function Population(size, lifespan, startx, starty){
 	this.size = size;
 	this.lifespan = lifespan;
+	this.DNAlength = lifespan;
 	this.rockets = [];
 	this.currentGene = 0;
 	this.startx = startx;
 	this.starty = starty;
-	
-	this.target = new Target(300, 50, 40);
-		
+	this.maxRocket = null;
+			
 	//Create population
 	this.createRandomPop();
 	
 	this.maxFitness = 0;
+	this.displayFitness = 0;
+
 }
 
 //Create random population
 Population.prototype.createRandomPop = function(){
 	//Create population
 	for(var i = 0; i < this.size; i++){
-		this.rockets.push(new Rocket(this.startx, this.starty, new DNA(this.lifespan), this.target));
+		this.rockets.push(new Rocket(this.startx, this.starty, new DNA(this.lifespan), level.target));
 	}
 		
 }
@@ -26,7 +28,7 @@ Population.prototype.createRandomPop = function(){
 //Update
 Population.prototype.update = function(){
 	
-	if(this.currentGene >= this.lifespan){
+	if(this.currentGene >= this.DNAlength){
 		//Generation lifespan over
 		this.nextGeneration();
 		this.currentGene = 0;
@@ -35,6 +37,8 @@ Population.prototype.update = function(){
 		this.rockets[i].update();
 	}
 	this.currentGene++;
+	
+	this.calcMaxFitness();
 };
 
 //Draw
@@ -42,15 +46,14 @@ Population.prototype.draw = function(){
 	for(var i = 0; i < this.rockets.length; i++){
 		this.rockets[i].draw();
 	}
-	this.target.draw();
 	
 	push();
 	textSize(32);
 	fill(55, 145, 155);
-	if(this.maxFitness == 1/this.target.radius)
-		text("Max Fitness: MAX", 10, 30); 
+	if(this.displayFitness == 1/level.target.radius)
+		$('#maxFitnessValue').text('MAX'); 
 	else
-		text("Max Fitness: " + int(this.maxFitness*10000), 10, 30); 
+		$('#maxFitnessValue').text(int(this.displayFitness*10000), 10, 30); 
 	pop();
 
 };
@@ -60,18 +63,26 @@ Population.prototype.getRocketByIndex = function(index){
 	return this.rockets[index];
 }
 
-//Create New Generation
-Population.prototype.nextGeneration = function(){
-	
+Population.prototype.calcMaxFitness = function(){
 	//Calculate fitness and max fitness
 	this.maxFitness = 0;
+	let index = null;
 	for(var i = 0; i < this.rockets.length; i++){
 		this.rockets[i].calcFitness();
-		if(this.maxFitness < this.rockets[i].fitness)
+		if(this.maxFitness < this.rockets[i].fitness){
 			this.maxFitness = this.rockets[i].fitness;
+			this.maxRocket = this.rockets[i];
+		}
 	}
+}
+
+//Create New Generation
+Population.prototype.nextGeneration = function(){
+
+	//reset camera follow
+	canSwap = true;
 		
-	
+	this.displayFitness = this.maxFitness;
 	//Normalize fitness
 	for(var i = 0; i < this.rockets.length; i++){
 		this.rockets[i].fitness /= this.maxFitness;
@@ -100,41 +111,36 @@ Population.prototype.nextGeneration = function(){
 
 	//Create population
 	var newPop = [];
-	for(var i = 0; i < this.size; i++){
+	let size = this.size;
+	for(var i = 0; i < size; i++){
 		//Get indexes of parents
 		var parentA = int(random(0, matingPool.length-1));
 		var parentB = int(random(0, matingPool.length-1));
 		
 		//Make sure parents dont equal each other. Need to have at least 2 rockets
-		while(parentA != parentB)
-			parentB = int(random(0, this.size-1));
+		while(parentA == parentB && matingPool.length != 1)
+			parentB = int(random(0, matingPool.length-1));
 		
-		this.rockets.push(new Rocket(this.startx, this.starty, DNA.crossoverMidpoint(matingPool[parentA].DNA, matingPool[parentB].DNA), this.target));
+		this.rockets.push(new Rocket(this.startx, this.starty, DNA.crossoverMidpoint(matingPool[parentA].DNA, matingPool[parentB].DNA), level.target));
 	}
 	
 	
 	//Mutate DNA
+	this.DNAlength = this.lifespan;
+	let lifespanDif = this.DNAlength-this.rockets.length;
 	for(var i = 0; i < this.rockets.length; i++){
+		//Resize DNA if needed
+		if(lifespanDif > 0){
+			for(let j = 0; j < lifespanDif; j++)
+				this.rockets[i].DNA.genes.push(p5.Vector.random2D());
+		}
+		else if(lifespanDif < 0){
+			for(let j = 0; j > lifespanDif; j--)
+				this.rockets[i].DNA.genes.pop();
+		}
+		
 		this.rockets[i].DNA.mutate();
 	}
 	
 	
-}
-
-
-
-
-
-function Target(x, y, radius){
-	
-	this.position = createVector(x, y);
-	this.radius = radius;
-	
-}
-//Draw
-Target.prototype.draw = function(){
-	push();
-	fill(200, 0, 0);
-	circle(this.position.x, this.position.y, this.radius);
-	pop();
 }

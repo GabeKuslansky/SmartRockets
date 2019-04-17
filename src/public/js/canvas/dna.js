@@ -1,6 +1,7 @@
 let mutateChance = 0.001;
 function DNA(genes) 
 {
+	
 	//Generate random if passing in a number
 	//Or use passed in genes array
 	if(typeof genes == 'number'){
@@ -13,7 +14,7 @@ function DNA(genes)
 		this.genes = genes;
 	}
 
-////////////////////////////////////
+	////////////////////////////////////
 
 }
 

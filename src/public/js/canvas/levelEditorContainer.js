@@ -12,7 +12,7 @@ function LevelEditorContainer(width, height) {
     this.h = 100;
     this.isHoldingObject = false;
 	this.heldIndex = 0;
-    this.marginX = 120;
+    this.marginX = 160;
     this.marginY = 20;
     this.offsetX = 15;
     this.color = [150, 155, 155];
@@ -37,7 +37,7 @@ LevelEditorContainer.prototype.draw = function() {
 		
 		
 		if(this.isHoldingObject){
-			eval(this.obstacles[this.heldIndex].obstacle + ".draw(" + mouseX + ", " + mouseY + ")");
+			eval(this.obstacles[this.heldIndex].obstacle + ".draw(" + (mouseX-cameraPosition.x) + ", " + (mouseY-cameraPosition.y) + ")");
 		}
     }
 }
@@ -45,8 +45,8 @@ LevelEditorContainer.prototype.draw = function() {
 LevelEditorContainer.prototype.update = function() {
 	
 	//Check if mouse is hovering
-	var hover = false;
-	for(var i = 0; i < this.obstacles.length && !hover; i++){
+	let hover = false;
+	for(let i = 0; i < this.obstacles.length && !hover; i++){
 		//Check if mouse clicked icon
 		if(eval(this.obstacles[i].obstacle + ".mouseIntersectsIcon(" + this.obstacles[i].x + ", " + this.obstacles[i].y + ")"))
 			hover = true;
@@ -59,7 +59,7 @@ LevelEditorContainer.prototype.update = function() {
 
 LevelEditorContainer.prototype.mousePressed = function(){
 	
-	for(var i = 0; i < this.obstacles.length && !this.isHoldingObject; i++){
+	for(let i = 0; i < this.obstacles.length && !this.isHoldingObject; i++){
 		
 		//Check if mouse clicked icon
 		if(eval(this.obstacles[i].obstacle + ".mouseIntersectsIcon(" + this.obstacles[i].x + ", " + this.obstacles[i].y + ")")){
@@ -74,11 +74,11 @@ LevelEditorContainer.prototype.mouseReleased = function(){
 	if(this.isHoldingObject){
 		
 		
-		var obstacle = eval("new " + this.obstacles[this.heldIndex].obstacle + "(" + mouseX + ", " + mouseY + ")");
-		if(checkCollision(obstacle.physics).collision)
+		let obstacle = eval("new " + this.obstacles[this.heldIndex].obstacle + "(" + (mouseX-cameraPosition.x) + ", " + (mouseY-cameraPosition.y) + ")");
+		if(checkCollision(obstacle.physics, null))
 			obstacle.deleteObstacle();
 		else
-			arrayOfObjects.push(obstacle);
+			level.addObstacle(obstacle);
 		
 		this.isHoldingObject = false;
 	}
@@ -95,6 +95,9 @@ LevelEditorContainer.prototype.getObstacles = function() {
 	
 	//Push new obstacles in here
 	this.obstacles.push(new IconHolder('BoxObstacle'));
+	this.obstacles.push(new IconHolder('CircleObstacle'));
+	this.obstacles.push(new IconHolder('TriangleObstacle'));
+	this.obstacles.push(new IconHolder('BlackHoleObstacle'));
 }
 
 LevelEditorContainer.prototype.generateSpawnPoints = function() {
