@@ -1,6 +1,5 @@
 const levelId = window.location.pathname.replace('/level/','');
 let levelStructure = {};
-const editing = false;
 const createLevel = false;
 
 (async() => {

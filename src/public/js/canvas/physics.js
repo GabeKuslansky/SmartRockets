@@ -1,6 +1,7 @@
 //all physics objects
 var physicsObjects = [];
 var rocketObjects = [];
+let spatialHashObjects = new SpatialHash(120);
 
 //box helper function corner coords
 function boundingBox(x, y, w, h){
@@ -9,6 +10,7 @@ function boundingBox(x, y, w, h){
 	this.w = w;
 	this.h = h;
 }
+
 
 //Physics Object holds colliders and is used in the array of
 //physics objects
@@ -35,8 +37,28 @@ function PhysicsObject(position, isRocket, ref, callBack){
 	else
 		physicsObjects.push(this);
 	
+	//relative to position
 	this.boundingBox = null;
+	
 };
+
+//angle in degrees
+//point to rotate about globally
+PhysicsObject.prototype.rotate = function(angle){
+	
+	
+	//convert to radians
+	let radians = angle*Math.PI/180;
+	
+	//reset bounding box
+	this.boundingBox = null;
+	
+	//rotate colliders
+	for(let i = 0; i < this.colliders.length; i++){
+		this.colliders[i].rotate(radians);
+		this.updateBoundingBoxPoly(this.colliders[i].getBoundingBox());
+	}
+}
 
 //Get bounding box
 PhysicsObject.prototype.getBoundingBoxGlobal = function(){
@@ -81,27 +103,35 @@ PhysicsObject.prototype.onCollision = function(){
 	}
 }
 
+//using offset
 PhysicsObject.prototype.updateBoundingBoxPoly = function(square){
+		if(this.boundingBox == null){
+			this.boundingBox = new boundingBox(square.x, square.y, square.w, square.h);
+			return;
+		}
 		if(square.x < this.boundingBox.x)
 			this.boundingBox.x = square.x;
 		if(square.x + square.w > this.boundingBox.x + this.boundingBox.w)
-			this.boundingBox.w += Math.abs(square.w - this.boundingBox.w);
-		if(square.y < this.boundingBox.y)
+			this.boundingBox.w = Math.abs(square.x + square.w - this.boundingBox.x);
+		if(square.y > this.boundingBox.y)
 			this.boundingBox.y = square.y;
-		if(square.y+square.h > this.boundingBox.y + this.boundingBox.y)
-			this.boundingBox.h += Math.abs(square.h - this.boundingBox.h);
+		if(square.y+square.h > this.boundingBox.y + this.boundingBox.h)
+			this.boundingBox.h = Math.abs(square.y + square.h - this.boundingBox.y);
 }
 
 //Add colliders
 //x and y are offsets from position
 PhysicsObject.prototype.addColliderBox = function(x, y, w, h){
-	this.colliders.push(new ColliderBox(this.position, x, y, w, h));
+	let collider = new ColliderBox(this.position, x, y, w, h);
+	this.colliders.push(collider);
+	
+	let bb = collider.getBoundingBox();
 	//reset bounding box
 	if(this.boundingBox == null)
-		this.boundingBox = new boundingBox(x, y, w, h);
+		this.boundingBox = new boundingBox(bb.x, bb.y, bb.w, bb.h);
 	//update bounding box
 	else
-		this.updateBoundingBoxPoly({x:x, y:y, w:w, h:h});
+		this.updateBoundingBoxPoly(collider.getBoundingBox());
 };
 //x and y are offsets from position
 PhysicsObject.prototype.addColliderCircle = function(x, y, r){
@@ -122,22 +152,15 @@ PhysicsObject.prototype.addColliderPolygon = function(x, y, points){
 	var collider = new ColliderPolygon(this.position, x, y, points);
 	this.colliders.push(collider);
 	
-	//Get bounding box of polygon
-	let bb = collider.getSATPolygon().getAABB();
-	//getAABB defines in a weird way. converting to corner coords
-	let betterbb = new boundingBox(bb.pos.x, bb.pos.y, bb.points[1].x, bb.points[3].y);
-	
-	//Set from global to local coords
-	betterbb.x -= this.position.x;
-	betterbb.y -= this.position.y;	
+	let bb = collider.getBoundingBox();
 	
 	//reset bounding box
 	if(this.boundingBox == null){
-		this.boundingBox = new boundingBox(betterbb.x, betterbb.y, betterbb.w, betterbb.h);
+		this.boundingBox = new boundingBox(bb.x, bb.y, bb.w, bb.h);
 	}
 	//update bounding box
 	else{
-		this.updateBoundingBoxPoly(betterbb);
+		this.updateBoundingBoxPoly(bb);
 	}
 };
 
@@ -156,13 +179,45 @@ function ColliderBox(transform, offsetX, offsetY, w, h){
 	this.offsetY = offsetY;
 	this.w = w;
 	this.h = h;
-	this.transform = transform;
+	this.transform = transform;	
+	this.angle = 0;
 	
 	this.type = ColliderTypes.POLY;
 }
+//GLOBAL
 ColliderBox.prototype.getSATPolygon = function(){
-	let box = new SAT.Box(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), this.w, this.h)
-	return box.toPolygon();
+	let poly = new SAT.Polygon(new SAT.Vector(this.transform.x+this.offsetX+this.w/2, this.transform.y+this.offsetY+this.h/2),
+							[new SAT.Vector(-this.w/2, -this.h/2),
+							new SAT.Vector(this.w/2, -this.h/2),
+							new SAT.Vector(this.w/2, this.h/2),
+							new SAT.Vector(-this.w/2, this.h/2)]);
+	poly.rotate(this.angle);
+	/*let points = poly.calcPoints; // relative to poly position
+	beginShape();
+	for(let i = 0; i < points.length; i++)
+		vertex(points[i].x + this.transform.x+this.offsetX+this.w/2, points[i].y + this.transform.y+this.offsetY+this.h/2);
+	endShape(CLOSE);*/
+	
+	return poly;
+}
+//receives radians
+ColliderBox.prototype.rotate = function(angle){
+	this.angle = angle;
+}
+//xywh format
+//LOCAL TO TRANSFORM
+ColliderBox.prototype.getBoundingBox = function(){
+	
+	//Get bounding box of polygon
+	let bb = this.getSATPolygon().getAABB();
+	//getAABB defines in a weird way. converting to corner coords
+	let betterbb = new boundingBox(bb.pos.x, bb.pos.y, bb.points[1].x, bb.points[3].y);
+	
+	//Set from global to local coords
+	betterbb.x -= this.transform.x;
+	betterbb.y -= this.transform.y;	
+		
+	return betterbb;
 }
 
 //x y in center
@@ -178,6 +233,9 @@ function ColliderCircle(transform, offsetX, offsetY, r){
 ColliderCircle.prototype.getSATCircle = function(){
 	return new SAT.Circle(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), this.r);
 }
+ColliderCircle.prototype.getBoundingBox = function(){
+	return new boundingBox(this.offsetX-this.r, this.offsetY-this.r, this.offsetX+this.r+this.r, this.offsetY+this.r+this.r);
+}
 
 //x y in top left corner
 function ColliderPolygon(transform, offsetX, offsetY, points){
@@ -185,13 +243,43 @@ function ColliderPolygon(transform, offsetX, offsetY, points){
 	this.offsetY = offsetY;
 	this.points = points;
 	this.transform = transform;
+	this.angle = 0;
 	
 	this.type = ColliderTypes.POLY;
 }
 ColliderPolygon.prototype.getSATPolygon = function(){
-	return new SAT.Polygon(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), this.points);
+	let newpoints = [];
+	for(let i = 0; i < this.points.length; i++)
+		newpoints.push(new SAT.Vector(this.points[i].x, this.points[i].y));
+	let poly = new SAT.Polygon(new SAT.Vector(this.offsetX + this.transform.x, this.offsetY + this.transform.y), newpoints);
+	poly.rotate(this.angle);
+	/*let points = poly.calcPoints; // relative to poly position
+	beginShape();
+	for(let i = 0; i < points.length; i++)
+		vertex(points[i].x + this.transform.x+this.offsetX, points[i].y + this.transform.y+this.offsetY);
+	endShape(CLOSE);*/
+	
+	return poly;
 }
-
+//receives radians
+ColliderPolygon.prototype.rotate = function(angle){
+	this.angle = angle;
+}
+//xywh format
+//LOCAL TO TRANSFORM
+ColliderPolygon.prototype.getBoundingBox = function(){
+	
+	//Get bounding box of polygon
+	let bb = this.getSATPolygon().getAABB();
+	//getAABB defines in a weird way. converting to corner coords
+	let betterbb = new boundingBox(bb.pos.x, bb.pos.y, bb.points[1].x, bb.points[3].y);
+	
+	//Set from global to local coords
+	betterbb.x -= this.transform.x;
+	betterbb.y -= this.transform.y;	
+		
+	return betterbb;
+}
 /////////////////////////////////////////////////////////
 //Spatial Hashing
 function SpatialHash (cellSize){
@@ -227,7 +315,7 @@ SpatialHash.prototype.at = function(x, y){
 
 //return list of all objects in same buckets
 SpatialHash.prototype.getBuckets = function(obj){
-	
+		
 	//get bounding box in x y right bottom format
 	var bb = obj.getBoundingBoxGlobal();
 	var buckets = [];
@@ -244,17 +332,31 @@ SpatialHash.prototype.getBuckets = function(obj){
 	}
 	return buckets;
 }
+//bb is bounding box in top left format
+SpatialHash.prototype.getBucketsFromBox = function(bb){		
+	var buckets = [];
+	
+	//loop through all cells
+	for(let i = Math.floor(bb.x/this.cellSize) * this.cellSize; i <= Math.floor((bb.x+bb.w)/this.cellSize) * this.cellSize; i = i + this.cellSize){
+		for(let j = Math.floor(bb.y/this.cellSize) * this.cellSize; j <= Math.floor((bb.y+bb.h)/this.cellSize) * this.cellSize; j = j + this.cellSize){
+			var key = i + "," + j;
+			var bucket = this.spatialHash[key];
+			if(bucket != undefined)
+				buckets = buckets.concat(bucket);
+
+		}
+	}
+	return buckets;
+}
 
 
-//get list o
 ///////////////////////////////////////////////////////////////////////////////
 //Update physics each frame
-let spatialHashObjects = new SpatialHash(120);
 function updatePhysics(){
 	
 	spatialHashObjects = new SpatialHash(120);
 	
-	//ObstacleHash
+	//ObstacleHash and Movement
 	for(let i = 0; i < physicsObjects.length; i++){
 		//physics stuff
 		physicsObjects[i].velocity.add(physicsObjects[i].acceleration);
@@ -267,47 +369,33 @@ function updatePhysics(){
 		//Add to hash map
 		spatialHashObjects.add(physicsObjects[i]);
 	}
-	
+		
 	///////////////////////
 	//Collision Detection and Resolution
 	//Object collision detection
-	let response = new SAT.Response();
-	for(let i = 0; i < physicsObjects.length; i++){
-		
-		//Check Collision
-		if(checkCollision(physicsObjects[i], response)){
-			//Collision detected
+	if(!gamePaused){
+		for(let i = 0; i < physicsObjects.length; i++){
 			
-			//Handle collision
-			physicsObjects[i].position.x -= response.overlapV.x;
-			physicsObjects[i].position.y -= response.overlapV.y;
-			physicsObjects[i].onCollision();
-		}		
+			//Check Collision
+			checkCollisionAndRespond(physicsObjects[i]);	
 
-	}
-	
-	//Rocket collision detection
-	for(let i = 0; i < rocketObjects.length; i++){
-		//physics stuff
-		rocketObjects[i].velocity.add(rocketObjects[i].acceleration);
-		rocketObjects[i].acceleration.mult(0);
+		}
 		
-		//Handle position
-		rocketObjects[i].position.x += rocketObjects[i].velocity.x;
-		rocketObjects[i].position.y += rocketObjects[i].velocity.y;
-		
-		//Check Collision
-		if(checkCollision(rocketObjects[i], response)){
-			//Collision detected
-			//Handle collision
-			rocketObjects[i].position.x -= response.overlapV.x;
-			rocketObjects[i].position.y -= response.overlapV.y;
-			//rocketObjects[i].position.x -= rocketObjects[i].velocity.x;
-			//rocketObjects[i].position.y -= rocketObjects[i].velocity.y;
-			rocketObjects[i].onCollision();
-		}		
+		//Rocket collision detection and movement
+		for(let i = 0; i < rocketObjects.length; i++){
+			//physics stuff
+			rocketObjects[i].velocity.add(rocketObjects[i].acceleration);
+			rocketObjects[i].acceleration.mult(0);
+			
+			//Handle position
+			rocketObjects[i].position.x += rocketObjects[i].velocity.x;
+			rocketObjects[i].position.y += rocketObjects[i].velocity.y;
+			
+			//Check Collision
+			checkCollisionAndRespond(rocketObjects[i])
 
-	}				
+		}	
+	}			
 }
 //////////////////////////////////////////////////////////////////////////////////
 function checkCollision(a, response){
@@ -325,14 +413,111 @@ function checkCollision(a, response){
 					
 					//Check collider A with collider B
 					let collided = checkColliderCollision(a.colliders[colliderA], b.colliders[colliderB], response)
-					if(collided == true)
+					if(collided == true){ 
 						return true;
+					}
 				}
 			}
 		}
 
 	}
 	return false;
+}
+function checkCollisionAndRespond(a){
+
+	//Get buckets to compare
+	let buckets = spatialHashObjects.getBuckets(a);
+	let response = new SAT.Response();
+	
+	let therewasacollsion = false;
+	let collided = false;
+
+	for(let i = 0; i < buckets.length; i++){
+		let b = buckets[i];
+		//Make sure not comparing yourself
+		if(a != b){
+			//Check colliders of each
+			for(let colliderA = 0; colliderA < a.colliders.length; colliderA++){
+				for(let colliderB = 0; colliderB < b.colliders.length; colliderB++){
+					
+					//Check collider A with collider B
+					collided = checkColliderCollision(a.colliders[colliderA], b.colliders[colliderB], response)
+					if(collided == true){ 
+						//Handle collision
+						a.position.x -= response.overlapV.x;
+						a.position.y -= response.overlapV.y;
+						collided = false;
+						therewasacollsion = true;
+					}
+				}
+			}
+		}
+
+	}
+	if(therewasacollsion)
+		a.onCollision();
+	return therewasacollsion;	
+		
+}
+//Top left coords
+function rectIntersectObstacle(x_, y_, w_, h_){
+	//get buckets
+	let buckets = spatialHashObjects.getBucketsFromBox({x:x_, y:y_, w:w_, h:h_});
+	let box = new SAT.Polygon(new SAT.Vector(x_+w_/2, y_+h_/2), 
+		[new SAT.Vector(w_/2, -h_/2), new SAT.Vector(w_/2, h_/2), new SAT.Vector(-w_/2, h_/2), new SAT.Vector(-w_/2, -h_/2)]);
+	let collided = false;
+
+	for(let i = 0; i < buckets.length; i++){
+		let obstacle = buckets[i];
+		//Check colliders of obstacle
+		for(let collider = 0; collider < obstacle.colliders.length; collider++){					
+			//Check collider against rect
+			collided = checkRectCollision(rect, obstacle.colliders[collider])
+			if(collided == true)
+				return obstacle;
+		}
+	}
+	
+	return null;
+}
+function pointIntersectObstacle(px, py){
+	//Get buckets to compare
+	let buckets = spatialHashObjects.getBucketsFromBox({x:px, y:py, w:1, h:1});
+	let point = new SAT.Vector(px, py);
+	let collided = false;
+	
+	for(let i = 0; i < buckets.length; i++){
+		let obstacle = buckets[i];
+		//Check colliders of obstacle
+		for(let collider = 0; collider < obstacle.colliders.length; collider++){					
+			//Check collider against point
+			collided = checkPointCollision(point, obstacle.colliders[collider])
+			if(collided == true)
+				return obstacle;
+		}
+	}
+	
+	return null;
+}
+////////////////////////////////
+function checkRectCollision(rect, collider){
+	if(collider.type == ColliderTypes.POLY)
+		return SAT.testPolygonPolygon(rect, collider.getSATPolygon());
+	else if(collider.type == ColliderTypes.CIRCLE)
+		return SAT.testPolygonCircle(rect, collider.getSATCircle());
+	else
+		throw "No Polygon Type Detected!";
+	
+}
+////////////////////////////////
+function checkPointCollision(point, collider){
+	if(collider.type == ColliderTypes.POLY)
+		return SAT.pointInPolygon(point, collider.getSATPolygon());
+	else if(collider.type == ColliderTypes.CIRCLE)
+		return SAT.pointInCircle(point, collider.getSATCircle());
+	else
+		throw "No Polygon Type Detected!";
+	
 }
 /////////////////////////////
 function checkColliderCollision(colliderA, colliderB, response){
@@ -342,17 +527,21 @@ function checkColliderCollision(colliderA, colliderB, response){
 		//Poly Poly check
 		return SAT.testPolygonPolygon(colliderA.getSATPolygon(), colliderB.getSATPolygon(), response);
 	}
-	if(colliderA.type == ColliderTypes.CIRCLE && colliderB.type == ColliderTypes.POLY){
+	else if(colliderA.type == ColliderTypes.CIRCLE && colliderB.type == ColliderTypes.POLY){
 		//Circle Poly check
 		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATPolygon(), response);
 	}
-	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
+	else if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
 		//Poly Circle check
 		return SAT.testPolygonCircle(colliderA.getSATPolygon(), colliderB.getSATCircle(), response);
 	}
-	if(colliderA.type == ColliderTypes.POLY && colliderB.type == ColliderTypes.CIRCLE){
+	else if(colliderA.type == ColliderTypes.CIRCLE && colliderB.type == ColliderTypes.CIRCLE){
 		//Circle Circle check
-		return SAT.testCirclePolygon(colliderA.getSATCircle(), colliderB.getSATCircle(), response);
+		return SAT.testCircleCircle(colliderA.getSATCircle(), colliderB.getSATCircle(), response);
+	}
+	else{
+		console.log("Failed collsion against ", colliderA, colliderB);
+		throw "No Polygon Type Detected!";
 	}
 }
 /////////////////////////////////

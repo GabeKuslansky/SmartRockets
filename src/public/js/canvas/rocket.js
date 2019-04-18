@@ -1,3 +1,4 @@
+dieOnCollision = false;
 function Rocket(x, y, DNA, target){
 
 	//Middle Coords
@@ -88,8 +89,8 @@ Rocket.prototype.update = function(){
 
 //Collided
 Rocket.prototype.onCollision = function(object){
-	
-	object.crashed = true;
+	if(dieOnCollision)
+		object.crashed = true;
 }
 
 //Calculate Fitness

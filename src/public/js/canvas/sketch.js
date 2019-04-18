@@ -1,8 +1,14 @@
 
-let canvas, level = new Level(), editor, cameraPosition, cameraTarget, gamePaused, levelShouldLoad = false, followRocket = true, trackedRocket, canSwap = true;
+let canvas, level = new Level(), gamePaused, levelShouldLoad = false;
 
-const width = 800, height = 800, arrayOfObjects = [];
+const width = 800, height = 800;
 const rocketFrameRate = 60;
+
+let deleteQueue = [];
+
+//Camera stuff
+let cameraPosition, cameraTarget, trackedRocket, canSwap = true;
+let followRocket = true;
 const lerpDist = 0.08;
 const cameraSpeed = 10;
 const swapPeriod = 3000;
@@ -10,29 +16,31 @@ const swapPeriod = 3000;
 function setup() {
 	canvas = createCanvas(width, height);
 	organizeCanvasForDOM();
-	if(createLevel)
+	if(createLevel){
 		level.initLevel();
-	if(editing)
-		editor = new LevelEditorContainer(width, height);
+		editor = new Editor(width, height);
+	}
 	cameraPosition = createVector(0, 0);
 	cameraTarget = createVector(0, 0);
 	frameRate(rocketFrameRate);
+	rectMode(CENTER);
+	//Stroke weight
+	strokeWeight(5);
 }
 
 function draw() {
 	//Clear
 	background(204, 198, 198);
 	if(level.initialized){
-		//Stroke weight
-		strokeWeight(5);
+
 		
 		//Update Input
-		if(editing)
+		if(createLevel)
 			editor.update();
 
 		if(followRocket){
 			//check if we have a population
-			if(level.initialized){
+			if(level.population != null){
 				if(canSwap){
 					canSwap = false;
 					setTimeout(function(){ canSwap = true;}, swapPeriod);
@@ -73,35 +81,48 @@ function draw() {
 		//update level
 		if(!gamePaused){
 			level.update();
-		
-		//Update Physics
-			updatePhysics();
 		}
 
+		//Update Physics
+		updatePhysics();
+
 		//Render
+		if(createLevel)
+			editor.draw();
 		//camera pos
 		cameraPosition.x = lerp(cameraPosition.x, cameraTarget.x, lerpDist);
 		cameraPosition.y = lerp(cameraPosition.y, cameraTarget.y, lerpDist);
 		translate(cameraPosition.x, cameraPosition.y);
 		level.draw();
 		
-		if(editing)
-			editor.draw();
+
 	}
-	if(levelShouldLoad){
+	else if(levelShouldLoad){
 		level.initLevel();
 		levelShouldLoad = false;
 	}
+
+	//Delete Queue
+	  for(let i = 0; i < deleteQueue.length; i++){
+		//Delete obstacle
+		deleteQueue[i].deleteObstacle();
+	}
+	deleteQueue = [];
 }	
+
+function keyPressed(){
+	if(createLevel)
+		editor.keyPressed();
+}
 
 function mousePressed(){
 	
-	if(editing)
+	if(createLevel)
 		editor.mousePressed();
 }
 
 function mouseReleased(){
-	if(editing)
+	if(createLevel)
 		editor.mouseReleased();
 }
 

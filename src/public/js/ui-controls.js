@@ -37,3 +37,12 @@ function setFollow(){
     const btn = $('#togglePauseBtn');
     gamePaused ? btn.removeClass('btn-danger').addClass('btn-success').html('<i class="fa fa-play"></i>') : btn.addClass('btn-danger').removeClass('btn-success').html('<i class="fa fa-pause"></i>');
 }
+
+function createPopulation(){
+    if(level.initialized)
+        level.createPopulation();
+}
+function killPopulation(){
+    if(level.initialized)
+        level.killPopulation();
+}

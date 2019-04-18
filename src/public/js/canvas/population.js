@@ -1,19 +1,20 @@
 function Population(size, lifespan, startx, starty){
-	this.size = size;
-	this.lifespan = lifespan;
-	this.DNAlength = lifespan;
-	this.rockets = [];
-	this.currentGene = 0;
-	this.startx = startx;
-	this.starty = starty;
-	this.maxRocket = null;
-			
-	//Create population
-	this.createRandomPop();
-	
-	this.maxFitness = 0;
-	this.displayFitness = 0;
+		this.size = size;
+		//lifespan (can be changed by slider)
+		this.lifespan = lifespan;
+		//lifespan unchanged for entire generation
+		this.DNAlength = lifespan;
+		this.rockets = [];
+		this.currentGene = 0;
+		this.startx = startx;
+		this.starty = starty;
+		this.maxRocket = null;
 
+		//Create population
+		this.createRandomPop();
+						
+		this.maxFitness = 0;
+		this.displayFitness = 0;
 }
 
 //Create random population
@@ -27,6 +28,7 @@ Population.prototype.createRandomPop = function(){
 
 //Update
 Population.prototype.update = function(){
+
 	
 	if(this.currentGene >= this.DNAlength){
 		//Generation lifespan over
@@ -39,22 +41,21 @@ Population.prototype.update = function(){
 	this.currentGene++;
 	
 	this.calcMaxFitness();
+
 };
 
 //Draw
 Population.prototype.draw = function(){
+
 	for(var i = 0; i < this.rockets.length; i++){
 		this.rockets[i].draw();
 	}
 	
-	push();
-	textSize(32);
-	fill(55, 145, 155);
 	if(this.displayFitness == 1/level.target.radius)
 		$('#maxFitnessValue').text('MAX'); 
 	else
 		$('#maxFitnessValue').text(int(this.displayFitness*10000), 10, 30); 
-	pop();
+
 
 };
 

@@ -1,7 +1,10 @@
 function Target(x, y, radius){
 	
-	this.position = createVector(x, y);
-	this.radius = radius;
+    this.position = createVector(x, y);
+    if(!radius)
+        this.radius = Target.defaultRadius;
+    else
+	    this.radius = radius;
 	
 }
 //Draw
@@ -11,15 +14,55 @@ Target.prototype.draw = function(){
 	circle(this.position.x, this.position.y, this.radius);
 	pop();
 }
+Target.defaultRadius = 30;
+//Where xy is the cneter
+Target.drawToGraphics = function(pg, x, y){
+	pg.push();
+	pg.fill(200, 0, 100);
+	pg.circle(x, y, Target.defaultRadius);
+	pg.pop();
+}
+//Draw with default values
+Target.draw = function(x, y){
+    push();
+    fill(200, 0, 0);
+	circle(x, y, Target.defaultRadius);
+	pop();
+}
+
+function SpawnPoint(x, y){
+    this.x = x;
+    this.y = y;
+}
+SpawnPoint.prototype.draw = function(){
+    push();
+    fill(255, 255, 255, 100);
+    circle(this.x, this.y, 2);
+    pop();
+}
+//Where xy is the cneter
+SpawnPoint.drawToGraphics = function(pg, x, y){
+	pg.push();
+	pg.fill(255, 255, 255, 100);
+	pg.circle(x, y, 2);
+	pg.pop();
+}
+//Draw with default values
+SpawnPoint.draw = function(x, y){
+    push();
+    fill(255, 255, 255, 100);
+	circle(x, y, 2);
+	pop();
+}
+
+
 
 function Level() {
     this.initialized = false;
     this.obstacles = [];
-    this.width = 600;
-    this.height = 600;
-    this.spawnCoordinate = {x: this.width/2, y: this.height-100};
+    this.spawnCoordinate = null;
     this.populationSize = 50;
-    this.lifespan = 360;
+    this.lifespan = 6*60;
     this.population = null;
     this.target = null;
 }
@@ -30,25 +73,33 @@ Level.prototype.addObstacle = function(object) {
 
 Level.prototype.initLevel = function(){
     
-    const { obstacles, width, height, spawnCoordinate, populationSize, lifespan, target} = levelStructure;
-    const obstacleArray = obstacles;
-    
-    for(let i = 0; i < obstacleArray.length; i++){
-        this.obstacles.push(eval("new " + obstacleArray[i].name + "(" + obstacleArray[i].x + ", " + obstacleArray[i].y + ")"));
-    }
-    this.width = width;
-    this.height = height;
-    this.spawnCoordinate = spawnCoordinate;
-    this.target = new Target(target.x, target.y, target.r);
+    //Create New Level
+    if(!createLevel){
+        const { obstacles, spawnCoordinate, populationSize, lifespan, target} = levelStructure;
 
-    this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.x, this.spawnCoordinate.y);
+        for(let i = 0; i < obstacles.length; i++){
+            this.obstacles.push(new obstacles[i].type(obstacles[i].x, obstacles[i].y));
+        }
+        this.spawnCoordinate = spawnCoordinate;
+        this.target = new Target(target.x, target.y, target.r);
+        this.populationSize = populationSize;
+        this.lifespan = lifespan;
+        this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.x, this.spawnCoordinate.y);
+    }
+    
+
     this.initialized = true;
+
 }
 
 Level.prototype.draw = function() {
     this.obstacles.forEach(element => element.draw());
-    this.population.draw();
-    this.target.draw();
+    if(this.population != null)
+        this.population.draw();
+    if(this.target != null)
+        this.target.draw();
+    if(createLevel && this.spawnCoordinate != null)
+        this.spawnCoordinate.draw();
 }
 
 Level.prototype.update = function() {
@@ -56,17 +107,27 @@ Level.prototype.update = function() {
 	for(let i = 0; i < this.obstacles.length; i++){
 		if(this.obstacles[i].update)
 			this.obstacles[i].update();
-	}
-    this.population.update();
+    }
+    if(this.population != null)
+        this.population.update();
 }
 
-Level.prototype.setLevelDimensions = function(x, y){
-    this.width = x;
-    this.height = y;
+Level.prototype.setSpawn = function(x_, y_){
+    this.spawnCoordinate = {x:x_, y:y_};
 }
 
-Level.prototype.setSpawn = function(x, y){
-    this.spawnCoordinate = {x, y};
+Level.prototype.setTarget = function(x, y){
+    this.target = new Target(x, y);
+}
+
+Level.prototype.createPopulation = function(){
+    if(this.population == null && this.target != null && this.spawnCoordinate != null){
+        this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.x, this.spawnCoordinate.y);
+    }
+}
+
+Level.prototype.killPopulation = function(){
+    this.population = null;
 }
 
 Level.prototype.serialize = function(){
@@ -75,7 +136,7 @@ Level.prototype.serialize = function(){
     for(let i = 0; i < this.obstacles.length; i++){
         obstacleArray.push(
             {
-                name: this.obstacles[i].name,
+                type: this.obstacles[i].type,
                 x: this.obstacles[i].position.x,
                 y: this.obstacles[i].position.y
             }
@@ -84,8 +145,6 @@ Level.prototype.serialize = function(){
     let target_ = {x: this.target.position.x, y: this.target.position.y, r: this.target.radius};
     return {
         obstacles : obstacleArray,
-        width : this.width,
-        height : this.height,
         spawnCoordinate : this.spawnCoordinate,
         populationSize : this.populationSize,
         lifespan : this.lifespan,
