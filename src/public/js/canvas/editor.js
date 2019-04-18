@@ -173,10 +173,14 @@ Editor.prototype.mouseReleased = function(){
 		if(this.mouseHoverTrash){
 			if(this.heldObstacle.type)
 				deleteQueue.push(this.heldObstacle);
-			else if(this.heldObstacle == level.target)
+			else if(this.heldObstacle == level.target){
+				level.killPopulation();
 				level.target = null;
-			else if(this.heldObstacle == level.spawnCoordinate)
+			}
+			else if(this.heldObstacle == level.spawnCoordinate){
+				level.killPopulation();
 				level.spawnCoordinate = null;
+			}
 		}
 		//Try and drop obstacle
 		else{

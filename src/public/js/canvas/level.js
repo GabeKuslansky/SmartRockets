@@ -1,3 +1,5 @@
+//TODO fix sliders to match creating and killing population
+
 function Target(x, y, radius){
 	
     this.position = createVector(x, y);
