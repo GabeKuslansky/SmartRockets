@@ -18,7 +18,8 @@ function Editor(width, height){
 	this.trashPositionY = this.trashOffset;
 	
 	this.pg = createGraphics(this.width, this.height);
-	this.trashIcon = loadImage("https://www.gravatar.com/avatar/06ce4c0f7ee07cf79c81ac6602f5d502?s=32&d=identicon&r=PG");
+	this.trashIconClose = loadImage("/public/images/trashclose.png");
+	this.trashIconOpen = loadImage("/public/images/trashopen.png");
 	
 	this.mouseHover = false;
 	this.mouseHoverTrash = false;
@@ -88,7 +89,10 @@ Editor.prototype.draw = function(){
 	//Draw trash icon
 	push();
 	rectMode(CORNER);
-	image(this.trashIcon, this.trashPositionX, this.trashPositionY, this.trashWidth, this.trashHeight);
+	if(this.mouseHoverTrash && (this.holding || this.heldObstacle != null))
+		image(this.trashIconOpen, this.trashPositionX, this.trashPositionY, this.trashWidth, this.trashHeight);
+	else
+		image(this.trashIconClose, this.trashPositionX, this.trashPositionY, this.trashWidth, this.trashHeight);
 	pop();
 	
 }
