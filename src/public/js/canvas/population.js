@@ -1,13 +1,13 @@
-function Population(size, lifespan, startx, starty){
-		this.size = size;
-		//lifespan (can be changed by slider)
-		this.lifespan = lifespan;
-		//lifespan unchanged for entire generation
-		this.DNAlength = lifespan;
+let populationSize = 50;
+let populationLifespan = 360;
+function Population(){
+		//size of population
+		this.size = populationSize;
+		//lifespan
+		this.lifespan = populationLifespan;
 		this.rockets = [];
 		this.currentGene = 0;
-		this.startx = startx;
-		this.starty = starty;
+
 		this.maxRocket = null;
 
 		//Create population
@@ -21,16 +21,22 @@ function Population(size, lifespan, startx, starty){
 Population.prototype.createRandomPop = function(){
 	//Create population
 	for(var i = 0; i < this.size; i++){
-		this.rockets.push(new Rocket(this.startx, this.starty, new DNA(this.lifespan), level.target));
+		this.rockets.push(new Rocket(level.spawnCoordinate.x, level.spawnCoordinate.y, new DNA(this.lifespan), level.target));
+		console.log(this.rockets[i].DNA)
 	}
 		
+}
+
+Population.prototype.deletePopulation = function(){
+	for(let i = 0; i < this.rockets.length; i++)
+		this.rockets[i].deleteRocket();
 }
 
 //Update
 Population.prototype.update = function(){
 
 	
-	if(this.currentGene >= this.DNAlength){
+	if(this.currentGene >= this.lifespan){
 		//Generation lifespan over
 		this.nextGeneration();
 		this.currentGene = 0;
@@ -112,7 +118,7 @@ Population.prototype.nextGeneration = function(){
 
 	//Create population
 	var newPop = [];
-	let size = this.size;
+	let size = populationSize;
 	for(var i = 0; i < size; i++){
 		//Get indexes of parents
 		var parentA = int(random(0, matingPool.length-1));
@@ -122,13 +128,13 @@ Population.prototype.nextGeneration = function(){
 		while(parentA == parentB && matingPool.length != 1)
 			parentB = int(random(0, matingPool.length-1));
 		
-		this.rockets.push(new Rocket(this.startx, this.starty, DNA.crossoverMidpoint(matingPool[parentA].DNA, matingPool[parentB].DNA), level.target));
+		this.rockets.push(new Rocket(level.spawnCoordinate.x, level.spawnCoordinate.y, DNA.crossoverMidpoint(matingPool[parentA].DNA, matingPool[parentB].DNA), level.target));
 	}
 	
 	
 	//Mutate DNA
-	this.DNAlength = this.lifespan;
-	let lifespanDif = this.DNAlength-this.rockets.length;
+	let lifespanDif = populationLifespan-this.lifespan;
+	this.lifespan = populationLifespan;
 	for(var i = 0; i < this.rockets.length; i++){
 		//Resize DNA if needed
 		if(lifespanDif > 0){

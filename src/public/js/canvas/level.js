@@ -154,7 +154,10 @@ Level.prototype.createPopulation = function(){
 }
 
 Level.prototype.killPopulation = function(){
-    this.population = null;
+    if(this.population != null){
+        this.population.deletePopulation();
+        this.population = null;
+    }
 }
 
 Level.prototype.serialize = function(){
