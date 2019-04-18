@@ -8,11 +8,23 @@ function Target(x, y, radius){
 	
 }
 //Draw
-Target.prototype.draw = function(){
-	push();
-	fill(200, 0, 0);
-	circle(this.position.x, this.position.y, this.radius);
-	pop();
+Target.prototype.draw = function(x, y){
+    if(!x){
+        push();
+        fill(200, 0, 0);
+        circle(this.position.x, this.position.y, this.radius);
+        pop();
+    }
+    else{
+        push();
+        fill(200, 0, 0);
+        circle(x, y, this.radius);
+        pop();
+    }
+}
+//Point in target
+Target.prototype.pointInTarget = function(x, y){
+	return dist(x, y, this.position.x, this.position.y) <= this.radius;
 }
 Target.defaultRadius = 30;
 //Where xy is the cneter
@@ -34,12 +46,25 @@ function SpawnPoint(x, y){
     this.x = x;
     this.y = y;
 }
-SpawnPoint.prototype.draw = function(){
-    push();
-    fill(255, 255, 255, 100);
-    circle(this.x, this.y, 2);
-    pop();
+SpawnPoint.prototype.draw = function(x, y){
+    if(!x){
+        push();
+        fill(255, 255, 255, 100);
+        circle(this.x, this.y, SpawnPoint.defaultRadius);
+        pop(); 
+    }
+    else{
+        push();
+        fill(255, 255, 255, 100);
+        circle(x, y, SpawnPoint.defaultRadius);
+        pop();
+    }
 }
+//Point on spawn points
+SpawnPoint.prototype.pointInSpawn = function(x, y){
+	return dist(x, y, this.x, this.y) <= SpawnPoint.defaultRadius*2;
+}
+SpawnPoint.defaultRadius = 2;
 //Where xy is the cneter
 SpawnPoint.drawToGraphics = function(pg, x, y){
 	pg.push();
@@ -51,7 +76,7 @@ SpawnPoint.drawToGraphics = function(pg, x, y){
 SpawnPoint.draw = function(x, y){
     push();
     fill(255, 255, 255, 100);
-	circle(x, y, 2);
+	circle(x, y, SpawnPoint.defaultRadius);
 	pop();
 }
 
