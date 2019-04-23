@@ -29,6 +29,7 @@ Population.prototype.createRandomPop = function(){
 Population.prototype.deletePopulation = function(){
 	for(let i = 0; i < this.rockets.length; i++)
 		this.rockets[i].deleteRocket();
+	this.rockets = [];
 }
 
 //Update
@@ -108,11 +109,7 @@ Population.prototype.nextGeneration = function(){
 	}
 		
 	//Delete rockets
-	for(var i = 0; i < this.rockets.length; i++){
-		this.rockets[i].deleteRocket();
-	}
-
-	this.rockets = [];
+	this.deletePopulation();
 	
 
 	//Create population

@@ -28,6 +28,10 @@ Target.prototype.draw = function(x, y){
 Target.prototype.pointInTarget = function(x, y){
 	return dist(x, y, this.position.x, this.position.y) <= this.radius;
 }
+//deleting
+Target.prototype.deleteObstacle = function(){
+    level.target = null;
+}
 Target.defaultRadius = 30;
 //Where xy is the cneter
 Target.drawToGraphics = function(pg, x, y){
@@ -65,6 +69,10 @@ SpawnPoint.prototype.draw = function(x, y){
 //Point on spawn points
 SpawnPoint.prototype.pointInSpawn = function(x, y){
 	return dist(x, y, this.x, this.y) <= SpawnPoint.defaultRadius*2;
+}
+//deleting
+SpawnPoint.prototype.deleteObstacle = function(){
+    level.spawnCoordinate = null;
 }
 SpawnPoint.defaultRadius = 2;
 //Where xy is the cneter

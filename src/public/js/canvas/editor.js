@@ -175,15 +175,12 @@ Editor.prototype.mouseReleased = function(){
 	if(this.heldObstacle){
 		//If dropped over trash icon
 		if(this.mouseHoverTrash){
+			//If obstacle
 			if(this.heldObstacle.type)
 				deleteQueue.push(this.heldObstacle);
-			else if(this.heldObstacle == level.target){
+			else {
 				level.killPopulation();
-				level.target = null;
-			}
-			else if(this.heldObstacle == level.spawnCoordinate){
-				level.killPopulation();
-				level.spawnCoordinate = null;
+				deleteQueue.push(this.heldObstacle);
 			}
 		}
 		//Try and drop obstacle

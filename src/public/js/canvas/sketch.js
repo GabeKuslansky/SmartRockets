@@ -8,7 +8,7 @@ let deleteQueue = [];
 
 //Camera stuff
 let cameraPosition, cameraTarget, trackedRocket, canSwap = true;
-let followRocket = true;
+let followRocket = false;
 const lerpDist = 0.08;
 const cameraSpeed = 10;
 const swapPeriod = 3000;
@@ -31,8 +31,10 @@ function setup() {
 function draw() {
 	//Clear
 	background(204, 198, 198);
+
 	if(level.initialized){
 
+		//Events
 		
 		//Update Input
 		if(createLevel)
@@ -116,7 +118,6 @@ function keyPressed(){
 }
 
 function mousePressed(){
-	
 	if(createLevel)
 		editor.mousePressed();
 }
