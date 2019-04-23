@@ -98,13 +98,13 @@ Editor.prototype.draw = function(){
 }
 Editor.prototype.keyPressed = function(){
 	//Toggling Obstacles
-	if(keyIsDown(37)){
+	if(key == 'ArrowLeft'){
 		this.selectedIndex--;
 		if(this.selectedIndex < 0)
 			this.selectedIndex = this.obstacleList.length-1;
 		this.selected = this.obstacleList[this.selectedIndex];
 	}
-	else if(keyIsDown(39)){
+	else if(key == 'ArrowRight'){
 		this.selectedIndex++;
 		if(this.selectedIndex > this.obstacleList.length-1)
 			this.selectedIndex = 0;
