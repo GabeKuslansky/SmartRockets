@@ -112,12 +112,9 @@ Editor.prototype.keyPressed = function(){
 	}
 }
 Editor.prototype.mousePressed = function(){
-	//If hovering over the creation area and clicked, pick up a new obstacle
-	if(this.mouseHover){
-		this.holding = true;
-	}
+
 	//If not currently holding an obstacle, try to pick one up
-	else if(!this.heldObstacle){
+	if(!this.heldObstacle){
 		//check obstacle click
 		let obstacle = pointIntersectObstacle(mouseX-cameraPosition.x, mouseY-cameraPosition.y); //returns the physics object
 		if(obstacle) {
@@ -137,13 +134,17 @@ Editor.prototype.mousePressed = function(){
 			}
 		}
 	}
+	//If hovering over the creation area and clicked (and not holding an obstacle), pick up a new obstacle
+	if(this.mouseHover && !this.heldObstacle){
+			this.holding = true;
+	}
 	
 }
 Editor.prototype.mouseReleased = function(){
 	
 	if(this.holding && !this.mouseHoverTrash){
 		let newObstacle = this.selected;
-		//check if spawn point
+		//if spawnpoint, try to drop
 		if(newObstacle == SpawnPoint){
 			let mx = mouseX-cameraPosition.x, my = mouseY-cameraPosition.y;
 			if(rectIntersectObstacle(mx-SpawnPoint.defaultRadius, my-SpawnPoint.defaultRadius,
@@ -151,6 +152,7 @@ Editor.prototype.mouseReleased = function(){
 				level.spawnCoordinate = new SpawnPoint(mx, my);
 			}
 		}
+		//if target, try to drop
 		else if(newObstacle == Target){
 			let mx = mouseX-cameraPosition.x, my = mouseY-cameraPosition.y;
 			if(rectIntersectObstacle(mx-Target.defaultRadius, my-Target.defaultRadius, 
