@@ -115,9 +115,10 @@ Rocket.prototype.calcFitness = function()
 //Delete Rocket
 Rocket.prototype.deleteRocket = function()
 {
-	//Delete physics object
-	if(this.physics != null){
+	//Delete physics object if not deleted
+	if(!this.deleted){
 		this.physics.deletePhysics();
 		this.physics = null;
+		this.deleted = true;
 	}
 }
