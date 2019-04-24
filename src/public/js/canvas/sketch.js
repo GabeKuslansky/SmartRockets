@@ -19,6 +19,8 @@ function setup() {
 	if(createLevel){
 		level.initLevel();
 		editor = new Editor(width, height);
+		canvas.mousePressed(mousePressedCallback);
+		canvas.mouseReleased(mouseReleasedCallback);
 	}
 	cameraPosition = createVector(0, 0);
 	cameraTarget = createVector(0, 0);
@@ -117,14 +119,12 @@ function keyPressed(){
 		editor.keyPressed();
 }
 
-function mousePressed(){
-	if(createLevel)
-		editor.mousePressed();
+function mousePressedCallback(){
+	editor.mousePressed();
 }
 
-function mouseReleased(){
-	if(createLevel)
-		editor.mouseReleased();
+function mouseReleasedCallback(){
+	editor.mouseReleased();
 }
 
 function organizeCanvasForDOM() {

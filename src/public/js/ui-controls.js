@@ -19,6 +19,32 @@ $('#lifespanSlider').change(function() {
     $('#lifespanValue').text(displayValue);
 });
 
+$('#scaleXForm').change(function() {
+    const value = $(this).val();
+    let scale = Number(value);
+    if(scale != 0){
+        editor.selectedObject.scale.x = value;
+    }
+});
+
+$('#scaleYForm').change(function() {
+    const value = $(this).val();
+    let scale = Number(value);
+    if(scale != 0){
+        editor.selectedObject.scale.y = value;
+    }
+});
+
+$('#positionXForm').change(function() {
+    const value = $(this).val();
+    editor.selectedObject.position.x = Number(value);
+});
+
+$('#positionYForm').change(function() {
+    const value = $(this).val();
+    editor.selectedObject.position.y = Number(value);
+});
+
 function togglePause(val){
     if (val === undefined) {
         gamePaused = !gamePaused;

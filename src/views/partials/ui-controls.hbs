@@ -43,14 +43,26 @@
                 {{!-- Kill Population --}}
                 <button id='setFollowBtn' class='btn btn-primary mt' onclick='killPopulation()'>Kill Population</button>
             </div>
-            <div class = "row">
-                {{!-- Object X --}}
-                <div class="col-3">
-                <input class="form-control" type="number" id="scaleXForm">
+            <div class = "row" id="editorUI">
+                <div class = "row">
+                    {{!-- Position X --}}
+                    <div class="col-4">
+                    Position X<input class="form-control" type="number" id="positionXForm">
+                    </div>
+                    {{!-- Position Y --}}
+                    <div class="col-4">
+                    Position Y<input class="form-control" type="number" id="positionYForm">
+                    </div>
                 </div>
-                {{!-- Object Y --}}
-                <div class="col-3">
-                <input class="form-control" type="number" id="scaleYForm">
+                <div class = "row">
+                    {{!-- Scale X --}}
+                    <div class="col-4">
+                    Scale X<input class="form-control" type="number" id="scaleXForm">
+                    </div>
+                    {{!-- Scale Y --}}
+                    <div class="col-4">
+                    Scale Y<input class="form-control" type="number" id="scaleYForm">
+                    </div>
                 </div>
             </div>
         </div>

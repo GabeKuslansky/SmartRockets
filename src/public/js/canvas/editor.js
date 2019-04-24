@@ -39,10 +39,13 @@ function Editor(width, height){
 	this.selectedIndex = 0;
 
 	this.scaleX = document.getElementById("scaleXForm");
-	this.scaleX.style.display = "none"
-
 	this.scaleY = document.getElementById("scaleYForm");
-	this.scaleY.style.display = "none"
+
+	this.posX = document.getElementById("positionXForm");
+	this.posY = document.getElementById("positionYForm");
+
+	this.editorUI = document.getElementById("editorUI");
+	this.editorUI.style.display = "none"
 	
 	
 }
@@ -132,16 +135,17 @@ Editor.prototype.mousePressed = function(){
 		if(obstacle) {
 			this.heldObstacle = obstacle.ref; //get the reference
 			this.selectedObject = obstacle.ref;
-			this.scaleX.style.display = null;
-			this.scaleY.style.display = null;
+			this.editorUI.style.display = null; //show editor
+			this.scaleX.value = this.heldObstacle.scale.x;
+			this.scaleY.value = this.heldObstacle.scale.y;
+			this.posX.value = this.heldObstacle.position.x.toFixed(2);
+			this.posY.value = this.heldObstacle.position.y.toFixed(2);
 		}
 		//check spawn coord click
 		if(level.spawnCoordinate != null){
 			if(level.spawnCoordinate.pointInSpawn(mouseX-cameraPosition.x, mouseY-cameraPosition.y)){
 				this.heldObstacle = level.spawnCoordinate;
-				this.selectedObject = level.spawnCoordinate;
-				this.scaleX.style.display = null;
-				this.scaleY.style.display = null;
+				this.editorUI.style.display = "none";
 			}
 		}
 
@@ -149,17 +153,13 @@ Editor.prototype.mousePressed = function(){
 		if(level.target != null){
 			if(level.target.pointInTarget(mouseX-cameraPosition.x, mouseY-cameraPosition.y)){
 				this.heldObstacle = level.target;
-				this.selectedObject = level.target;
-				this.scaleX 
-				this.scaleX.style.display = null;
-				this.scaleY.style.display = null;
+				this.editorUI.style.display = "none";
 			}
 		}
 	}
 	if(!this.heldObstacle){//If didn't click on anything, then reset
 		this.selectedObject = null; 
-		this.scaleX.style.display = "none"
-		this.scaleY.style.display = "none"
+		this.editorUI.style.display = "none";
 	}
 	//If hovering over the creation area and clicked (and not holding an obstacle), pick up a new obstacle
 	if(this.mouseHover && !this.heldObstacle){
@@ -221,6 +221,11 @@ Editor.prototype.mouseReleased = function(){
 				if(checkCollision(this.heldObstacle.physics)){
 					this.heldObstacle.position.x = oldPosition.x;
 					this.heldObstacle.position.y = oldPosition.y;
+				}
+				else{
+					//update position editor
+					this.posX.value = this.heldObstacle.position.x.toFixed(2);
+					this.posY.value = this.heldObstacle.position.y.toFixed(2);
 				}
 			}
 			else if(this.heldObstacle == level.spawnCoordinate){
