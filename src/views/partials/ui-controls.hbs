@@ -36,11 +36,22 @@
                         <button id='createLevelBtn' class='btn btn-primary mt-3' onclick='saveLevel()'>Upload level <i class='fas fa-cloud-upload-alt'></i></button>                        
                     {{/unless}}
                 {{/if}}
+            </div>
+            <div class="row">
                 {{!-- Create Population --}}
                 <button id='setFollowBtn' class='btn btn-primary mt' onclick='createPopulation()'>Create Population</button>
                 {{!-- Kill Population --}}
                 <button id='setFollowBtn' class='btn btn-primary mt' onclick='killPopulation()'>Kill Population</button>
             </div>
+            <div class = "row">
+                {{!-- Object X --}}
+                <div class="col-3">
+                <input class="form-control" type="number" id="scaleXForm">
+                </div>
+                {{!-- Object Y --}}
+                <div class="col-3">
+                <input class="form-control" type="number" id="scaleYForm">
+                </div>
             </div>
         </div>
     </div>

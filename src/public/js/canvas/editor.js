@@ -31,6 +31,12 @@ function Editor(width, height){
 
 	this.obstacleList = [Target, SpawnPoint, Rectangle, Circle, Polygon];
 	this.selectedIndex = 0;
+
+	let scaleX = document.getElementById("scaleXForm");
+	//scaleX.style.display = "none"
+
+	let scaleY = document.getElementById("scaleYForm");
+	//scaleY.style.display = "none"
 	
 	
 }

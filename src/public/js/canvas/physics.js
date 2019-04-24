@@ -473,7 +473,7 @@ function rectIntersectObstacle(x_, y_, w_, h_){
 		//Check colliders of obstacle
 		for(let collider = 0; collider < obstacle.colliders.length; collider++){					
 			//Check collider against rect
-			collided = checkRectCollision(rect, obstacle.colliders[collider])
+			collided = checkRectCollision(box, obstacle.colliders[collider])
 			if(collided == true)
 				return obstacle;
 		}
