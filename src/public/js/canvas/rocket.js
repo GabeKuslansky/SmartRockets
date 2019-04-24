@@ -10,8 +10,8 @@ function Rocket(x, y, DNA, target){
 	this.h = 25;
 	
 	//Physics Colliders
-	this.physics = new PhysicsObject(this.position, true, this, this.onCollision);
-	this.physics.addColliderBox(-this.w/2, -this.h/2, this.w, this.h);
+	this.physics = new PhysicsObject(this.position, createVector(1, 1), true, this, this.onCollision);
+	this.physics.addColliderBox(0, 0, this.w, this.h);
 	
 	//If crashed
 	this.crashed = false;

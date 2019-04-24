@@ -9,13 +9,16 @@ function Rectangle(x, y, w, h){
 		this.w = w;
 		this.h = h;
 	}
+	this.scale = createVector(1, 1);
+
 	this.rotation = 0; //degrees
 	this.step = 0;
-	this.rotationPoint = createVector(x+50, y+40);
-	this.physics = new PhysicsObject(this.position, false, this);
-	this.physics.addColliderBox(-this.w/2, -this.h/2, this.w, this.h);
+	this.rotationPoint = createVector(x, y);
+	this.physics = new PhysicsObject(this.position, this.scale, false, this);
+	this.physics.addColliderBox(0, 0, this.w, this.h);
 	this.doDelete = false;
 }
+
 Rectangle.prototype.update = function(){
 	this.rotation += this.step;
 	this.position.sub(this.rotationPoint);
@@ -29,13 +32,13 @@ Rectangle.prototype.draw = function(x, y){
 		translate(this.position.x, this.position.y);
 		rotate(radians(this.rotation));
 		translate(-this.position.x, -this.position.y);
-		rect(this.position.x, this.position.y, this.w, this.h);
+		rect(this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
 	}
 	else{
 		translate(x, y);
 		rotate(radians(this.rotation));
 		translate(-x, -y);
-		rect(x, y, this.w, this.h);	
+		rect(x, y, this.w*this.scale.x, this.h*this.scale.y);	
 	}
 	pop();
 }
@@ -93,10 +96,11 @@ function Polygon(centerx, centery, points){
 	}
 	else
 		this.points = points;
+	this.scale = createVector(1, 1);
 	this.rotation = 0; //degrees
 	this.step = 0;
 	this.rotationPoint = createVector(centerx+50, centery+40);
-	this.physics = new PhysicsObject(this.position, false, this);
+	this.physics = new PhysicsObject(this.position, this.scale, false, this);
 	this.physics.addColliderPolygon(0, 0, this.points);
 }
 Polygon.prototype.update = function(){
@@ -114,7 +118,7 @@ Polygon.prototype.draw = function(x, y){
 		translate(-this.position.x, -this.position.y);
 		beginShape();
 		for(let i = 0; i < this.points.length; i++)
-			vertex(this.points[i].x + this.position.x, this.points[i].y + this.position.y);
+			vertex(this.points[i].x*this.scale.x + this.position.x, this.points[i].y*this.scale.y + this.position.y);
 		endShape(CLOSE);
 	}
 	else{
@@ -123,7 +127,7 @@ Polygon.prototype.draw = function(x, y){
 		translate(-x, -y);
 		beginShape();
 		for(let i = 0; i < this.points.length; i++)
-			vertex(this.points[i].x + x, this.points[i].y + y);
+			vertex(this.points[i].x*this.scale.x + x, this.points[i].y*this.scale.y + y);
 		endShape(CLOSE);
 	}
 	pop();
@@ -184,10 +188,11 @@ function Circle(x, y, r){
 		this.r = Circle.defaultRadius;
 	else
 		this.r = r;
+	this.scale = createVector(1, 1);
 	this.rotation = 0; //degrees
 	this.step = 0;
 	this.rotationPoint = createVector(200, 200);
-	this.physics = new PhysicsObject(this.position, false, this);
+	this.physics = new PhysicsObject(this.position, this.scale, false, this);
 	this.physics.addColliderCircle(0, 0, this.r);
 }
 Circle.prototype.update = function(){
@@ -202,13 +207,13 @@ Circle.prototype.draw = function(x, y){
 		translate(this.position.x, this.position.y);
 		rotate(radians(this.rotation));
 		translate(-this.position.x, -this.position.y);
-		circle(this.position.x, this.position.y, this.r);
+		circle(this.position.x, this.position.y, this.r*this.scale.x);
 	}
 	else{
 		translate(x, y);
 		rotate(radians(this.rotation));
 		translate(-x, -y);
-		circle(x, y, this.r);
+		circle(x, y, this.r*this.scale.x);
 	}
 	pop();
 }

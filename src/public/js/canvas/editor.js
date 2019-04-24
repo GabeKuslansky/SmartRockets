@@ -23,20 +23,26 @@ function Editor(width, height){
 	
 	this.mouseHover = false;
 	this.mouseHoverTrash = false;
+	//Holding a new obstacle
 	this.holding = false;
+	//The Holding Obstacle
 	this.heldObstacle = null;
 	
+	//The selected obstacle type
 	this.selected = Target;
+
+	//the currently clicked on object
+	this.selectedObject = null;
 
 
 	this.obstacleList = [Target, SpawnPoint, Rectangle, Circle, Polygon];
 	this.selectedIndex = 0;
 
-	let scaleX = document.getElementById("scaleXForm");
-	//scaleX.style.display = "none"
+	this.scaleX = document.getElementById("scaleXForm");
+	this.scaleX.style.display = "none"
 
-	let scaleY = document.getElementById("scaleYForm");
-	//scaleY.style.display = "none"
+	this.scaleY = document.getElementById("scaleYForm");
+	this.scaleY.style.display = "none"
 	
 	
 }
@@ -125,11 +131,17 @@ Editor.prototype.mousePressed = function(){
 		let obstacle = pointIntersectObstacle(mouseX-cameraPosition.x, mouseY-cameraPosition.y); //returns the physics object
 		if(obstacle) {
 			this.heldObstacle = obstacle.ref; //get the reference
+			this.selectedObject = obstacle.ref;
+			this.scaleX.style.display = null;
+			this.scaleY.style.display = null;
 		}
 		//check spawn coord click
 		if(level.spawnCoordinate != null){
 			if(level.spawnCoordinate.pointInSpawn(mouseX-cameraPosition.x, mouseY-cameraPosition.y)){
 				this.heldObstacle = level.spawnCoordinate;
+				this.selectedObject = level.spawnCoordinate;
+				this.scaleX.style.display = null;
+				this.scaleY.style.display = null;
 			}
 		}
 
@@ -137,8 +149,17 @@ Editor.prototype.mousePressed = function(){
 		if(level.target != null){
 			if(level.target.pointInTarget(mouseX-cameraPosition.x, mouseY-cameraPosition.y)){
 				this.heldObstacle = level.target;
+				this.selectedObject = level.target;
+				this.scaleX 
+				this.scaleX.style.display = null;
+				this.scaleY.style.display = null;
 			}
 		}
+	}
+	if(!this.heldObstacle){//If didn't click on anything, then reset
+		this.selectedObject = null; 
+		this.scaleX.style.display = "none"
+		this.scaleY.style.display = "none"
 	}
 	//If hovering over the creation area and clicked (and not holding an obstacle), pick up a new obstacle
 	if(this.mouseHover && !this.heldObstacle){
