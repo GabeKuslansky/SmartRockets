@@ -49,6 +49,7 @@ Rocket.prototype.draw = function(){
 	translate(this.position.x, this.position.y);
 	rotate(this.angle);
 	rotate(PI/2);
+	imageMode(CENTER);
 	image(clipRocket, -this.h, -this.w, this.h, this.w, this.h);
 			
 	pop();

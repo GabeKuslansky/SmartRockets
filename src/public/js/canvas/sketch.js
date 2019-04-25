@@ -19,14 +19,14 @@ function preload(){
 	backimg = loadImage('/public/images/assets/SpaceBackground.jpg');
 	clipBlack = loadImage('/public/images/assets/Black_hole.png');
 	clipEarth = loadImage('/public/images/assets/earth.png');
-	clipEarth.resize(50,50);
+	clipEarth.resize(100,100);
 	//clipMars = loadImage('/public/images/assets/clipMars.png');
 	clipRocket = loadImage('/public/images/assets/rockets.png');
 	clipRocket.resize(25,25);
 	clipSatellite = loadImage('/public/images/assets/sattelite.png');
-	clipSatellite.resize(300,50);
+	clipSatellite.resize(500,100);
 	clipAsteroid = loadImage('/public/images/assets/asteroidFixed.png');
-	clipAsteroid.resize(50,50);
+	clipAsteroid.resize(100,100);
 	clipSign = loadImage('/public/images/assets/ufoSign.png');
 }
 

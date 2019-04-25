@@ -1,13 +1,14 @@
 function Target(x, y, radius){
 	
 	this.position = createVector(x, y);
-	this.radius = radius;
+	this.radius = radius*2;
 	
 }
 //Draw
 Target.prototype.draw = function(){
     push();
-    image(clipEarth, this.position.x, this.position.y, this.radius, this.radius);
+    imageMode(CENTER);
+    image(clipEarth, this.position.x, this.position.y, this.radius*1.3, this.radius*1.3);
     pop();
 }
 
