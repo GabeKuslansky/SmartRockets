@@ -14,7 +14,7 @@ Target.prototype.draw = function(x, y){
     if(!x){
         push();
         imageMode(CENTER);
-        image(clipMars, this.position.x, this.position.y, this.radius*1.3, this.radius*1.3);
+        image(clipMars, this.position.x, this.position.y, this.radius, this.radius);
         //fill(200, 0, 0);
         //circle(this.position.x, this.position.y, this.radius);
         pop();
@@ -22,7 +22,7 @@ Target.prototype.draw = function(x, y){
     else{
         push();
         imageMode(CENTER);
-        image(clipMars, x, y, this.radius*1.3, this.radius*1.3);
+        image(clipMars, x, y, this.radius, this.radius);
         //fill(200, 0, 0);
         //circle(x, y, this.radius);
         pop();
@@ -36,7 +36,7 @@ Target.prototype.pointInTarget = function(x, y){
 Target.prototype.deleteObstacle = function(){
     level.target = null;
 }
-Target.defaultRadius = 30;
+Target.defaultRadius = 80;
 //Where xy is the cneter
 Target.drawToGraphics = function(pg, x, y){
     pg.push();
@@ -87,7 +87,7 @@ SpawnPoint.prototype.pointInSpawn = function(x, y){
 SpawnPoint.prototype.deleteObstacle = function(){
     level.spawnCoordinate = null;
 }
-SpawnPoint.defaultRadius = 30;
+SpawnPoint.defaultRadius = 80;
 //Where xy is the cneter
 SpawnPoint.drawToGraphics = function(pg, x, y){
 	pg.push();

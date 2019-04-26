@@ -70,7 +70,7 @@ Rectangle.prototype.deleteObstacle = function(){
 			}
 	}
 }
-Rectangle.defaultDimensions = {w:60, h:60};
+Rectangle.defaultDimensions = {w:110, h:110};
 
 //Where xy is the cneter
 Rectangle.drawToGraphics = function(pg, x, y){
@@ -256,7 +256,7 @@ Circle.prototype.deleteObstacle = function(){
 			}
 	}
 }
-Circle.defaultRadius = 30;
+Circle.defaultRadius = 70;
 
 //Where xy is the cneter
 Circle.drawToGraphics = function(pg, x, y){
