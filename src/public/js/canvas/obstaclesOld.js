@@ -197,12 +197,16 @@ BlackHoleObstacle.getOpacity = function(){
 
 BlackHoleObstacle.prototype.draw = function(){
 	push();
+	imageMode(CENTER);
+	image(clipBlack, this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius()*1.5, BlackHoleObstacle.getAttractionRadius()*1.5);
 	strokeWeight(0);
+	/*
 	var color = BlackHoleObstacle.getColor();
 	fill(color[0]+100, color[1]+100, color[2]+100, BlackHoleObstacle.getOpacity());
 	circle(this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius());
 	fill(color);
 	circle(this.position.x, this.position.y, BlackHoleObstacle.getRadius());
+	*/
 	pop();
 }
 
@@ -218,13 +222,18 @@ BlackHoleObstacle.prototype.deleteObstacle = function()
 
 //Draw icon at x y coord
 BlackHoleObstacle.drawIcon = function(x, y){
-	push()
+	push();
+	imageMode(CENTER);
+	image(clipBlack, x, y, BlackHoleObstacle.getAttractionRadius()*1.5, BlackHoleObstacle.getAttractionRadius()*1.5);
+	
+	/*
 	var color = BlackHoleObstacle.getColor();
 	if(pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale))
 		fill(color[0]+50, color[1]+50, color[2]+50);
 	else
 		fill(...color);
 	circle(x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
+	*/
 	pop();
 }
 
@@ -242,8 +251,10 @@ BlackHoleObstacle.getAttractionRadius = function(){
 //Draw obstacle no reference to class
 BlackHoleObstacle.draw = function(x, y){
 	push();
-	fill(...BlackHoleObstacle.getColor());
-	circle(x, y, BlackHoleObstacle.getRadius());
+	imageMode(CENTER);
+	image(clipBlack, x, y, BlackHoleObstacle.getAttractionRadius()*1.5, BlackHoleObstacle.getAttractionRadius()*1.5);
+	//fill(...BlackHoleObstacle.getColor());
+	//circle(x, y, BlackHoleObstacle.getRadius());
 	pop();
 }
 

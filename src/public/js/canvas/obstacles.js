@@ -29,23 +29,20 @@ Rectangle.prototype.update = function(){
 Rectangle.prototype.draw = function(x, y){
 	push();
 	if(!x){
-		image(clipSatellite, this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
-		/*
 		translate(this.position.x, this.position.y);
 		rotate(radians(this.rotation));
 		translate(-this.position.x, -this.position.y);
-		rect(this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
-		*/
+		imageMode(CENTER);
+		image(clipSatellite, this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
+		//rect(this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
 	}
 	else{
-		image(clipSatellite, x, y, this.w*this.scale.x, this.h*this.scale.y);
-	
-		/*
 		translate(x, y);
 		rotate(radians(this.rotation));
 		translate(-x, -y);
-		rect(x, y, this.w*this.scale.x, this.h*this.scale.y);	
-		*/
+		imageMode(CENTER);
+		image(clipSatellite, x, y, this.w*this.scale.x, this.h*this.scale.y);
+		//rect(x, y, this.w*this.scale.x, this.h*this.scale.y);	
 	}
 	pop();
 }
@@ -107,7 +104,7 @@ function Polygon(centerx, centery, points){
 			this.points.push(new SAT.Vector(Polygon.defaultPoints[i].x, Polygon.defaultPoints[i].y));
 	}
 	else
-		this.points = points;
+	this.points = points;
 	this.scale = createVector(1, 1);
 	this.rotation = 0; //degrees
 	this.step = 0;
@@ -216,25 +213,22 @@ Circle.prototype.update = function(){
 Circle.prototype.draw = function(x, y){
 	push();
 	if(!x){
-		imageMode(CENTER);
-		image(clipAsteroid, this.position.x, this.position.y, this.r*this.scale.x, this.r*this.scale.x);
-		/*
 		translate(this.position.x, this.position.y);
 		rotate(radians(this.rotation));
 		translate(-this.position.x, -this.position.y);
-		circle(this.position.x, this.position.y, this.r*this.scale.x);
-		*/
+		imageMode(CENTER);
+		image(clipAsteroid, this.position.x, this.position.y, this.r*this.scale.x, this.r*this.scale.x);
+		//circle(this.position.x, this.position.y, this.r*this.scale.x);
+		
 	}
 	else{
-		imageMode(CENTER);
-		image(clipAsteroid, x, y, this.r*this.scale.x, this.r*this.scale.x);
-		
-		/*
 		translate(x, y);
 		rotate(radians(this.rotation));
 		translate(-x, -y);
-		circle(x, y, this.r*this.scale.x);
-		*/
+		imageMode(CENTER);
+		image(clipAsteroid, x, y, this.r*this.scale.x, this.r*this.scale.x);
+		//circle(x, y, this.r*this.scale.x);
+		
 	}
 	pop();
 }

@@ -3,7 +3,7 @@ let canvas, level = new Level(), gamePaused, levelShouldLoad = false;
 let backimg;
 let clipBlack;
 let clipEarth;
-//let clipMars;
+let clipMars;
 let clipRocket;
 let clipSatellite;
 let clipAsteroid;
@@ -26,7 +26,7 @@ function preload(){
 	clipBlack = loadImage('/public/images/assets/Black_hole.png');
 	clipEarth = loadImage('/public/images/assets/earth.png');
 	clipEarth.resize(100,100);
-	//clipMars = loadImage('/public/images/assets/clipMars.png');
+	clipMars = loadImage('/public/images/assets/mars.png');
 	clipRocket = loadImage('/public/images/assets/rockets.png');
 	clipRocket.resize(25,25);
 	clipSatellite = loadImage('/public/images/assets/sattelite.png');
