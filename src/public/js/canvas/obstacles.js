@@ -29,16 +29,23 @@ Rectangle.prototype.update = function(){
 Rectangle.prototype.draw = function(x, y){
 	push();
 	if(!x){
+		image(clipSatellite, this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
+		/*
 		translate(this.position.x, this.position.y);
 		rotate(radians(this.rotation));
 		translate(-this.position.x, -this.position.y);
 		rect(this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
+		*/
 	}
 	else{
+		image(clipSatellite, x, y, this.w*this.scale.x, this.h*this.scale.y);
+	
+		/*
 		translate(x, y);
 		rotate(radians(this.rotation));
 		translate(-x, -y);
 		rect(x, y, this.w*this.scale.x, this.h*this.scale.y);	
+		*/
 	}
 	pop();
 }
@@ -71,16 +78,21 @@ Rectangle.defaultDimensions = {w:60, h:60};
 //Where xy is the cneter
 Rectangle.drawToGraphics = function(pg, x, y){
 	pg.push();
-	pg.fill(255, 255, 255, 100);
-	pg.rectMode(CENTER);
-	pg.rect(x, y, Rectangle.defaultDimensions.w/1.5, Rectangle.defaultDimensions.h/1.5);
+	//pg.fill(255, 255, 255, 100);
+	imageMode(CENTER);
+	//pg.rectMode(CENTER);
+	image(clipSatellite, x, y, Rectangle.defaultDimensions.w/1.5, Rectangle.defaultDimensions.h/1.5);
+	
+	//pg.rect(x, y, Rectangle.defaultDimensions.w/1.5, Rectangle.defaultDimensions.h/1.5);
 	pg.pop();
 }
 //Draw with default values
 Rectangle.draw = function(x, y){
 	push();
-	rectMode(CENTER);
-	rect(x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
+	imageMode(CENTER);
+	image(clipSatellite, x, y, Rectangle.defaultDimensions.w/1.5, Rectangle.defaultDimensions.h/1.5);
+	//rectMode(CENTER);
+	//rect(x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
 	pop();
 }
 
@@ -204,16 +216,25 @@ Circle.prototype.update = function(){
 Circle.prototype.draw = function(x, y){
 	push();
 	if(!x){
+		imageMode(CENTER);
+		image(clipAsteroid, this.position.x, this.position.y, this.r*this.scale.x, this.r*this.scale.x);
+		/*
 		translate(this.position.x, this.position.y);
 		rotate(radians(this.rotation));
 		translate(-this.position.x, -this.position.y);
 		circle(this.position.x, this.position.y, this.r*this.scale.x);
+		*/
 	}
 	else{
+		imageMode(CENTER);
+		image(clipAsteroid, x, y, this.r*this.scale.x, this.r*this.scale.x);
+		
+		/*
 		translate(x, y);
 		rotate(radians(this.rotation));
 		translate(-x, -y);
 		circle(x, y, this.r*this.scale.x);
+		*/
 	}
 	pop();
 }
@@ -247,13 +268,17 @@ Circle.defaultRadius = 30;
 Circle.drawToGraphics = function(pg, x, y){
 	pg.push();
 	pg.fill(255, 255, 255, 100);
-	pg.rectMode(CENTER);
-	pg.circle(x, y, Circle.defaultRadius/1.2);
+	imageMode(CENTER);
+	image(clipAsteroid, x, y, Circle.defaultRadius/1.2);
+	//pg.rectMode(CENTER);
+	//pg.circle(x, y, Circle.defaultRadius/1.2);
 	pg.pop();
 }
 //Draw with default values
 Circle.draw = function(x, y){
 	push();
-	circle(x, y, Circle.defaultRadius);
+	imageMode(CENTER);
+	image(clipAsteroid, x, y, Circle.defaultRadius);
+	//circle(x, y, Circle.defaultRadius);
 	pop();
 }

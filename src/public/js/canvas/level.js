@@ -13,14 +13,18 @@ function Target(x, y, radius){
 Target.prototype.draw = function(x, y){
     if(!x){
         push();
-        fill(200, 0, 0);
-        circle(this.position.x, this.position.y, this.radius);
+        imageMode(CENTER);
+        image(clipEarth, this.position.x, this.position.y, this.radius*1.3, this.radius*1.3);
+        //fill(200, 0, 0);
+        //circle(this.position.x, this.position.y, this.radius);
         pop();
     }
     else{
         push();
-        fill(200, 0, 0);
-        circle(x, y, this.radius);
+        imageMode(CENTER);
+        image(clipEarth, x, y, this.radius*1.3, this.radius*1.3);
+        //fill(200, 0, 0);
+        //circle(x, y, this.radius);
         pop();
     }
 }
@@ -35,16 +39,20 @@ Target.prototype.deleteObstacle = function(){
 Target.defaultRadius = 30;
 //Where xy is the cneter
 Target.drawToGraphics = function(pg, x, y){
-	pg.push();
-	pg.fill(200, 0, 100);
-	pg.circle(x, y, Target.defaultRadius);
+    pg.push();
+    imageMode(CENTER);
+    image(clipEarth, x, y, Target.defaultRadius, Target.defaultRadius);
+	//pg.fill(200, 0, 100);
+	//pg.circle(x, y, Target.defaultRadius);
 	pg.pop();
 }
 //Draw with default values
 Target.draw = function(x, y){
     push();
-    fill(200, 0, 0);
-	circle(x, y, Target.defaultRadius);
+    imageMode(CENTER);
+    image(clipEarth, x, y, Target.defaultRadius, Target.defaultRadius);
+    //fill(200, 0, 0);
+	//circle(x, y, Target.defaultRadius);
 	pop();
 }
 
