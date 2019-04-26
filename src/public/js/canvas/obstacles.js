@@ -78,7 +78,7 @@ Rectangle.drawToGraphics = function(pg, x, y){
 	//pg.fill(255, 255, 255, 100);
 	pg.imageMode(CENTER);
 	//pg.rectMode(CENTER);
-	pg.image(clipSatellite, x, y, Rectangle.defaultDimensions.w/1.5, Rectangle.defaultDimensions.h/1.5);
+	pg.image(clipSatellite, x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
 	
 	//pg.rect(x, y, Rectangle.defaultDimensions.w/1.5, Rectangle.defaultDimensions.h/1.5);
 	pg.pop();
@@ -87,7 +87,7 @@ Rectangle.drawToGraphics = function(pg, x, y){
 Rectangle.draw = function(x, y){
 	push();
 	imageMode(CENTER);
-	image(clipSatellite, x, y, Rectangle.defaultDimensions.w/1.5, Rectangle.defaultDimensions.h/1.5);
+	image(clipSatellite, x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
 	//rectMode(CENTER);
 	//rect(x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
 	pop();
@@ -166,10 +166,11 @@ Polygon.prototype.deleteObstacle = function(){
 	}
 }
 Polygon.defaultPoints = [new SAT.Vector(0, -70), new SAT.Vector(70, 70), new SAT.Vector(-70, 70)];
-//Where xy is the cneter
+//Where xy is the center
 Polygon.drawToGraphics = function(pg, x, y){
 	pg.push();
-	pg.fill(255, 255, 255, 100);
+	//pg.fill(255, 255, 255, 100);
+
 	pg.beginShape();
 	for(let i = 0; i < Polygon.defaultPoints.length; i++)
 		pg.vertex(Polygon.defaultPoints[i].x/3 + x, Polygon.defaultPoints[i].y/3 + y);
