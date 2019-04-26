@@ -79,9 +79,9 @@ Rectangle.defaultDimensions = {w:60, h:60};
 Rectangle.drawToGraphics = function(pg, x, y){
 	pg.push();
 	//pg.fill(255, 255, 255, 100);
-	imageMode(CENTER);
+	pg.imageMode(CENTER);
 	//pg.rectMode(CENTER);
-	image(clipSatellite, x, y, Rectangle.defaultDimensions.w/1.5, Rectangle.defaultDimensions.h/1.5);
+	pg.image(clipSatellite, x, y, Rectangle.defaultDimensions.w/1.5, Rectangle.defaultDimensions.h/1.5);
 	
 	//pg.rect(x, y, Rectangle.defaultDimensions.w/1.5, Rectangle.defaultDimensions.h/1.5);
 	pg.pop();
@@ -267,9 +267,9 @@ Circle.defaultRadius = 30;
 //Where xy is the cneter
 Circle.drawToGraphics = function(pg, x, y){
 	pg.push();
-	pg.fill(255, 255, 255, 100);
-	imageMode(CENTER);
-	image(clipAsteroid, x, y, Circle.defaultRadius/1.2);
+	//pg.fill(255, 255, 255, 100);
+	pg.imageMode(CENTER);
+	pg.image(clipAsteroid, x, y, Circle.defaultRadius, Circle.defaultRadius);
 	//pg.rectMode(CENTER);
 	//pg.circle(x, y, Circle.defaultRadius/1.2);
 	pg.pop();
@@ -278,7 +278,7 @@ Circle.drawToGraphics = function(pg, x, y){
 Circle.draw = function(x, y){
 	push();
 	imageMode(CENTER);
-	image(clipAsteroid, x, y, Circle.defaultRadius);
+	image(clipAsteroid, x, y, Circle.defaultRadius, Circle.defaultRadius);
 	//circle(x, y, Circle.defaultRadius);
 	pop();
 }

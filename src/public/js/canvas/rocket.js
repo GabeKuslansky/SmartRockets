@@ -51,7 +51,7 @@ Rocket.prototype.draw = function(){
 	rotate(this.angle);
 	rotate(PI/2);
 	imageMode(CENTER);
-	image(clipRocket, -this.h, -this.w, this.h, this.w, this.h);
+	image(clipRocket, -this.h/2, -this.w/2, this.h/2, this.w/2, this.h/2);
 	/*fill(...this.color, 145);
 	triangle(0, -this.h/2,
 			-this.w/2, this.h/2,

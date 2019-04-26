@@ -40,8 +40,8 @@ Target.defaultRadius = 30;
 //Where xy is the cneter
 Target.drawToGraphics = function(pg, x, y){
     pg.push();
-    imageMode(CENTER);
-    image(clipEarth, x, y, Target.defaultRadius, Target.defaultRadius);
+    pg.imageMode(CENTER);
+    pg.image(clipEarth, x, y, Target.defaultRadius, Target.defaultRadius);
 	//pg.fill(200, 0, 100);
 	//pg.circle(x, y, Target.defaultRadius);
 	pg.pop();
