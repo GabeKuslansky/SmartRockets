@@ -23,7 +23,14 @@ $('#scaleXForm').change(function() {
     const value = $(this).val();
     let scale = Number(value);
     if(scale != 0){
+        //check for collision
+        let oldscale = editor.previousSelectedObject.scale.x;
         editor.previousSelectedObject.scale.x = value;
+        updatePhysics(false);
+        if(checkCollision(editor.previousSelectedObject.physics)){
+            editor.previousSelectedObject.scale.x = oldscale;
+            document.getElementById("scaleXForm").value = oldscale;
+        }
     }
 });
 
@@ -31,7 +38,14 @@ $('#scaleYForm').change(function() {
     const value = $(this).val();
     let scale = Number(value);
     if(scale != 0){
+        //check for collision
+        let oldscale = editor.previousSelectedObject.scale.y;
         editor.previousSelectedObject.scale.y = value;
+        updatePhysics(false);
+        if(checkCollision(editor.previousSelectedObject.physics)){
+            editor.previousSelectedObject.scale.y = oldscale;
+            document.getElementById("scaleXForm").value = oldscale;
+        }
     }
 });
 

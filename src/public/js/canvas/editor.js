@@ -231,22 +231,22 @@ Editor.prototype.mouseReleased = function(){
 		//if spawnpoint, try to drop
 		if(newObstacle == SpawnPoint){
 			let mx = mouseX-cameraPosition.x, my = mouseY-cameraPosition.y;
-			if(rectIntersectObstacle(mx-SpawnPoint.defaultRadius, my-SpawnPoint.defaultRadius,
-				2*SpawnPoint.defaultRadius, 2*SpawnPoint.defaultRadius) == null){
+			if(circleIntersectObstacle(mx, my, SpawnPoint.defaultRadius) == null){
 				level.spawnCoordinate = new SpawnPoint(mx, my);
 			}
 		}
 		//if target, try to drop
 		else if(newObstacle == Target){
 			let mx = mouseX-cameraPosition.x, my = mouseY-cameraPosition.y;
-			if(rectIntersectObstacle(mx-Target.defaultRadius, my-Target.defaultRadius, 
-									2*Target.defaultRadius, 2*Target.defaultRadius) == null){
+			if(circleIntersectObstacle(mx, my, Target.defaultRadius) == null){
 				level.target = new Target(mx, my);
 			}
 		}
 		else{
 			let obstacle = new newObstacle(mouseX-cameraPosition.x, mouseY-cameraPosition.y);
-			if(checkCollision(obstacle.physics)){
+			if(checkCollision(obstacle.physics) ||
+					(level.target != null && level.target.intersectsTarget(obstacle.physics)) ||
+					(level.spawnCoordinate != null && level.spawnCoordinate.intersectsSpawnPoint(obstacle.physics))){
 				obstacle.physics.deletePhysics();
 			}
 			else{
@@ -275,7 +275,10 @@ Editor.prototype.mouseReleased = function(){
 				let oldPosition = createVector(this.heldObstacle.position.x, this.heldObstacle.position.y);
 				this.heldObstacle.position.x = mouseX-cameraPosition.x;
 				this.heldObstacle.position.y = mouseY-cameraPosition.y;
-				if(checkCollision(this.heldObstacle.physics)){
+
+				if(checkCollision(this.heldObstacle.physics) || 
+				(level.target != null && level.target.intersectsTarget(this.heldObstacle.physics)) ||
+				(level.spawnCoordinate != null && level.spawnCoordinate.intersectsSpawnPoint(this.heldObstacle.physics))){
 					this.heldObstacle.position.x = oldPosition.x;
 					this.heldObstacle.position.y = oldPosition.y;
 				}
@@ -289,16 +292,14 @@ Editor.prototype.mouseReleased = function(){
 			}
 			else if(this.heldObstacle == level.spawnCoordinate){
 				let mx = mouseX-cameraPosition.x, my = mouseY-cameraPosition.y;
-				if(rectIntersectObstacle(mx-SpawnPoint.defaultRadius, my-SpawnPoint.defaultRadius,
-								 2*SpawnPoint.defaultRadius, 2*SpawnPoint.defaultRadius) == null){
-					level.spawnCoordinate.x = mx;
-					level.spawnCoordinate.y = my;
+				if(circleIntersectObstacle(mx, my, SpawnPoint.defaultRadius) == null){
+					level.spawnCoordinate.position.x = mx;
+					level.spawnCoordinate.position.y = my;
 				}
 			}
 			else if(this.heldObstacle == level.target){
 				let mx = mouseX-cameraPosition.x, my = mouseY-cameraPosition.y;
-				if(rectIntersectObstacle(mx-Target.defaultRadius, my-Target.defaultRadius, 
-										2*Target.defaultRadius, 2*Target.defaultRadius) == null){
+				if(circleIntersectObstacle(mx, my, Target.defaultRadius) == null){
 					level.target.position.x = mx;
 					level.target.position.y = my;
 				}

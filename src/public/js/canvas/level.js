@@ -6,7 +6,7 @@ function Target(x, y, radius){
     if(!radius)
         this.radius = Target.defaultRadius;
     else
-	    this.radius = radius;
+        this.radius = radius;
 	
 }
 //Draw
@@ -27,6 +27,17 @@ Target.prototype.draw = function(x, y){
 //Point in target
 Target.prototype.pointInTarget = function(x, y){
 	return dist(x, y, this.position.x, this.position.y) <= this.radius;
+}
+//Physics intersect target
+Target.prototype.intersectsTarget = function(physobj){
+    let collided = false;
+    let circle = new SAT.Circle(new SAT.Vector(this.position.x, this.position.y), Target.defaultRadius);
+    for(let i = 0; i < physobj.colliders.length; i++){
+        collided = checkCircleCollision(circle, physobj.colliders[i]);
+        if(collided)
+            return true
+    }
+    return false;
 }
 //deleting
 Target.prototype.deleteObstacle = function(){
@@ -49,14 +60,13 @@ Target.draw = function(x, y){
 }
 
 function SpawnPoint(x, y){
-    this.x = x;
-    this.y = y;
+    this.position = createVector(x, y);
 }
 SpawnPoint.prototype.draw = function(x, y){
     if(!x){
         push();
         fill(255, 255, 255, 100);
-        circle(this.x, this.y, SpawnPoint.defaultRadius);
+        circle(this.position.x, this.position.y, SpawnPoint.defaultRadius);
         pop(); 
     }
     else{
@@ -68,11 +78,23 @@ SpawnPoint.prototype.draw = function(x, y){
 }
 //Point on spawn points
 SpawnPoint.prototype.pointInSpawn = function(x, y){
-	return dist(x, y, this.x, this.y) <= SpawnPoint.defaultRadius*2;
+	return dist(x, y, this.position.x, this.position.y) <= SpawnPoint.defaultRadius*2;
 }
 //deleting
 SpawnPoint.prototype.deleteObstacle = function(){
     level.spawnCoordinate = null;
+}
+//Physics intersect target
+SpawnPoint.prototype.intersectsSpawnPoint = function(physobj){
+
+    let collided = false;
+    let circle = new SAT.Circle(new SAT.Vector(this.position.x, this.position.y), SpawnPoint.defaultRadius);
+    for(let i = 0; i < physobj.colliders.length; i++){
+        collided = checkCircleCollision(circle, physobj.colliders[i]);
+        if(collided)
+            return true
+    }
+    return false;
 }
 SpawnPoint.defaultRadius = 2;
 //Where xy is the cneter
@@ -150,7 +172,7 @@ Level.prototype.setTarget = function(x, y){
 
 Level.prototype.createPopulation = function(){
     if(this.population == null && this.target != null && this.spawnCoordinate != null){
-        this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.x, this.spawnCoordinate.y);
+        this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.position.x, this.spawnCoordinate.position.y);
     }
     this.objectStart();
 }
@@ -210,9 +232,10 @@ Level.prototype.serialize = function(){
         );
     }
     let target_ = {x: this.target.position.x, y: this.target.position.y, r: this.target.radius};
+    let spawnpoint = {x: this.spawnCoordinate.position.x, y: this.spawnCoordinate.position.y};
     return {
         obstacles : obstacleArray,
-        spawnCoordinate : this.spawnCoordinate,
+        spawnCoordinate : spawnpoint,
         populationSize : this.populationSize,
         lifespan : this.lifespan,
         target : target_
@@ -232,7 +255,7 @@ Level.prototype.deserialize = function(levelStructure){
         obstacle.step.x = obstacles[i].step;
         this.obstacles.push(obstacle);
     }
-    this.spawnCoordinate = spawnCoordinate;
+    this.spawnCoordinate = new SpawnPoint(spawnCoordinate.x, spawnCoordinate.y);
     this.target = new Target(target.x, target.y, target.r);
     this.populationSize = populationSize;
     this.lifespan = lifespan;

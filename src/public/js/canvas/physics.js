@@ -370,13 +370,13 @@ SpatialHash.prototype.getBucketsFromBox = function(bb){
 
 ///////////////////////////////////////////////////////////////////////////////
 //Update physics each frame
-function updatePhysics(){
+function updatePhysics(doResponse){
 	
 	spatialHashObjects = new SpatialHash(120);
 	
 	//ObstacleHash and Movement
 	for(let i = 0; i < physicsObjects.length; i++){
-		if(!gamePaused && level.population != null){
+		if(doResponse){
 		//physics stuff
 		physicsObjects[i].velocity.add(physicsObjects[i].acceleration);
 		physicsObjects[i].acceleration.mult(0);
@@ -399,7 +399,7 @@ function updatePhysics(){
 	///////////////////////
 	//Collision Detection and Resolution
 	//Object collision detection
-	if(!gamePaused && level.population != null){
+	if(doResponse){
 		for(let i = 0; i < physicsObjects.length; i++){
 			
 			//Check Collision
@@ -486,6 +486,25 @@ function checkCollisionAndRespond(a){
 	return therewasacollsion;	
 		
 }
+function circleIntersectObstacle(x_, y_, r){
+	//get buckets
+	let buckets = spatialHashObjects.getBucketsFromBox({x:x_-r, y:y_-r, w:r*2, h:r*2});
+	let circle = new SAT.Circle(new SAT.Vector(x_, y_), r);
+	let collided = false;
+
+	for(let i = 0; i < buckets.length; i++){
+		let obstacle = buckets[i];
+		//Check colliders of obstacle
+		for(let collider = 0; collider < obstacle.colliders.length; collider++){					
+			//Check collider against rect
+			collided = checkCircleCollision(circle, obstacle.colliders[collider])
+			if(collided == true)
+				return obstacle;
+		}
+	}
+	
+	return null;
+}
 //Top left coords
 function rectIntersectObstacle(x_, y_, w_, h_){
 	//get buckets
@@ -545,6 +564,15 @@ function checkPointCollision(point, collider){
 	else
 		throw "No Polygon Type Detected!";
 	
+}
+///////////////////////////////
+function checkCircleCollision(circle, collider){
+	if(collider.type == ColliderTypes.POLY)
+		return SAT.testCirclePolygon(circle, collider.getSATPolygon(), new SAT.Response());
+	else if(collider.type == ColliderTypes.CIRCLE)
+		return SAT.testCircleCircle(circle, collider.getSATCircle(), new SAT.Response());
+	else
+		throw "No Polygon Type Detected!";
 }
 /////////////////////////////
 function checkColliderCollision(colliderA, colliderB, response){

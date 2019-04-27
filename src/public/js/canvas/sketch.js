@@ -87,7 +87,7 @@ function draw() {
 		}
 
 		//Update Physics
-		updatePhysics();
+		updatePhysics(!gamePaused && level.population != null);
 
 		//camera pos
 		cameraPosition.x = lerp(cameraPosition.x, cameraTarget.x, lerpDist);
