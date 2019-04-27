@@ -387,8 +387,11 @@ function updatePhysics(){
 		}
 		
 		//check if bounding box needs updating
-		if(physicsObjects[i].scale.x != physicsObjects[i].oldscale.x || physicsObjects[i].scale.y != physicsObjects[i].oldscale.y)
+		if(physicsObjects[i].scale.x != physicsObjects[i].oldscale.x || physicsObjects[i].scale.y != physicsObjects[i].oldscale.y){
 			physicsObjects[i].updateBoundingBox();
+			physicsObjects[i].oldscale.x = physicsObjects[i].scale.x;
+			physicsObjects[i].oldscale.y = physicsObjects[i].scale.y;
+		}
 		//Add to hash map
 		spatialHashObjects.add(physicsObjects[i]);
 	}
