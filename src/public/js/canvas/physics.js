@@ -472,7 +472,8 @@ function checkCollisionAndRespond(a){
 						//Handle collision
 						a.position.x -= response.overlapV.x;
 						a.position.y -= response.overlapV.y;
-						a.velocity.sub(createVector(response.overlapV.x, response.overlapV.y));
+						a.acceleration.sub(createVector(response.overlapV.x, response.overlapV.y));
+						b.acceleration.add(createVector(response.overlapV.x, response.overlapV.y));
 						collided = false;
 						therewasacollsion = true;
 					}
