@@ -147,3 +147,7 @@ function killPopulation(){
 function selectRotation(){
     editor.rotationPointSelect = true;
 }
+
+function dieOnImpact(){
+    dieOnCollision = !dieOnCollision;
+}
