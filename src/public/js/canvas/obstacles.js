@@ -12,7 +12,6 @@ function Rectangle(x, y, w, h){
 	this.scale = createVector(1, 1);
 
 	this.startPosition = createVector(x, y);
-	this.startRotation = 0;
 	this.startForce = createVector(0, 0);
 
 	this.rotation = 0; //degrees
@@ -28,6 +27,7 @@ Rectangle.prototype.update = function(){
 	this.position.rotate(radians(this.step));
 	this.position.add(this.rotationPoint);	
 	this.physics.rotate(this.rotation);
+	console.log(this.step)
 }
 Rectangle.prototype.draw = function(x, y){
 	push();
@@ -115,7 +115,6 @@ function Polygon(centerx, centery, points){
 		this.points = points;
 
 	this.startPosition = createVector(centerx, centery);
-	this.startRotation = 0;
 	this.startForce = createVector(0, 0);
 
 	this.scale = createVector(1, 1);
@@ -226,7 +225,6 @@ function Circle(x, y, r){
 		this.r = r;
 
 	this.startPosition = createVector(x, y);
-	this.startRotation = 0;
 	this.startForce = createVector(0, 0);
 
 	this.scale = createVector(1, 1);

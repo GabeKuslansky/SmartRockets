@@ -184,7 +184,7 @@ Level.prototype.killPopulation = function(){
 
         this.objectReset();
 
-        if(editor)
+        if(createLevel)
             editor.resetUI();
     }
     
@@ -252,7 +252,7 @@ Level.prototype.deserialize = function(levelStructure){
         obstacle.startForce.y = obstacles[i].startforcey;
         obstacle.rotationPoint.x = obstacles[i].rotatepointx;
         obstacle.rotationPoint.y = obstacles[i].rotatepointy;
-        obstacle.step.x = obstacles[i].step;
+        obstacle.step = obstacles[i].step;
         this.obstacles.push(obstacle);
     }
     this.spawnCoordinate = new SpawnPoint(spawnCoordinate.x, spawnCoordinate.y);
