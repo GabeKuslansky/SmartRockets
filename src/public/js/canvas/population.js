@@ -124,7 +124,7 @@ Population.prototype.nextGeneration = function(){
 		while(parentA == parentB && matingPool.length != 1)
 			parentB = int(random(0, matingPool.length-1));
 		
-		this.rockets.push(new Rocket(level.spawnCoordinate.x, level.spawnCoordinate.y, DNA.crossoverMidpoint(matingPool[parentA].DNA, matingPool[parentB].DNA), level.target));
+		this.rockets.push(new Rocket(level.spawnCoordinate.position.x, level.spawnCoordinate.position.y, DNA.crossoverMidpoint(matingPool[parentA].DNA, matingPool[parentB].DNA), level.target));
 	}
 	
 	
