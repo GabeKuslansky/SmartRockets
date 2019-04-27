@@ -172,7 +172,7 @@ Level.prototype.setTarget = function(x, y){
 
 Level.prototype.createPopulation = function(){
     if(this.population == null && this.target != null && this.spawnCoordinate != null){
-        this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.position.x, this.spawnCoordinate.position.y);
+        this.population = new Population();
     }
     this.objectStart();
 }
@@ -259,5 +259,5 @@ Level.prototype.deserialize = function(levelStructure){
     this.target = new Target(target.x, target.y, target.r);
     this.populationSize = populationSize;
     this.lifespan = lifespan;
-    this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.x, this.spawnCoordinate.y);
+    this.population = new Population();
 }

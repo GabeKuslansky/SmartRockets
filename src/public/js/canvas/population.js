@@ -21,7 +21,7 @@ function Population(){
 Population.prototype.createRandomPop = function(){
 	//Create population
 	for(var i = 0; i < this.size; i++){
-		this.rockets.push(new Rocket(level.spawnCoordinate.x, level.spawnCoordinate.y, new DNA(this.lifespan), level.target));
+		this.rockets.push(new Rocket(level.spawnCoordinate.position.x, level.spawnCoordinate.position.y, new DNA(this.lifespan), level.target));
 	}
 		
 }
