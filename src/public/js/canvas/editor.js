@@ -73,7 +73,7 @@ Editor.prototype.resetUI = function(){
 		this.posY.value = (this.selectedObject.position.y*-1).toFixed(2);
 
 		this.forceX.value = this.selectedObject.startForce.x;
-		this.forceY.value = this.selectedObject.startForce.y;
+		this.forceY.value = this.selectedObject.startForce.y*-1;
 
 		this.rotateX.value = this.selectedObject.rotationPoint.x;
 		this.rotateY.value = this.selectedObject.rotationPoint.y*-1;
