@@ -55,18 +55,35 @@ $('#scaleYForm').change(function() {
 
 $('#positionXForm').change(function() {
     const value = $(this).val();
+
+    let previous = editor.previousSelectedObject.position.x;
+    editor.previousSelectedObject.position.x = Number(value);
+    if(checkCollision(editor.previousSelectedObject.physics)||
+                (level.target != null && level.target.intersectsTarget(editor.previousSelectedObject.physics)) ||
+                (level.spawnCoordinate != null && level.spawnCoordinate.intersectsSpawnPoint(editor.previousSelectedObject.physics))){
+        editor.previousSelectedObject.position.x = previous;
+    }
+
     //change start position if there is no population
     if(level.population == null)
-        editor.previousSelectedObject.startPosition.x = Number(value);
-    editor.previousSelectedObject.position.x = Number(value);
+        editor.previousSelectedObject.startPosition.x = editor.previousSelectedObject.position.x;
+    
 });
 
 $('#positionYForm').change(function() {
     const value = $(this).val();
+
+    let previous = editor.previousSelectedObject.position.y;
+    editor.previousSelectedObject.position.y = Number(value)*-1; //y flipped
+    if(checkCollision(editor.previousSelectedObject.physics)||
+                (level.target != null && level.target.intersectsTarget(editor.previousSelectedObject.physics)) ||
+                (level.spawnCoordinate != null && level.spawnCoordinate.intersectsSpawnPoint(editor.previousSelectedObject.physics))){
+        editor.previousSelectedObject.position.y = previous;
+    }
+
     //change start position if there is no population
     if(level.population == null)
-        editor.previousSelectedObject.startPosition.y = Number(value)*-1; //y flipped
-    editor.previousSelectedObject.position.y = Number(value)*-1; //y flipped
+        editor.previousSelectedObject.startPosition.y = editor.previousSelectedObject.position.y;
 });
 
 $('#forceXForm').change(function() {
