@@ -75,20 +75,6 @@ $('#rotateYForm').change(function() {
     editor.previousSelectedObject.rotationPoint.y = Number(value)*-1; //y flipped
 });
 
-$('#rotationForm').click(function() {
-    editor.updateRotation = false;
-});
-
-$('#rotationForm').change(function() {
-    const value = $(this).val();
-    //change start rotation if there is no population
-    if(level.population == null)
-        editor.previousSelectedObject.startRotation = Number(value);
-    //change current rotation
-    editor.previousSelectedObject.setRotation(Number(value));
-    editor.updateRotation = true;
-});
-
 $('#intervalForm').change(function() {
     const value = $(this).val();
     //change rotation interval

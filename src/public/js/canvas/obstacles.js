@@ -20,8 +20,6 @@ function Rectangle(x, y, w, h){
 	this.rotationPoint = createVector(0, 0);
 	this.physics = new PhysicsObject(this.position, this.scale, false, this);
 	this.physics.addColliderBox(0, 0, this.w, this.h);
-
-	this.doDelete = false;
 }
 
 Rectangle.prototype.update = function(){
@@ -79,12 +77,11 @@ Rectangle.prototype.start = function(){
 Rectangle.prototype.reset = function(){
 	this.position.x = this.startPosition.x;
 	this.position.y = this.startPosition.y;
-	this.rotation = this.startRotation;
 	this.physics.velocity.x = 0;
 	this.physics.velocity.y = 0;
 	this.physics.acceleration.x = 0;
 	this.physics.acceleration.y = 0;
-	this.setRotation(this.startRotation);
+	this.rotation = 0;
 }
 Rectangle.defaultDimensions = {w:60, h:60};
 
@@ -189,12 +186,11 @@ Polygon.prototype.start = function(){
 Polygon.prototype.reset = function(){
 	this.position.x = this.startPosition.x;
 	this.position.y = this.startPosition.y;
-	this.rotation = this.startRotation;
 	this.physics.velocity.x = 0;
 	this.physics.velocity.y = 0;
 	this.physics.acceleration.x = 0;
 	this.physics.acceleration.y = 0;
-	this.setRotation(this.startRotation);
+	this.rotation = 0;
 }
 Polygon.defaultPoints = [new SAT.Vector(0, -70), new SAT.Vector(70, 70), new SAT.Vector(-70, 70)];
 //Where xy is the cneter
@@ -294,12 +290,11 @@ Circle.prototype.start = function(){
 Circle.prototype.reset = function(){
 	this.position.x = this.startPosition.x;
 	this.position.y = this.startPosition.y;
-	this.rotation = this.startRotation;
 	this.physics.velocity.x = 0;
 	this.physics.velocity.y = 0;
 	this.physics.acceleration.x = 0;
 	this.physics.acceleration.y = 0;
-	this.setRotation(this.startRotation);
+	this.rotation = 0;
 }
 Circle.defaultRadius = 30;
 

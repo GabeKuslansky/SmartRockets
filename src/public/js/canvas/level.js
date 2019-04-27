@@ -110,16 +110,7 @@ Level.prototype.initLevel = function(){
     
     //Create New Level
     if(!createLevel){
-        const { obstacles, spawnCoordinate, populationSize, lifespan, target} = levelStructure;
-
-        for(let i = 0; i < obstacles.length; i++){
-            this.obstacles.push(new obstacles[i].type(obstacles[i].x, obstacles[i].y));
-        }
-        this.spawnCoordinate = spawnCoordinate;
-        this.target = new Target(target.x, target.y, target.r);
-        this.populationSize = populationSize;
-        this.lifespan = lifespan;
-        this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.x, this.spawnCoordinate.y);
+        this.deserialize(levelStructure);
     }
     
 
@@ -170,13 +161,20 @@ Level.prototype.killPopulation = function(){
         this.population = null;
 
         this.objectReset();
+
+        if(editor)
+            editor.resetUI();
     }
     
 }
 
 Level.prototype.reset = function(){
+
     this.objectReset();
     this.objectStart();
+
+    if(editor)
+     editor.resetUI();
 }
 
 Level.prototype.objectStart = function(){
@@ -199,7 +197,15 @@ Level.prototype.serialize = function(){
             {
                 type: this.obstacles[i].type,
                 x: this.obstacles[i].position.x,
-                y: this.obstacles[i].position.y
+                y: this.obstacles[i].position.y,
+                scalex: this.obstacles[i].scale.x,
+                scaley: this.obstacles[i].scale.y,
+                startforcex: this.obstacles[i].startForce.x,
+                startforcey: this.obstacles[i].startForce.y,
+                rotatepointx: this.obstacles[i].rotationPoint.x,
+                rotatepointy: this.obstacles[i].rotationPoint.y,
+                step: this.obstacles[i].step
+
             }
         );
     }
@@ -211,4 +217,24 @@ Level.prototype.serialize = function(){
         lifespan : this.lifespan,
         target : target_
     };
+}
+Level.prototype.deserialize = function(levelStructure){
+    const { obstacles, spawnCoordinate, populationSize, lifespan, target} = levelStructure;
+
+    for(let i = 0; i < obstacles.length; i++){
+        let obstacle = new obstacles[i].type(obstacles[i].x, obstacles[i].y);
+        obstacle.scale.x = obstacles[i].scalex;
+        obstacle.scale.y = obstacles[i].scaley;
+        obstacle.startForce.x = obstacles[i].startforcex;
+        obstacle.startForce.y = obstacles[i].startforcey;
+        obstacle.rotationPoint.x = obstacles[i].rotatepointx;
+        obstacle.rotationPoint.y = obstacles[i].rotatepointy;
+        obstacle.step.x = obstacles[i].step;
+        this.obstacles.push(obstacle);
+    }
+    this.spawnCoordinate = spawnCoordinate;
+    this.target = new Target(target.x, target.y, target.r);
+    this.populationSize = populationSize;
+    this.lifespan = lifespan;
+    this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.x, this.spawnCoordinate.y);
 }
