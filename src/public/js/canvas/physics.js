@@ -473,7 +473,8 @@ function checkCollisionAndRespond(a){
 						a.position.x -= response.overlapV.x;
 						a.position.y -= response.overlapV.y;
 						a.acceleration.sub(createVector(response.overlapV.x, response.overlapV.y));
-						b.acceleration.add(createVector(response.overlapV.x, response.overlapV.y));
+						if(!a.isRocket)
+							b.acceleration.add(createVector(response.overlapV.x, response.overlapV.y));
 						collided = false;
 						therewasacollsion = true;
 					}
