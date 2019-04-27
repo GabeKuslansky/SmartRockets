@@ -26,6 +26,7 @@ function PhysicsObject(position, scale, isRocket, ref, callBack){
 	
 	this.position = position; // top left
 	this.scale = scale;
+	this.oldscale = createVector(scale.x, scale.y);
 	this.velocity = createVector();
 	this.acceleration = createVector();
 	
@@ -57,6 +58,13 @@ PhysicsObject.prototype.rotate = function(angle){
 	//rotate colliders
 	for(let i = 0; i < this.colliders.length; i++){
 		this.colliders[i].rotate(radians);
+		this.updateBoundingBoxPoly(this.colliders[i].getBoundingBox());
+	}
+}
+
+PhysicsObject.prototype.updateBoundingBox = function(){
+	this.boundingBox = null;
+	for(let i = 0; i < this.colliders.length; i++){
 		this.updateBoundingBoxPoly(this.colliders[i].getBoundingBox());
 	}
 }
@@ -369,15 +377,18 @@ function updatePhysics(){
 	//ObstacleHash and Movement
 	for(let i = 0; i < physicsObjects.length; i++){
 		if(!gamePaused && level.population != null){
-			//physics stuff
-			physicsObjects[i].velocity.add(physicsObjects[i].acceleration);
-			physicsObjects[i].acceleration.mult(0);
-			
-			//Handle position
-			physicsObjects[i].position.x += physicsObjects[i].velocity.x;
-			physicsObjects[i].position.y += physicsObjects[i].velocity.y;
+		//physics stuff
+		physicsObjects[i].velocity.add(physicsObjects[i].acceleration);
+		physicsObjects[i].acceleration.mult(0);
+		
+		//Handle position
+		physicsObjects[i].position.x += physicsObjects[i].velocity.x;
+		physicsObjects[i].position.y += physicsObjects[i].velocity.y;
 		}
 		
+		//check if bounding box needs updating
+		if(physicsObjects[i].scale.x != physicsObjects[i].oldscale.x || physicsObjects[i].scale.y != physicsObjects[i].oldscale.y)
+			physicsObjects[i].updateBoundingBox();
 		//Add to hash map
 		spatialHashObjects.add(physicsObjects[i]);
 	}
