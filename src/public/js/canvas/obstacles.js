@@ -17,7 +17,7 @@ function Rectangle(x, y, w, h){
 	this.rotation = 0; //degrees
 	this.step = 0;
 	this.rotationPoint = createVector(0, 0);
-	this.physics = new PhysicsObject(this.position, this.scale, false, this);
+	this.physics = new PhysicsObject(this.position, this.scale, false, this, true);
 	this.physics.addColliderBox(0, 0, this.w, this.h);
 }
 
@@ -27,7 +27,6 @@ Rectangle.prototype.update = function(){
 	this.position.rotate(radians(this.step));
 	this.position.add(this.rotationPoint);	
 	this.physics.rotate(this.rotation);
-	console.log(this.step)
 }
 Rectangle.prototype.draw = function(x, y){
 	push();
@@ -121,7 +120,7 @@ function Polygon(centerx, centery, points){
 	this.rotation = 0; //degrees
 	this.step = 0;
 	this.rotationPoint = createVector(0, 0);
-	this.physics = new PhysicsObject(this.position, this.scale, false, this);
+	this.physics = new PhysicsObject(this.position, this.scale, false, this, true);
 	this.physics.addColliderPolygon(0, 0, this.points);
 }
 Polygon.prototype.update = function(){
@@ -231,7 +230,7 @@ function Circle(x, y, r){
 	this.rotation = 0; //degrees
 	this.step = 0;
 	this.rotationPoint = createVector(0, 0);
-	this.physics = new PhysicsObject(this.position, this.scale, false, this);
+	this.physics = new PhysicsObject(this.position, this.scale, false, this, true);
 	this.physics.addColliderCircle(0, 0, this.r);
 }
 Circle.prototype.update = function(){

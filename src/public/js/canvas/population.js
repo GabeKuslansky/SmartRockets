@@ -1,5 +1,7 @@
 let populationSize = 50;
 let populationLifespan = 360;
+let currentSelection = 0;
+let crossoverSelection = 0;
 function Population(){
 		//size of population
 		this.size = populationSize;
@@ -21,7 +23,7 @@ function Population(){
 Population.prototype.createRandomPop = function(){
 	//Create population
 	for(var i = 0; i < this.size; i++){
-		this.rockets.push(new Rocket(level.spawnCoordinate.position.x, level.spawnCoordinate.position.y, new DNA(this.lifespan), level.target));
+		this.rockets.push(new Rocket(level.spawnCoordinate.position.x, level.spawnCoordinate.position.y, new DNA(this.lifespan)));
 	}
 		
 }
@@ -96,17 +98,38 @@ Population.prototype.nextGeneration = function(){
 	}
 	
 	
+
+	//Selection
 	var matingPool = [];
-	
-	//Add highest fitness to mating pool. Ensure mating pool is half of population
-	while(matingPool.length <= this.rockets.length/2){
-		for(var i = 0; i < this.rockets.length && matingPool.length <= this.rockets.length/2; i++){
-			if(random(1) < this.rockets[i].fitness && !this.rockets[i].mating){
-				matingPool.push(this.rockets[i]);
-				this.rockets[i].mating = false;
+	switch(currentSelection){
+
+		//Natural
+		case 0:
+			//Add highest fitness to mating pool. Ensure mating pool is half of population
+			while(matingPool.length <= this.rockets.length/2){
+				for(var i = 0; i < this.rockets.length && matingPool.length <= this.rockets.length/2; i++){
+					if(random(1) < this.rockets[i].fitness && !this.rockets[i].mating){
+						matingPool.push(this.rockets[i]);
+						this.rockets[i].mating = false;
+					}
+				}
 			}
-		}
+			break;
+
+		//Best Half
+		case 1:
+			//Get best half of fitness
+			//first sort rockets by fitness
+			this.rockets.sort(function(a, b){return b.fitness-a.fitness}); //descending order with index 0 highest
+			for(let i = 0; i <= this.rockets.length/2; i++){
+				matingPool.push(this.rockets[i]);
+			}
+			break;
+
+		default:
+			throw "Selection Type Not Found!";
 	}
+
 		
 	//Delete rockets
 	this.deletePopulation();
@@ -115,6 +138,7 @@ Population.prototype.nextGeneration = function(){
 	//Create population
 	var newPop = [];
 	let size = populationSize;
+	let currentCrossoverSelection = crossoverSelection;
 	for(var i = 0; i < size; i++){
 		//Get indexes of parents
 		var parentA = int(random(0, matingPool.length-1));
@@ -124,7 +148,18 @@ Population.prototype.nextGeneration = function(){
 		while(parentA == parentB && matingPool.length != 1)
 			parentB = int(random(0, matingPool.length-1));
 		
-		this.rockets.push(new Rocket(level.spawnCoordinate.position.x, level.spawnCoordinate.position.y, DNA.crossoverMidpoint(matingPool[parentA].DNA, matingPool[parentB].DNA), level.target));
+		switch(currentCrossoverSelection){
+			//midpoint crossover
+			case 0:
+				this.rockets.push(new Rocket(level.spawnCoordinate.position.x, level.spawnCoordinate.position.y, DNA.crossoverRandom(matingPool[parentA].DNA, matingPool[parentB].DNA)));
+				break;
+			//random
+			case 1:
+				this.rockets.push(new Rocket(level.spawnCoordinate.position.x, level.spawnCoordinate.position.y, DNA.crossoverMidpoint(matingPool[parentA].DNA, matingPool[parentB].DNA)));
+				break;
+			default:
+				throw "No Crossover Type Found!";
+		}
 	}
 	
 	

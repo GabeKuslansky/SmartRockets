@@ -25,13 +25,46 @@
         </div>
         
         <div class="col-sm">
+            {{!-- Fitness Dropdown --}}
             <span>Fitness Algorithm</span>
             <div class='row'>
-                <select id='fitnessSelect' class='browser-default custom-select'>
-                    <option selected hidden disabled>Please Select</option>
-                    <option>Distance</option>
-                    <option>Distance & Time</option>
-                </select>
+                <div class="btn-group">
+                    <button class="btn btn-primary mt dropdown-toggle" id='fitnessSelect' type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Distance
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class ="dropdown-item" onclick='fitnessSelectDistance()'>Distance</div>
+                        <div class="dropdown-item" onclick='fitnessSelectDistanceTime()'>Distance & Time</div>
+                        <div class="dropdown-item" onclick='fitnessSelectDistancePrioTime()'>Distance (Priority) & Time</div>
+                        <div class="dropdown-item" onclick='fitnessSelectDistanceTimePrio()'>Distance & Time (Priority)</div>
+                    </div>
+                </div>
+            </div>
+            {{!-- Selection Dropdown --}}
+            <span>Selection Algorithm</span>
+            <div class='row'>
+                <div class="btn-group">
+                    <button class="btn btn-primary mt dropdown-toggle" id='selectionSelect' type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Natural
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class = "dropdown-item" onclick="selectionSelectNatural()">Natural</div>
+                        <div class = "dropdown-item" onclick="selectionSelectBest()">Best</div>
+                    </div>
+                </div>
+            </div>
+            {{!-- Crossover Dropdown --}}
+            <span>Crossover Algorithm</span>
+            <div class='row'>
+                <div class="btn-group">
+                    <button class="btn btn-primary mt dropdown-toggle" id='crossoverSelect' type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Midpoint
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class = "dropdown-item" onclick="crossoverSelectMidpoint()">Midpoint</div>
+                        <div class = "dropdown-item" onclick="crossoverSelectRandom()">Random</div>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <button id='togglePauseBtn' class='btn btn-success mt-3' onclick='togglePause()'><span id='pauseState'>Play</span> <i class='fas fa-play'></i></button>
@@ -97,11 +130,15 @@
                         Rotation Interval<input class="form-control" type="number" id="intervalForm">
                         </div>
                         <div class="col-4">
-                            <div class = "row">
-                                Select
-                            </div>
-                            <div class = "row">
-                                <button type="button" class="btn btn-primary btn-circle" onclick = 'selectRotation()'><i class="fa fa-times"></i></button>
+                        Select Rotation<button type="button" class="btn btn-primary btn-circle" onclick = 'selectRotation()'><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class = "row">
+                        {{!-- Is Kinematic --}}
+                        <div class="col-4">
+                            <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="isKinematic" onclick="toggleKinematic()">
+                            <label class="custom-control-label" for="isKinematic">Is Kinematic</label>
                             </div>
                         </div>
                     </div>

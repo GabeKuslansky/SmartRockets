@@ -226,7 +226,8 @@ Level.prototype.serialize = function(){
                 startforcey: this.obstacles[i].startForce.y,
                 rotatepointx: this.obstacles[i].rotationPoint.x,
                 rotatepointy: this.obstacles[i].rotationPoint.y,
-                step: this.obstacles[i].step
+                step: this.obstacles[i].step,
+                isKinematic: this.obstacles[i].physics.isKinematic
 
             }
         );
@@ -253,6 +254,7 @@ Level.prototype.deserialize = function(levelStructure){
         obstacle.rotationPoint.x = obstacles[i].rotatepointx;
         obstacle.rotationPoint.y = obstacles[i].rotatepointy;
         obstacle.step = obstacles[i].step;
+        obstacle.physics.isKinematic = obstacles[i].isKinematic;
         this.obstacles.push(obstacle);
     }
     this.spawnCoordinate = new SpawnPoint(spawnCoordinate.x, spawnCoordinate.y);

@@ -151,3 +151,49 @@ function selectRotation(){
 function dieOnImpact(){
     dieOnCollision = !dieOnCollision;
 }
+
+function fitnessSelectDistance(){
+    $('#fitnessSelect').text("Distance");
+    currentFitness = 0;
+}
+
+function fitnessSelectDistanceTime(){
+    $('#fitnessSelect').text("Distance Time");
+    currentFitness = 1;
+}
+
+
+function fitnessSelectDistancePrioTime(){
+    $('#fitnessSelect').text("Distance (Priority) & Time");
+    currentFitness = 2;
+}
+
+
+function fitnessSelectDistanceTimePrio(){
+    $('#fitnessSelect').text("Distance & Time (Priority)");
+    currentFitness = 3;
+}
+
+function selectionSelectNatural(){
+    $('#selectionSelect').text("Natural");
+    currentSelection = 0;
+}
+
+function selectionSelectBest(){
+    $('#selectionSelect').text("Best");
+    currentSelection = 1;
+}
+
+function crossoverSelectMidpoint(){
+    $('#crossoverSelect').text("Midpoint");
+    crossoverSelection = 0;
+}
+
+function crossoverSelectRandom(){
+    $('#crossoverSelect').text("Random");
+    crossoverSelection = 1;
+}
+
+function toggleKinematic(){
+    editor.previousSelectedObject.physics.isKinematic = !editor.previousSelectedObject.physics.isKinematic;
+}

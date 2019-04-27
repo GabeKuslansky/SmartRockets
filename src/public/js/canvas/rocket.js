@@ -1,5 +1,6 @@
 dieOnCollision = false;
-function Rocket(x, y, DNA, target){
+let currentFitness = 0;
+function Rocket(x, y, DNA){
 
 	//Middle Coords
     this.position = new createVector(x, y);
@@ -10,7 +11,7 @@ function Rocket(x, y, DNA, target){
 	this.h = 25;
 	
 	//Physics Colliders
-	this.physics = new PhysicsObject(this.position, createVector(1, 1), true, this, this.onCollision);
+	this.physics = new PhysicsObject(this.position, createVector(1, 1), true, this, true, this.onCollision);
 	this.physics.addColliderBox(0, 0, this.w, this.h);
 	
 	//If crashed
@@ -26,9 +27,6 @@ function Rocket(x, y, DNA, target){
 		
 	//Index of DNA
 	this.currentDNA = 0;
-	
-	//target
-	this.target = target;
 	
 	//If deleted
 	this.deleted = false;
@@ -74,7 +72,7 @@ Rocket.prototype.update = function(){
 		//Update Logic//
 		
 		//Check if center of rocket is within radius of target
-		if(dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y) <= this.target.radius){
+		if(dist(this.position.x, this.position.y, level.target.position.x, level.target.position.y) <= level.target.radius){
 			this.success = true;
 			this.deleteRocket();
 		}
@@ -96,19 +94,37 @@ Rocket.prototype.onCollision = function(object){
 //Calculate Fitness
 Rocket.prototype.calcFitness = function()
 {
-	
-	//Check if success. Rockets could make it on the last frame
-	if(dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y) <= this.target.radius)
-		this.success = true;
-	
-	var d = dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y);
 
-	if(this.success)
-		this.fitness = 1/this.target.radius;
-	else
-		this.fitness = 1/d;
-	if(this.crashed)
-		this.fitness /= 10;
+	let whichfitness = currentFitness;
+
+	let distance = dist(this.position.x, this.position.y, level.target.position.x, level.target.position.y);
+	let time = this.currentDNA;
+	let distanceFromSpawn = dist(level.spawnCoordinate.position.x, level.spawnCoordinate.position.y, level.target.position.x, level.target.position.y)
+	switch(whichfitness){
+
+		//pure distance
+		case 0:
+			this.fitness = 1/(distance+1);
+			break;
+		//distance and time //even
+		case 1:
+			this.fitness = (distanceFromSpawn+this.DNA.genes.length)/(1+distance+time/this.DNA.genes.length);
+			break;
+		//distance and time //distance focus
+		case 2:
+			this.fitness = (distanceFromSpawn+this.DNA.genes.length+1)-((1+time)*(1+distance));
+			break;
+		//distance and time //time focus
+		case 3:
+			this.fitness = (distanceFromSpawn+this.DNA.genes.length)/((1+time)*(1+distance));
+			break;
+
+		default:
+			throw "No Fitness Type Selected!";
+	}
+		
+	/*if(this.crashed)
+		this.fitness /= 10;*/
 	
 }
 

@@ -53,6 +53,8 @@ function Editor(width, height){
 
 	this.interval = document.getElementById("intervalForm");
 
+	this.kinematic = document.getElementById("isKinematic");
+
 	this.editorUI = document.getElementById("editorUI");
 	this.editorUI.style.display = "none"
 
@@ -79,6 +81,8 @@ Editor.prototype.resetUI = function(){
 		this.rotateY.value = this.selectedObject.rotationPoint.y*-1;
 
 		this.interval.value = this.selectedObject.step;
+
+		this.kinematic.checked = this.selectedObject.physics.isKinematic;
 	}
 }
 Editor.prototype.update = function(){
