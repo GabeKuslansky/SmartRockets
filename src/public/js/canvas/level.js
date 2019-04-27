@@ -195,7 +195,7 @@ Level.prototype.reset = function(){
     this.objectReset();
     this.objectStart();
 
-    if(editor)
+    if(createLevel)
      editor.resetUI();
 }
 
@@ -245,7 +245,7 @@ Level.prototype.deserialize = function(levelStructure){
     const { obstacles, spawnCoordinate, populationSize, lifespan, target} = levelStructure;
 
     for(let i = 0; i < obstacles.length; i++){
-        let obstacle = new obstacles[i].type(obstacles[i].x, obstacles[i].y);
+        let obstacle = new window[obstacles[i].type](obstacles[i].x, obstacles[i].y);
         obstacle.scale.x = obstacles[i].scalex;
         obstacle.scale.y = obstacles[i].scaley;
         obstacle.startForce.x = obstacles[i].startforcex;

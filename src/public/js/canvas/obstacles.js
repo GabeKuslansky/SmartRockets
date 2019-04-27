@@ -1,5 +1,5 @@
 function Rectangle(x, y, w, h){
-	this.type = Rectangle;
+	this.type = "Rectangle";
 	this.position = createVector(x, y); //center
 	if(!h){
 		this.w = Rectangle.defaultDimensions.w;
@@ -104,7 +104,7 @@ Rectangle.draw = function(x, y){
 
 //DEFINE CLOCKWISE
 function Polygon(centerx, centery, points){
-	this.type = Polygon;
+	this.type = "Polygon";
 	this.position = createVector(centerx, centery); //center
 	if(!points){
 		this.points = [];
@@ -218,7 +218,7 @@ Polygon.draw = function(x, y){
 
 
 function Circle(x, y, r){
-	this.type = Circle;
+	this.type = "Circle";
 	this.position = createVector(x, y);
 	if(!r)
 		this.r = Circle.defaultRadius;

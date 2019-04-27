@@ -117,7 +117,8 @@ function draw() {
 }
 
 function mouseDragged(){
-	editor.mouseDragged();
+	if(createLevel)
+		editor.mouseDragged();
 }
 
 function keyPressed(){
@@ -130,7 +131,8 @@ function mousePressedCallback(){
 }
 
 function mouseReleased(){
-	editor.mouseReleased();
+	if(createLevel)
+		editor.mouseReleased();
 }
 
 function organizeCanvasForDOM() {
