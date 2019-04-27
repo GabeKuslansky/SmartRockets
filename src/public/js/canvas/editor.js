@@ -163,6 +163,13 @@ Editor.prototype.keyPressed = function(){
 			this.selectedIndex = 0;
 		this.selected = this.obstacleList[this.selectedIndex];
 	}
+
+	//check delete key
+	if(key == 'Delete' && this.selectedObject != null){
+		deleteQueue.push(this.selectedObject);
+		this.selectedObject = null; 
+		this.editorUI.style.display = "none";
+	}
 }
 Editor.prototype.mousePressed = function(){
 

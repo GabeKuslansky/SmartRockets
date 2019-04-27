@@ -27,7 +27,9 @@ $('#scaleXForm').change(function() {
         let oldscale = editor.previousSelectedObject.scale.x;
         editor.previousSelectedObject.scale.x = value;
         updatePhysics(false);
-        if(checkCollision(editor.previousSelectedObject.physics)){
+        if(checkCollision(editor.previousSelectedObject.physics) || 
+                (level.target != null && level.target.intersectsTarget(editor.previousSelectedObject.physics)) ||
+                (level.spawnCoordinate != null && level.spawnCoordinate.intersectsSpawnPoint(editor.previousSelectedObject.physics))){
             editor.previousSelectedObject.scale.x = oldscale;
             document.getElementById("scaleXForm").value = oldscale;
         }
@@ -42,7 +44,9 @@ $('#scaleYForm').change(function() {
         let oldscale = editor.previousSelectedObject.scale.y;
         editor.previousSelectedObject.scale.y = value;
         updatePhysics(false);
-        if(checkCollision(editor.previousSelectedObject.physics)){
+        if(checkCollision(editor.previousSelectedObject.physics)||
+                (level.target != null && level.target.intersectsTarget(editor.previousSelectedObject.physics)) ||
+                (level.spawnCoordinate != null && level.spawnCoordinate.intersectsSpawnPoint(editor.previousSelectedObject.physics))){
             editor.previousSelectedObject.scale.y = oldscale;
             document.getElementById("scaleXForm").value = oldscale;
         }
