@@ -20,7 +20,6 @@ function setup() {
 		level.initLevel();
 		editor = new Editor(width, height);
 		canvas.mousePressed(mousePressedCallback);
-		canvas.mouseReleased(mouseReleasedCallback);
 	}
 	cameraPosition = createVector(0, 0);
 	cameraTarget = createVector(0, 0);
@@ -130,7 +129,7 @@ function mousePressedCallback(){
 	editor.mousePressed();
 }
 
-function mouseReleasedCallback(){
+function mouseReleased(){
 	editor.mouseReleased();
 }
 
