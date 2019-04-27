@@ -23,11 +23,21 @@ const saveLevel = async (levelStructure, googleId) => {
         views: 0,
         authorGoogleId: googleId
     }
-    console.log(metadata)
+
     const index = await getLatestIndex();
 
     const level = { index, levelStructure, metadata };
+    console.log(level);
     levelsRepository.insert(level);
+}
+
+const deleteLevel = async _id => await levelsRepository.remove({ _id }, { multi: true });
+
+const updateLevel = async (levelStructure, _id) => await levelsRepository.update({ _id }, { levelStructure });
+
+const trackViewLevel = async _id => {
+    const level = await getLevelById(_id);
+    await levelsRepository.update({ _id }, { $set:  { "metadata.views": ++level.metadata.views }});
 }
 
 const getLevelsStartingFromIndex = async index => await levelsRepository.find({index: { $gt: ctx.params.index }}).sort({ index: 1 }).limit(15)
@@ -41,4 +51,4 @@ const getLatestIndex = async() => {
     }
 };
 
-module.exports = { getLatestLevels, getLevelById, saveLevel, getLevelsStartingFromIndex }
+module.exports = { getLatestLevels, getLevelById, saveLevel, getLevelsStartingFromIndex, deleteLevel, updateLevel, trackViewLevel }

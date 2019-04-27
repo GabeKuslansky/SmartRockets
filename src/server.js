@@ -20,22 +20,22 @@ app.use(serve({rootDir: __dirname + '/public/', rootPath: '/public' }));
 const errorHandler = async (ctx, next) => {
     try {
         await next();
-        const status     = ctx.status || 404;
-        if (status === 404) {
-            ctx.throw(404);
+        const httpStatusCode     = ctx.status || 404;
+        if ([404, 500].includes(httpStatusCode)) {
+            ctx.throw(httpStatusCode);
         }
     } catch(error) {
-        ctx.render('error', { error: error.stack });
+        // ctx.redirect(ctx.originalUrl); //temp fix for unknown 404
+        //ctx.render('error', { error: error.stack });
         console.error(error)
     }
 }
 
-app.use(errorHandler);
-
-app.use(bodyParser());
-
-app.use(hbs.middleware({ viewPath: __dirname + '/views', layoutsPath: __dirname + '/views/layouts', defaultLayout: 'defaultLayout', partialsPath: __dirname + '/views/partials' }));
-app.use(router())
+app
+//.use(errorHandler)
+.use(bodyParser())
+.use(hbs.middleware({ viewPath: __dirname + '/views', layoutsPath: __dirname + '/views/layouts', defaultLayout: 'defaultLayout', partialsPath: __dirname + '/views/partials' }))
+.use(router());
 
 app.listen(3000, () => {
     console.log('Listening on port 3000')

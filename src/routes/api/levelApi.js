@@ -13,8 +13,23 @@ router
 
 .post('/', async(ctx, next) => {
     if (ctx.isAuthenticated()) {
-        console.log(ctx.state)
-        await levelService.saveLevel(ctx.request.body, ctx.state.user.googleId);
+        const { googleId } = ctx.state.user;
+        await levelService.saveLevel(ctx.request.body, googleId);
+    } else {
+        ctx.status = 500;
+    }
+})
+
+.get('/delete/:id', async(ctx, next) => {
+    if (ctx.isAuthenticated()) {
+        const levelId = ctx.params.id;
+        const level = await levelService.getLevelById(levelId);
+        if (level.metadata.authorGoogleId == levelId) {
+            await levelService.deleteLevel(levelId);
+            ctx.redirect('/')
+        } else {
+            ctx.status = 500;
+        }
     } else {
         ctx.status = 500;
     }

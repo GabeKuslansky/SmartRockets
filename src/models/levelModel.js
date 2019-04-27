@@ -6,6 +6,6 @@ const levelsRepository = DataStore.create({
     timestampData: true,
 });
     
-// levelsRepository.ensureIndex({ fieldName: '_id', unique: true });
+levelsRepository.ensureIndex({ fieldName: '_id', unique: true });
 
 module.exports = levelsRepository;

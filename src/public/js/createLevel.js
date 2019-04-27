@@ -9,7 +9,13 @@ const saveLevel = async () => {
        await axios.post(API.level, levelStructure);
        window.location.href = '/';
     } catch (error) {
-        alert(error);
+        const httpStatusCode = error.toString().substring(39);
+        console.log(httpStatusCode)
+        if (['404', '405'].includes(httpStatusCode)) {
+            window.location.href = '/';
+        } else {
+            alert(error);
+        }
     }
 
 }

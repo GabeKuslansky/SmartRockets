@@ -7,9 +7,11 @@ const router = new Router();
 router
 
 .get('/', async (ctx, next) => {
-    console.log(ctx.isAuthenticated())
     const levels = await levelService.getLatestLevels();
-    await ctx.render('home', { title: `Home - Try ${levels.length} levels`, levels}); 
+    if (ctx.state.user) {
+        levels.forEach(level => level.currentUserOwnsLevel = level.author.googleId == ctx.state.user.googleId);
+    }
+    await ctx.render('home', { title: `Home - Try ${levels.length} levels`, levels }); 
 })
 
 .get('/create', (ctx, next) => ctx.render('createLevel', { title: 'Create level - Smart Rockets', user: ctx.state.user }))

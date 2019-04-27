@@ -8,5 +8,4 @@ const createLevel = false;
     levelShouldLoad = true;
     const { author } = levelObj.data;
     document.title = `Playing ${author.name}'s level`;
-    console.log(levelObj)
 })();
