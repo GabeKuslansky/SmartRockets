@@ -46,6 +46,9 @@ function Editor(width, height){
 
 	this.editorUI = document.getElementById("editorUI");
 	this.editorUI.style.display = "none"
+
+	//if user has begun dragging obstacle
+	this.beganDrag = false;
 	
 	
 }
@@ -103,7 +106,7 @@ Editor.prototype.draw = function(){
 		this.selected.draw(mouseX, mouseY);
 
 	//If holding an obstacle
-	if(this.heldObstacle){
+	if(this.heldObstacle && this.beganDrag){
 		this.heldObstacle.draw(mouseX, mouseY);
 	}
 	
@@ -205,7 +208,7 @@ Editor.prototype.mouseReleased = function(){
 	this.holding = false;
 
 	
-	if(this.heldObstacle){
+	if(this.heldObstacle && this.beganDrag){
 		//If dropped over trash icon
 		if(this.mouseHoverTrash){
 			//If obstacle
@@ -252,4 +255,9 @@ Editor.prototype.mouseReleased = function(){
 	}
 	
 	this.heldObstacle = null;
+	this.beganDrag = false;
+}
+Editor.prototype.mouseDragged = function(){
+	if(this.heldObstacle)
+		this.beganDrag = true;
 }

@@ -112,7 +112,11 @@ function draw() {
 		deleteQueue[i].deleteObstacle();
 	}
 	deleteQueue = [];
-}	
+}
+
+function mouseDragged(){
+	editor.mouseDragged();
+}
 
 function keyPressed(){
 	if(createLevel)
