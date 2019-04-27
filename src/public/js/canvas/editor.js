@@ -33,6 +33,7 @@ function Editor(width, height){
 
 	//the currently clicked on object
 	this.selectedObject = null;
+	this.previousSelectedObject = null;
 
 
 	this.obstacleList = [Target, SpawnPoint, Rectangle, Circle, Polygon];
@@ -44,8 +45,21 @@ function Editor(width, height){
 	this.posX = document.getElementById("positionXForm");
 	this.posY = document.getElementById("positionYForm");
 
+	this.forceX = document.getElementById("forceXForm");
+	this.forceY = document.getElementById("forceYForm");
+
+	this.rotateX = document.getElementById("rotateXForm");
+	this.rotateY = document.getElementById("rotateYForm");
+
+	this.rotation = document.getElementById("rotationForm");
+	this.interval = document.getElementById("intervalForm");
+
 	this.editorUI = document.getElementById("editorUI");
 	this.editorUI.style.display = "none"
+
+	this.updateRotation = true;
+
+	this.rotationPointSelect = false;
 
 	//if user has begun dragging obstacle
 	this.beganDrag = false;
@@ -54,7 +68,9 @@ function Editor(width, height){
 }
 Editor.prototype.update = function(){
 	//Mouse hover creation icon
-	if(pointInBox(mouseX, mouseY, this.positionX, this.positionY, this.width, this.height)){
+	if(this.rotationPointSelect)
+		cursor(CROSS)
+	else if(pointInBox(mouseX, mouseY, this.positionX, this.positionY, this.width, this.height)){
 		this.mouseHover = true;
 		cursor(HAND);
 	}
@@ -70,14 +86,8 @@ Editor.prototype.update = function(){
 		this.mouseHoverTrash = false;
 	}
 
-	//if clicked on an object, update ui
-	if(this.selectedObject != null){
-		this.scaleX.value = this.selectedObject.scale.x;
-		this.scaleY.value = this.selectedObject.scale.y;
-		this.posX.value = this.selectedObject.position.x.toFixed(2);
-		this.posY.value = this.selectedObject.position.y.toFixed(2);
-	}
-
+	if(this.updateRotation && this.selectedObject != null)
+		this.rotation.value = this.selectedObject.rotation;
 }
 Editor.prototype.draw = function(){
 	
@@ -139,6 +149,16 @@ Editor.prototype.keyPressed = function(){
 }
 Editor.prototype.mousePressed = function(){
 
+	//clicking on a rotation point
+	if(this.rotationPointSelect){
+		this.selectedObject.rotationPoint.x = mouseX-cameraPosition.x;
+		this.selectedObject.rotationPoint.y = mouseY-cameraPosition.y;
+		this.rotationPointSelect = false;
+		this.rotateX.value = this.selectedObject.rotationPoint.x;
+		this.rotateY.value = this.selectedObject.rotationPoint.y*-1;
+		return;
+	}
+
 	//If not currently holding an obstacle, try to pick one up
 	if(!this.heldObstacle){
 		//check obstacle click
@@ -146,7 +166,23 @@ Editor.prototype.mousePressed = function(){
 		if(obstacle) {
 			this.heldObstacle = obstacle.ref; //get the reference
 			this.selectedObject = obstacle.ref;
+			this.previousSelectedObject = this.selectedObject;
 			this.editorUI.style.display = null; //show editor
+
+			this.scaleX.value = this.selectedObject.scale.x;
+			this.scaleY.value = this.selectedObject.scale.y;
+
+			this.posX.value = this.selectedObject.position.x.toFixed(2);
+			this.posY.value = this.selectedObject.position.y.toFixed(2)*-1;
+
+			this.forceX.value = this.selectedObject.startForce.x;
+			this.forceY.value = this.selectedObject.startForce.y;
+
+			this.rotateX.value = this.selectedObject.rotationPoint.x;
+			this.rotateY.value = this.selectedObject.rotationPoint.y;
+
+			this.rotation.value = this.selectedObject.rotation;
+			this.interval.value = this.selectedObject.step;
 		}
 		//check spawn coord click
 		if(level.spawnCoordinate != null){
@@ -234,6 +270,8 @@ Editor.prototype.mouseReleased = function(){
 					this.heldObstacle.startPosition.x = this.heldObstacle.position.x;
 					this.heldObstacle.startPosition.y = this.heldObstacle.position.y;
 				}
+				this.posX.value = this.selectedObject.position.x.toFixed(2);
+				this.posY.value = this.selectedObject.position.y.toFixed(2)*-1;
 			}
 			else if(this.heldObstacle == level.spawnCoordinate){
 				let mx = mouseX-cameraPosition.x, my = mouseY-cameraPosition.y;

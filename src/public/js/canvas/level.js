@@ -138,13 +138,15 @@ Level.prototype.draw = function() {
 }
 
 Level.prototype.update = function() {
-	
-	for(let i = 0; i < this.obstacles.length; i++){
-		if(this.obstacles[i].update)
-			this.obstacles[i].update();
-    }
-    if(this.population != null)
+    
+    if(this.population != null){
+
+        for(let i = 0; i < this.obstacles.length; i++){
+            if(this.obstacles[i].update)
+                this.obstacles[i].update();
+        }
         this.population.update();
+    }
 }
 
 Level.prototype.setSpawn = function(x_, y_){
@@ -159,6 +161,7 @@ Level.prototype.createPopulation = function(){
     if(this.population == null && this.target != null && this.spawnCoordinate != null){
         this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.x, this.spawnCoordinate.y);
     }
+    this.objectStart();
 }
 
 Level.prototype.killPopulation = function(){
@@ -169,6 +172,17 @@ Level.prototype.killPopulation = function(){
         this.objectReset();
     }
     
+}
+
+Level.prototype.reset = function(){
+    this.objectReset();
+    this.objectStart();
+}
+
+Level.prototype.objectStart = function(){
+    //start obstacles
+    for(let i = 0; i < this.obstacles.length; i++)
+        this.obstacles[i].start();
 }
 
 Level.prototype.objectReset = function(){

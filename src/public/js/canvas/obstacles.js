@@ -13,15 +13,14 @@ function Rectangle(x, y, w, h){
 
 	this.startPosition = createVector(x, y);
 	this.startRotation = 0;
+	this.startForce = createVector(0, 0);
 
 	this.rotation = 0; //degrees
 	this.step = 0;
-	this.rotationPoint = createVector(x, y);
+	this.rotationPoint = createVector(0, 0);
 	this.physics = new PhysicsObject(this.position, this.scale, false, this);
 	this.physics.addColliderBox(0, 0, this.w, this.h);
-	//test
-	this.physics.acceleration.y = 1;
-	//
+
 	this.doDelete = false;
 }
 
@@ -72,11 +71,20 @@ Rectangle.prototype.deleteObstacle = function(){
 			}
 	}
 }
+//Start
+Rectangle.prototype.start = function(){
+	this.physics.applyForce(this.startForce);
+}
 //Reset
 Rectangle.prototype.reset = function(){
 	this.position.x = this.startPosition.x;
 	this.position.y = this.startPosition.y;
 	this.rotation = this.startRotation;
+	this.physics.velocity.x = 0;
+	this.physics.velocity.y = 0;
+	this.physics.acceleration.x = 0;
+	this.physics.acceleration.y = 0;
+	this.setRotation(this.startRotation);
 }
 Rectangle.defaultDimensions = {w:60, h:60};
 
@@ -111,11 +119,12 @@ function Polygon(centerx, centery, points){
 
 	this.startPosition = createVector(x, y);
 	this.startRotation = 0;
+	this.startForce = createVector(0, 0);
 
 	this.scale = createVector(1, 1);
 	this.rotation = 0; //degrees
 	this.step = 0;
-	this.rotationPoint = createVector(centerx+50, centery+40);
+	this.rotationPoint = createVector(0, 0);
 	this.physics = new PhysicsObject(this.position, this.scale, false, this);
 	this.physics.addColliderPolygon(0, 0, this.points);
 }
@@ -172,11 +181,20 @@ Polygon.prototype.deleteObstacle = function(){
 			}
 	}
 }
+//Start
+Polygon.prototype.start = function(){
+	this.physics.applyForce(this.startForce);
+}
 //Reset
 Polygon.prototype.reset = function(){
 	this.position.x = this.startPosition.x;
 	this.position.y = this.startPosition.y;
 	this.rotation = this.startRotation;
+	this.physics.velocity.x = 0;
+	this.physics.velocity.y = 0;
+	this.physics.acceleration.x = 0;
+	this.physics.acceleration.y = 0;
+	this.setRotation(this.startRotation);
 }
 Polygon.defaultPoints = [new SAT.Vector(0, -70), new SAT.Vector(70, 70), new SAT.Vector(-70, 70)];
 //Where xy is the cneter
@@ -213,11 +231,12 @@ function Circle(x, y, r){
 
 	this.startPosition = createVector(x, y);
 	this.startRotation = 0;
+	this.startForce = createVector(0, 0);
 
 	this.scale = createVector(1, 1);
 	this.rotation = 0; //degrees
 	this.step = 0;
-	this.rotationPoint = createVector(200, 200);
+	this.rotationPoint = createVector(0, 0);
 	this.physics = new PhysicsObject(this.position, this.scale, false, this);
 	this.physics.addColliderCircle(0, 0, this.r);
 }
@@ -267,11 +286,20 @@ Circle.prototype.deleteObstacle = function(){
 			}
 	}
 }
+//Start
+Circle.prototype.start = function(){
+	this.physics.applyForce(this.startForce);
+}
 //Reset
 Circle.prototype.reset = function(){
 	this.position.x = this.startPosition.x;
 	this.position.y = this.startPosition.y;
 	this.rotation = this.startRotation;
+	this.physics.velocity.x = 0;
+	this.physics.velocity.y = 0;
+	this.physics.acceleration.x = 0;
+	this.physics.acceleration.y = 0;
+	this.setRotation(this.startRotation);
 }
 Circle.defaultRadius = 30;
 

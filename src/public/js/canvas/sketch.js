@@ -90,14 +90,17 @@ function draw() {
 		//Update Physics
 		updatePhysics();
 
-		//Render
-		if(createLevel)
-			editor.draw();
 		//camera pos
 		cameraPosition.x = lerp(cameraPosition.x, cameraTarget.x, lerpDist);
 		cameraPosition.y = lerp(cameraPosition.y, cameraTarget.y, lerpDist);
+		push();
 		translate(cameraPosition.x, cameraPosition.y);
 		level.draw();
+		pop();
+
+		//Render Editor
+		if(createLevel)
+		editor.draw();
 		
 
 	}
