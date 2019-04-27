@@ -165,7 +165,16 @@ Level.prototype.killPopulation = function(){
     if(this.population != null){
         this.population.deletePopulation();
         this.population = null;
+
+        this.objectReset();
     }
+    
+}
+
+Level.prototype.objectReset = function(){
+    //reset obstacles
+    for(let i = 0; i < this.obstacles.length; i++)
+        this.obstacles[i].reset();
 }
 
 Level.prototype.serialize = function(){

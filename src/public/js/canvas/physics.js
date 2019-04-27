@@ -368,13 +368,15 @@ function updatePhysics(){
 	
 	//ObstacleHash and Movement
 	for(let i = 0; i < physicsObjects.length; i++){
-		//physics stuff
-		physicsObjects[i].velocity.add(physicsObjects[i].acceleration);
-		physicsObjects[i].acceleration.mult(0);
-		
-		//Handle position
-		physicsObjects[i].position.x += physicsObjects[i].velocity.x;
-		physicsObjects[i].position.y += physicsObjects[i].velocity.y;
+		if(!gamePaused && level.population != null){
+			//physics stuff
+			physicsObjects[i].velocity.add(physicsObjects[i].acceleration);
+			physicsObjects[i].acceleration.mult(0);
+			
+			//Handle position
+			physicsObjects[i].position.x += physicsObjects[i].velocity.x;
+			physicsObjects[i].position.y += physicsObjects[i].velocity.y;
+		}
 		
 		//Add to hash map
 		spatialHashObjects.add(physicsObjects[i]);
@@ -383,7 +385,7 @@ function updatePhysics(){
 	///////////////////////
 	//Collision Detection and Resolution
 	//Object collision detection
-	if(!gamePaused){
+	if(!gamePaused && level.population != null){
 		for(let i = 0; i < physicsObjects.length; i++){
 			
 			//Check Collision

@@ -37,12 +37,20 @@ $('#scaleYForm').change(function() {
 
 $('#positionXForm').change(function() {
     const value = $(this).val();
-    editor.selectedObject.position.x = Number(value);
+    //change start position if there is no population
+    if(level.population == null)
+        editor.selectedObject.startPosition.x = Number(value);
+    else
+        editor.selectedObject.position.x = Number(value);
 });
 
 $('#positionYForm').change(function() {
     const value = $(this).val();
-    editor.selectedObject.position.y = Number(value);
+    //change start position if there is no population
+    if(level.population == null)
+        editor.selectedObject.startPosition.y = Number(value);
+    else
+        editor.selectedObject.position.y = Number(value);
 });
 
 function togglePause(val){

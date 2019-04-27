@@ -67,6 +67,14 @@ Editor.prototype.update = function(){
 		this.mouseHoverTrash = false;
 	}
 
+	//if clicked on an object, update ui
+	if(this.selectedObject != null){
+		this.scaleX.value = this.selectedObject.scale.x;
+		this.scaleY.value = this.selectedObject.scale.y;
+		this.posX.value = this.selectedObject.position.x.toFixed(2);
+		this.posY.value = this.selectedObject.position.y.toFixed(2);
+	}
+
 }
 Editor.prototype.draw = function(){
 	
@@ -136,10 +144,6 @@ Editor.prototype.mousePressed = function(){
 			this.heldObstacle = obstacle.ref; //get the reference
 			this.selectedObject = obstacle.ref;
 			this.editorUI.style.display = null; //show editor
-			this.scaleX.value = this.heldObstacle.scale.x;
-			this.scaleY.value = this.heldObstacle.scale.y;
-			this.posX.value = this.heldObstacle.position.x.toFixed(2);
-			this.posY.value = this.heldObstacle.position.y.toFixed(2);
 		}
 		//check spawn coord click
 		if(level.spawnCoordinate != null){
@@ -163,7 +167,7 @@ Editor.prototype.mousePressed = function(){
 	}
 	//If hovering over the creation area and clicked (and not holding an obstacle), pick up a new obstacle
 	if(this.mouseHover && !this.heldObstacle){
-			this.holding = true;
+		this.holding = true;
 	}
 	
 }
@@ -222,10 +226,10 @@ Editor.prototype.mouseReleased = function(){
 					this.heldObstacle.position.x = oldPosition.x;
 					this.heldObstacle.position.y = oldPosition.y;
 				}
-				else{
-					//update position editor
-					this.posX.value = this.heldObstacle.position.x.toFixed(2);
-					this.posY.value = this.heldObstacle.position.y.toFixed(2);
+				//set as start as well if no population
+				if(level.population == null){
+					this.heldObstacle.startPosition.x = this.heldObstacle.position.x;
+					this.heldObstacle.startPosition.y = this.heldObstacle.position.y;
 				}
 			}
 			else if(this.heldObstacle == level.spawnCoordinate){

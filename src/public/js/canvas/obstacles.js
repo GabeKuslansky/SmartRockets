@@ -11,11 +11,17 @@ function Rectangle(x, y, w, h){
 	}
 	this.scale = createVector(1, 1);
 
+	this.startPosition = createVector(x, y);
+	this.startRotation = 0;
+
 	this.rotation = 0; //degrees
 	this.step = 0;
 	this.rotationPoint = createVector(x, y);
 	this.physics = new PhysicsObject(this.position, this.scale, false, this);
 	this.physics.addColliderBox(0, 0, this.w, this.h);
+	//test
+	this.physics.acceleration.y = 1;
+	//
 	this.doDelete = false;
 }
 
@@ -66,6 +72,12 @@ Rectangle.prototype.deleteObstacle = function(){
 			}
 	}
 }
+//Reset
+Rectangle.prototype.reset = function(){
+	this.position.x = this.startPosition.x;
+	this.position.y = this.startPosition.y;
+	this.rotation = this.startRotation;
+}
 Rectangle.defaultDimensions = {w:60, h:60};
 
 //Where xy is the cneter
@@ -96,6 +108,10 @@ function Polygon(centerx, centery, points){
 	}
 	else
 		this.points = points;
+
+	this.startPosition = createVector(x, y);
+	this.startRotation = 0;
+
 	this.scale = createVector(1, 1);
 	this.rotation = 0; //degrees
 	this.step = 0;
@@ -156,6 +172,12 @@ Polygon.prototype.deleteObstacle = function(){
 			}
 	}
 }
+//Reset
+Polygon.prototype.reset = function(){
+	this.position.x = this.startPosition.x;
+	this.position.y = this.startPosition.y;
+	this.rotation = this.startRotation;
+}
 Polygon.defaultPoints = [new SAT.Vector(0, -70), new SAT.Vector(70, 70), new SAT.Vector(-70, 70)];
 //Where xy is the cneter
 Polygon.drawToGraphics = function(pg, x, y){
@@ -188,6 +210,10 @@ function Circle(x, y, r){
 		this.r = Circle.defaultRadius;
 	else
 		this.r = r;
+
+	this.startPosition = createVector(x, y);
+	this.startRotation = 0;
+
 	this.scale = createVector(1, 1);
 	this.rotation = 0; //degrees
 	this.step = 0;
@@ -240,6 +266,12 @@ Circle.prototype.deleteObstacle = function(){
 				deleted = true;
 			}
 	}
+}
+//Reset
+Circle.prototype.reset = function(){
+	this.position.x = this.startPosition.x;
+	this.position.y = this.startPosition.y;
+	this.rotation = this.startRotation;
 }
 Circle.defaultRadius = 30;
 
