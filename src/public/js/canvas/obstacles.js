@@ -114,7 +114,7 @@ function Polygon(centerx, centery, points){
 	else
 		this.points = points;
 
-	this.startPosition = createVector(x, y);
+	this.startPosition = createVector(centerx, centery);
 	this.startRotation = 0;
 	this.startForce = createVector(0, 0);
 
