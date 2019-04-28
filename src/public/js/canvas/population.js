@@ -56,7 +56,8 @@ Population.prototype.update = function(){
 Population.prototype.draw = function(){
 
 	for(var i = 0; i < this.rockets.length; i++){
-		this.rockets[i].draw();
+		if(!this.rockets[i].crashed)
+			this.rockets[i].draw();
 	}
 	
 	if(this.displayFitness == 1/level.target.radius)
