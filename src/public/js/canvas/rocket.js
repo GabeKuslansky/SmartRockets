@@ -116,8 +116,8 @@ Rocket.prototype.calcFitness = function()
 			throw "No Fitness Type Selected!";
 	}
 		
-	/*if(this.crashed)
-		this.fitness /= 10;*/
+	if(this.crashed)
+		this.fitness /= 10;
 	
 }
 
