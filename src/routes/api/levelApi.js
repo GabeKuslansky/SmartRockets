@@ -24,11 +24,11 @@ router
     if (ctx.isAuthenticated()) {
         const levelId = ctx.params.id;
         const level = await levelService.getLevelById(levelId);
-        if (level.metadata.authorGoogleId == levelId) {
+        if (level.metadata.authorGoogleId == ctx.state.user.googleId) {
             await levelService.deleteLevel(levelId);
             ctx.redirect('/')
         } else {
-            ctx.status = 500;
+            ctx.redirect('/')
         }
     } else {
         ctx.status = 500;

@@ -35,6 +35,8 @@ const deleteLevel = async _id => await levelsRepository.remove({ _id }, { multi:
 
 const updateLevel = async (levelStructure, _id) => await levelsRepository.update({ _id }, { levelStructure });
 
+const getLevelsFromUserId = async authorGoogleId => await levelsRepository.find({ "metadata.authorGoogleId": authorGoogleId })
+
 const trackViewLevel = async _id => {
     const level = await getLevelById(_id);
     await levelsRepository.update({ _id }, { $set:  { "metadata.views": ++level.metadata.views }});
@@ -51,4 +53,4 @@ const getLatestIndex = async() => {
     }
 };
 
-module.exports = { getLatestLevels, getLevelById, saveLevel, getLevelsStartingFromIndex, deleteLevel, updateLevel, trackViewLevel }
+module.exports = { getLatestLevels, getLevelById, saveLevel, getLevelsStartingFromIndex, deleteLevel, updateLevel, trackViewLevel, getLevelsFromUserId }

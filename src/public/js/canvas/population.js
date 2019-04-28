@@ -88,7 +88,9 @@ Population.prototype.nextGeneration = function(){
 
 	//reset camera follow
 	canSwap = true;
-		
+
+	
+	
 	this.displayFitness = this.maxFitness;
 	//Normalize fitness
 	for(var i = 0; i < this.rockets.length; i++){

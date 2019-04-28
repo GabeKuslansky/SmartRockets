@@ -3,7 +3,9 @@ function Rocket(x, y, DNA, target){
 
 	//Middle Coords
     this.position = new createVector(x, y);
-    this.color = [random(255), random(255), random(255)];
+	this.color = [random(255), random(255), random(255)];
+	
+	this.opacity = 145;
 	
 	//Dimensions
 	this.w = 25;
@@ -50,7 +52,7 @@ Rocket.prototype.draw = function(){
 	translate(this.position.x, this.position.y);
 	rotate(this.angle);
 	rotate(PI/2);
-	fill(...this.color, 145);
+	fill(...this.color, this.opacity);
 	triangle(0, -this.h/2,
 			-this.w/2, this.h/2,
 			this.w/2, this.h/2);
@@ -74,7 +76,7 @@ Rocket.prototype.update = function(){
 		//Update Logic//
 		
 		//Check if center of rocket is within radius of target
-		if(dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y) <= this.target.radius){
+		if(this.isTouchingTarget()){
 			this.success = true;
 			this.deleteRocket();
 		}
@@ -85,6 +87,10 @@ Rocket.prototype.update = function(){
 			this.currentDNA++;
 		}
 	}
+}
+
+Rocket.prototype.isTouchingTarget = function() {
+return dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y) <= this.target.radius;
 }
 
 //Collided
@@ -115,10 +121,30 @@ Rocket.prototype.calcFitness = function()
 //Delete Rocket
 Rocket.prototype.deleteRocket = function()
 {
+	if (this.isTouchingTarget()) {
+		this.onTargetCollision();
+	} else {
+		this.onObstacleDeathCollision();
+	}
+
 	//Delete physics object if not deleted
 	if(!this.deleted){
 		this.physics.deletePhysics();
 		this.physics = null;
 		this.deleted = true;
 	}
+}
+
+Rocket.prototype.onTargetCollision = function() {
+	this.w *= 1.5
+	this.h *= 1.5;
+	this.color = [0, 230, 0]
+	this.target.color = [255, 211, 0];
+	this.opacity = 255;
+}
+
+Rocket.prototype.onObstacleDeathCollision = function() {
+	this.w /= 3;
+	this.h /= 3;
+	this.opacity = 0;
 }

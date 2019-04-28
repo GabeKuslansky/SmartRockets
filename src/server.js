@@ -25,14 +25,14 @@ const errorHandler = async (ctx, next) => {
             ctx.throw(httpStatusCode);
         }
     } catch(error) {
-        // ctx.redirect(ctx.originalUrl); //temp fix for unknown 404
-        //ctx.render('error', { error: error.stack });
+        ctx.redirect(ctx.originalUrl); //temp fix for unknown 404
+        // ctx.render('error', { error: error.stack });
         console.error(error)
     }
 }
 
 app
-//.use(errorHandler)
+.use(errorHandler)
 .use(bodyParser())
 .use(hbs.middleware({ viewPath: __dirname + '/views', layoutsPath: __dirname + '/views/layouts', defaultLayout: 'defaultLayout', partialsPath: __dirname + '/views/partials' }))
 .use(router());

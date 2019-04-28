@@ -1,7 +1,8 @@
 //TODO fix sliders to match creating and killing population
 
 function Target(x, y, radius){
-	
+    
+    this.color = [200, 0, 0]
     this.position = createVector(x, y);
     if(!radius)
         this.radius = Target.defaultRadius;
@@ -13,13 +14,13 @@ function Target(x, y, radius){
 Target.prototype.draw = function(x, y){
     if(!x){
         push();
-        fill(200, 0, 0);
+        fill(...this.color);
         circle(this.position.x, this.position.y, this.radius);
         pop();
     }
     else{
         push();
-        fill(200, 0, 0);
+        fill(...this.color);
         circle(x, y, this.radius);
         pop();
     }
