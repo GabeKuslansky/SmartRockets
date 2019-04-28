@@ -90,7 +90,6 @@ Population.prototype.nextGeneration = function(){
 
 	//reset camera follow
 	canSwap = true;
-		
 	this.displayFitness = this.maxFitness;
 	//Normalize fitness
 	for(var i = 0; i < this.rockets.length; i++){
@@ -134,7 +133,6 @@ Population.prototype.nextGeneration = function(){
 	//Delete rockets
 	this.deletePopulation();
 	
-
 	//Create population
 	var newPop = [];
 	let size = populationSize;
@@ -162,7 +160,6 @@ Population.prototype.nextGeneration = function(){
 		}
 	}
 	
-	
 	//Mutate DNA
 	let lifespanDif = populationLifespan-this.lifespan;
 	this.lifespan = populationLifespan;
@@ -179,6 +176,7 @@ Population.prototype.nextGeneration = function(){
 		
 		this.rockets[i].DNA.mutate();
 	}
+	console.log("done")
 	
 	level.reset()
 

@@ -98,7 +98,7 @@ Rocket.prototype.calcFitness = function()
 	let whichfitness = currentFitness;
 
 	let distance = dist(this.position.x, this.position.y, level.target.position.x, level.target.position.y);
-	let time = this.currentDNA;
+	let time = this.DNA.genes.length-this.currentDNA;
 	let distanceFromSpawn = dist(level.spawnCoordinate.position.x, level.spawnCoordinate.position.y, level.target.position.x, level.target.position.y)
 	switch(whichfitness){
 
