@@ -176,7 +176,6 @@ Population.prototype.nextGeneration = function(){
 		
 		this.rockets[i].DNA.mutate();
 	}
-	console.log("done")
 	
 	level.reset()
 
