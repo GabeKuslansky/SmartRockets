@@ -4,7 +4,7 @@
 
             {{!-- Population Slider --}}
             <label for="populationSlider">Population Size: <span id='populationValue'>50</span></label>
-            <input type="range" class="custom-range" value='50' min="1" max="200" step="1" id="populationSlider">
+            <input type="range" class="custom-range" value='50' min="2" max="200" step="1" id="populationSlider">
 
             {{!-- Mutation Rate --}}
             <label for="mutationSlider">Mutation Rate: <span id='mutationValue'>0.1</span></label>
@@ -30,13 +30,12 @@
             <div class='row'>
                 <div class="btn-group">
                     <button class="btn btn-primary mt dropdown-toggle" id='fitnessSelect' type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Distance
+                    Distance Priority
                     </button>
                     <div class="dropdown-menu">
-                        <div class ="dropdown-item" onclick='fitnessSelectDistance()'>Distance</div>
+                        <div class ="dropdown-item" onclick='fitnessSelectDistance()'>Distance Prioirty</div>
                         <div class="dropdown-item" onclick='fitnessSelectDistanceTime()'>Distance & Time</div>
-                        <div class="dropdown-item" onclick='fitnessSelectDistancePrioTime()'>Distance (Priority) & Time</div>
-                        <div class="dropdown-item" onclick='fitnessSelectDistanceTimePrio()'>Distance & Time (Priority)</div>
+                        <div class="dropdown-item" onclick='fitnessSelectDistanceTimePrio()'>Time Priority</div>
                     </div>
                 </div>
             </div>

@@ -20,9 +20,6 @@ function Rocket(x, y, DNA){
 	//If success
 	this.success = false;
 	
-	//If mating or not. used in population
-	this.mating = false;
-	
 	this.fitness = 0;
 		
 	//Index of DNA
@@ -110,12 +107,8 @@ Rocket.prototype.calcFitness = function()
 		case 1:
 			this.fitness = (distanceFromSpawn+this.DNA.genes.length)/(1+distance+time/this.DNA.genes.length);
 			break;
-		//distance and time //distance focus
-		case 2:
-			this.fitness = (distanceFromSpawn+this.DNA.genes.length+1)-((1+time)*(1+distance));
-			break;
 		//distance and time //time focus
-		case 3:
+		case 2:
 			this.fitness = (distanceFromSpawn+this.DNA.genes.length)/((1+time)*(1+distance));
 			break;
 

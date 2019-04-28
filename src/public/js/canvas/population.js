@@ -107,9 +107,8 @@ Population.prototype.nextGeneration = function(){
 			//Add highest fitness to mating pool. Ensure mating pool is half of population
 			while(matingPool.length <= this.rockets.length/2){
 				for(var i = 0; i < this.rockets.length && matingPool.length <= this.rockets.length/2; i++){
-					if(random(1) < this.rockets[i].fitness && !this.rockets[i].mating){
+					if(random(1) < this.rockets[i].fitness){
 						matingPool.push(this.rockets[i]);
-						this.rockets[i].mating = false;
 					}
 				}
 			}

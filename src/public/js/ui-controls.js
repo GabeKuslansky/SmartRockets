@@ -153,25 +153,18 @@ function dieOnImpact(){
 }
 
 function fitnessSelectDistance(){
-    $('#fitnessSelect').text("Distance");
+    $('#fitnessSelect').text("Distance Priority");
     currentFitness = 0;
 }
 
 function fitnessSelectDistanceTime(){
-    $('#fitnessSelect').text("Distance Time");
+    $('#fitnessSelect').text("Distance & Time");
     currentFitness = 1;
 }
 
-
-function fitnessSelectDistancePrioTime(){
-    $('#fitnessSelect').text("Distance (Priority) & Time");
-    currentFitness = 2;
-}
-
-
 function fitnessSelectDistanceTimePrio(){
-    $('#fitnessSelect').text("Distance & Time (Priority)");
-    currentFitness = 3;
+    $('#fitnessSelect').text("Time Priority");
+    currentFitness = 2;
 }
 
 function selectionSelectNatural(){
