@@ -22,9 +22,9 @@ $('#lifespanSlider').change(function() {
 $('#scaleXForm').change(function() {
     const value = $(this).val();
     let scale = Number(value);
-    if(scale != 0){
+    let oldscale = editor.previousSelectedObject.scale.x;
+    if(scale > 0){
         //check for collision
-        let oldscale = editor.previousSelectedObject.scale.x;
         editor.previousSelectedObject.scale.x = value;
         updatePhysics(false);
         if(checkCollision(editor.previousSelectedObject.physics) || 
@@ -34,23 +34,27 @@ $('#scaleXForm').change(function() {
             document.getElementById("scaleXForm").value = oldscale;
         }
     }
+    else
+        document.getElementById("scaleXForm").value = oldscale;
 });
 
 $('#scaleYForm').change(function() {
     const value = $(this).val();
     let scale = Number(value);
-    if(scale != 0){
+    let oldscale = editor.previousSelectedObject.scale.y;
+    if(scale > 0){
         //check for collision
-        let oldscale = editor.previousSelectedObject.scale.y;
         editor.previousSelectedObject.scale.y = value;
         updatePhysics(false);
         if(checkCollision(editor.previousSelectedObject.physics)||
                 (level.target != null && level.target.intersectsTarget(editor.previousSelectedObject.physics)) ||
                 (level.spawnCoordinate != null && level.spawnCoordinate.intersectsSpawnPoint(editor.previousSelectedObject.physics))){
             editor.previousSelectedObject.scale.y = oldscale;
-            document.getElementById("scaleXForm").value = oldscale;
+            document.getElementById("scaleYForm").value = oldscale;
         }
     }
+    else
+        document.getElementById("scaleYForm").value = oldscale;
 });
 
 $('#positionXForm').change(function() {
