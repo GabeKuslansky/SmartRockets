@@ -86,7 +86,7 @@ Rectangle.prototype.reset = function(){
 	this.physics.acceleration.y = 0;
 	this.rotation = 0;
 }
-Rectangle.defaultDimensions = {w:60, h:60};
+Rectangle.defaultDimensions = {w:80, h:80};
 
 //Where xy is the cneter
 Rectangle.drawToGraphics = function(pg, x, y){
@@ -309,7 +309,7 @@ Circle.prototype.reset = function(){
 	this.physics.acceleration.y = 0;
 	this.rotation = 0;
 }
-Circle.defaultRadius = 30;
+Circle.defaultRadius = 80;
 
 //Where xy is the cneter
 Circle.drawToGraphics = function(pg, x, y){
@@ -377,10 +377,12 @@ BlackHole.prototype.draw = function(x, y){
 		rotate(radians(this.rotation));
 		translate(-this.position.x, -this.position.y);
 		push();
-		fill(0, 0, 0, 100);
-		circle(this.position.x, this.position.y, this.outerR*this.scale.x);
-		fill(0, 0, 0, 200);
-		circle(this.position.x, this.position.y, this.innerR);
+		imageMode(CENTER);
+		image(clipBlack, this.position.x, this.position.y, this.outerR*this.scale.x,this.outerR*scale.y);
+		//fill(0, 0, 0, 100);
+		//circle(this.position.x, this.position.y, this.outerR*this.scale.x);
+		//fill(0, 0, 0, 200);
+		//circle(this.position.x, this.position.y, this.innerR);
 		pop();
 	}
 	else{
@@ -388,10 +390,12 @@ BlackHole.prototype.draw = function(x, y){
 		rotate(radians(this.rotation));
 		translate(-x, -y);
 		push();
-		fill(0, 0, 0, 100);
-		circle(x, y, this.outerR*this.scale.x);
-		fill(0, 0, 0, 200);
-		circle(x, y, this.innerR);
+		imageMode(CENTER);
+		image(clipBlack, this.position.x, this.position.y, this.outerR*this.scale.x, this.outerR*scale.y);
+		//fill(0, 0, 0, 100);
+		//circle(x, y, this.outerR*this.scale.x);
+		//fill(0, 0, 0, 200);
+		//circle(x, y, this.innerR);
 		pop();
 
 	}
@@ -435,25 +439,29 @@ BlackHole.prototype.reset = function(){
 	this.physics.acceleration.y = 0;
 	this.rotation = 0;
 }
-BlackHole.defaultInnerRadius = 10;
-BlackHole.defaultOuterRadius = 55;
+BlackHole.defaultInnerRadius = 15;
+BlackHole.defaultOuterRadius = 70;
 BlackHole.force = 1.5;
 
 //Where xy is the cneter
 BlackHole.drawToGraphics = function(pg, x, y){
 	pg.push();
-	pg.fill(0, 0, 0, 100);
-	pg.circle(x, y, BlackHole.defaultOuterRadius/1.2);
-	pg.fill(0, 0, 0, 200);
-	pg.circle(x, y, BlackHole.defaultInnerRadius/1.2);
+	pg.imageMode(CENTER);
+	pg.image(clipBlack, x, y, BlackHole.defaultOuterRadius, BlackHole.defaultOuterRadius);
+	//pg.fill(0, 0, 0, 100);
+	//pg.circle(x, y, BlackHole.defaultOuterRadius/1.2);
+	//pg.fill(0, 0, 0, 200);
+	//pg.circle(x, y, BlackHole.defaultInnerRadius/1.2);
 	pg.pop();
 }
 //Draw with default values
 BlackHole.draw = function(x, y){
 	push();
-	fill(0, 0, 0, 100);
-	circle(x, y, BlackHole.defaultOuterRadius);
-	fill(0, 0, 0, 200);
-	circle(x, y, BlackHole.defaultInnerRadius);
+	imageMode(CENTER);
+	image(clipBlack, x, y, BlackHole.defaultOuterRadius, BlackHole.defaultOuterRadius);
+	//fill(0, 0, 0, 100);
+	//circle(x, y, BlackHole.defaultOuterRadius);
+	//fill(0, 0, 0, 200);
+	//circle(x, y, BlackHole.defaultInnerRadius);
 	pop();
 }
