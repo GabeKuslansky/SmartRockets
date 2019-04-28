@@ -33,9 +33,10 @@ function Editor(width, height){
 
 	//the currently clicked on object
 	this.selectedObject = null;
+	this.previousSelectedObject = null;
 
 
-	this.obstacleList = [Target, SpawnPoint, Rectangle, Circle, Polygon];
+	this.obstacleList = [Target, SpawnPoint, Rectangle, Circle, Polygon, BlackHole];
 	this.selectedIndex = 0;
 
 	this.scaleX = document.getElementById("scaleXForm");
@@ -44,14 +45,51 @@ function Editor(width, height){
 	this.posX = document.getElementById("positionXForm");
 	this.posY = document.getElementById("positionYForm");
 
+	this.forceX = document.getElementById("forceXForm");
+	this.forceY = document.getElementById("forceYForm");
+
+	this.rotateX = document.getElementById("rotateXForm");
+	this.rotateY = document.getElementById("rotateYForm");
+
+	this.interval = document.getElementById("intervalForm");
+
+	this.kinematic = document.getElementById("isKinematic");
+
 	this.editorUI = document.getElementById("editorUI");
 	this.editorUI.style.display = "none"
+
+	//is selecting a rotation point
+	this.rotationPointSelect = false;
+
+	//if user has begun dragging obstacle
+	this.beganDrag = false;
 	
 	
 }
+Editor.prototype.resetUI = function(){
+	if(this.selectedObject){
+		this.scaleX.value = this.selectedObject.scale.x;
+		this.scaleY.value = this.selectedObject.scale.y;
+
+		this.posX.value = this.selectedObject.position.x.toFixed(2);
+		this.posY.value = (this.selectedObject.position.y*-1).toFixed(2);
+
+		this.forceX.value = this.selectedObject.startForce.x;
+		this.forceY.value = this.selectedObject.startForce.y*-1;
+
+		this.rotateX.value = this.selectedObject.rotationPoint.x;
+		this.rotateY.value = this.selectedObject.rotationPoint.y*-1;
+
+		this.interval.value = this.selectedObject.step;
+
+		this.kinematic.checked = this.selectedObject.physics.isKinematic;
+	}
+}
 Editor.prototype.update = function(){
 	//Mouse hover creation icon
-	if(pointInBox(mouseX, mouseY, this.positionX, this.positionY, this.width, this.height)){
+	if(this.rotationPointSelect)
+		cursor(CROSS)
+	else if(level.population == null && pointInBox(mouseX, mouseY, this.positionX, this.positionY, this.width, this.height)){
 		this.mouseHover = true;
 		cursor(HAND);
 	}
@@ -67,6 +105,10 @@ Editor.prototype.update = function(){
 		this.mouseHoverTrash = false;
 	}
 
+	//override ui
+	if(this.selectedObject != null && level.population != null){
+		this.resetUI();
+	}
 }
 Editor.prototype.draw = function(){
 	
@@ -95,7 +137,7 @@ Editor.prototype.draw = function(){
 		this.selected.draw(mouseX, mouseY);
 
 	//If holding an obstacle
-	if(this.heldObstacle){
+	if(this.heldObstacle && this.beganDrag){
 		this.heldObstacle.draw(mouseX, mouseY);
 	}
 	
@@ -125,45 +167,71 @@ Editor.prototype.keyPressed = function(){
 			this.selectedIndex = 0;
 		this.selected = this.obstacleList[this.selectedIndex];
 	}
+
+	//check delete key
+	if(key == 'Delete' && this.selectedObject != null){
+		deleteQueue.push(this.selectedObject);
+		this.selectedObject = null; 
+		this.editorUI.style.display = "none";
+	}
 }
 Editor.prototype.mousePressed = function(){
 
+	//clicking on a rotation point
+	if(this.rotationPointSelect){
+		if(level.population != null){
+			this.rotationPointSelect = false;
+			return;
+		}
+		this.selectedObject.rotationPoint.x = mouseX-cameraPosition.x;
+		this.selectedObject.rotationPoint.y = mouseY-cameraPosition.y;
+		this.rotationPointSelect = false;
+		this.rotateX.value = this.selectedObject.rotationPoint.x;
+		this.rotateY.value = this.selectedObject.rotationPoint.y*-1;
+		return;
+	}
+
+	let clickedonobject = false;
 	//If not currently holding an obstacle, try to pick one up
 	if(!this.heldObstacle){
 		//check obstacle click
 		let obstacle = pointIntersectObstacle(mouseX-cameraPosition.x, mouseY-cameraPosition.y); //returns the physics object
 		if(obstacle) {
-			this.heldObstacle = obstacle.ref; //get the reference
+			clickedonobject = true;
+			if(level.population == null)
+				this.heldObstacle = obstacle.ref; //get the reference
 			this.selectedObject = obstacle.ref;
+			this.previousSelectedObject = this.selectedObject;
 			this.editorUI.style.display = null; //show editor
-			this.scaleX.value = this.heldObstacle.scale.x;
-			this.scaleY.value = this.heldObstacle.scale.y;
-			this.posX.value = this.heldObstacle.position.x.toFixed(2);
-			this.posY.value = this.heldObstacle.position.y.toFixed(2);
-		}
-		//check spawn coord click
-		if(level.spawnCoordinate != null){
-			if(level.spawnCoordinate.pointInSpawn(mouseX-cameraPosition.x, mouseY-cameraPosition.y)){
-				this.heldObstacle = level.spawnCoordinate;
-				this.editorUI.style.display = "none";
-			}
+
+			this.resetUI();
 		}
 
-		//check target click
-		if(level.target != null){
-			if(level.target.pointInTarget(mouseX-cameraPosition.x, mouseY-cameraPosition.y)){
-				this.heldObstacle = level.target;
-				this.editorUI.style.display = "none";
+		if(level.population == null){
+			//check spawn coord click
+			if(level.spawnCoordinate != null){
+				if(level.spawnCoordinate.pointInSpawn(mouseX-cameraPosition.x, mouseY-cameraPosition.y)){
+					this.heldObstacle = level.spawnCoordinate;
+					this.editorUI.style.display = "none";
+				}
+			}
+
+			//check target click
+			if(level.target != null){
+				if(level.target.pointInTarget(mouseX-cameraPosition.x, mouseY-cameraPosition.y)){
+					this.heldObstacle = level.target;
+					this.editorUI.style.display = "none";
+				}
 			}
 		}
 	}
-	if(!this.heldObstacle){//If didn't click on anything, then reset
+	if(!clickedonobject){//If didn't click on anything, then reset
 		this.selectedObject = null; 
 		this.editorUI.style.display = "none";
 	}
 	//If hovering over the creation area and clicked (and not holding an obstacle), pick up a new obstacle
 	if(this.mouseHover && !this.heldObstacle){
-			this.holding = true;
+		this.holding = true;
 	}
 	
 }
@@ -174,22 +242,22 @@ Editor.prototype.mouseReleased = function(){
 		//if spawnpoint, try to drop
 		if(newObstacle == SpawnPoint){
 			let mx = mouseX-cameraPosition.x, my = mouseY-cameraPosition.y;
-			if(rectIntersectObstacle(mx-SpawnPoint.defaultRadius, my-SpawnPoint.defaultRadius,
-				2*SpawnPoint.defaultRadius, 2*SpawnPoint.defaultRadius) == null){
+			if(circleIntersectObstacle(mx, my, SpawnPoint.defaultRadius) == null){
 				level.spawnCoordinate = new SpawnPoint(mx, my);
 			}
 		}
 		//if target, try to drop
 		else if(newObstacle == Target){
 			let mx = mouseX-cameraPosition.x, my = mouseY-cameraPosition.y;
-			if(rectIntersectObstacle(mx-Target.defaultRadius, my-Target.defaultRadius, 
-									2*Target.defaultRadius, 2*Target.defaultRadius) == null){
+			if(circleIntersectObstacle(mx, my, Target.defaultRadius) == null){
 				level.target = new Target(mx, my);
 			}
 		}
 		else{
 			let obstacle = new newObstacle(mouseX-cameraPosition.x, mouseY-cameraPosition.y);
-			if(checkCollision(obstacle.physics)){
+			if(checkCollision(obstacle.physics) ||
+					(level.target != null && level.target.intersectsTarget(obstacle.physics)) ||
+					(level.spawnCoordinate != null && level.spawnCoordinate.intersectsSpawnPoint(obstacle.physics))){
 				obstacle.physics.deletePhysics();
 			}
 			else{
@@ -201,7 +269,7 @@ Editor.prototype.mouseReleased = function(){
 	this.holding = false;
 
 	
-	if(this.heldObstacle){
+	if(this.heldObstacle && this.beganDrag){
 		//If dropped over trash icon
 		if(this.mouseHoverTrash){
 			//If obstacle
@@ -218,28 +286,31 @@ Editor.prototype.mouseReleased = function(){
 				let oldPosition = createVector(this.heldObstacle.position.x, this.heldObstacle.position.y);
 				this.heldObstacle.position.x = mouseX-cameraPosition.x;
 				this.heldObstacle.position.y = mouseY-cameraPosition.y;
-				if(checkCollision(this.heldObstacle.physics)){
+
+				if(checkCollision(this.heldObstacle.physics) || 
+				(level.target != null && level.target.intersectsTarget(this.heldObstacle.physics)) ||
+				(level.spawnCoordinate != null && level.spawnCoordinate.intersectsSpawnPoint(this.heldObstacle.physics))){
 					this.heldObstacle.position.x = oldPosition.x;
 					this.heldObstacle.position.y = oldPosition.y;
 				}
-				else{
-					//update position editor
-					this.posX.value = this.heldObstacle.position.x.toFixed(2);
-					this.posY.value = this.heldObstacle.position.y.toFixed(2);
+				//set as start as well if no population
+				if(level.population == null){
+					this.heldObstacle.startPosition.x = this.heldObstacle.position.x;
+					this.heldObstacle.startPosition.y = this.heldObstacle.position.y;
 				}
+				this.posX.value = this.selectedObject.position.x.toFixed(2);
+				this.posY.value = (this.selectedObject.position.y*-1).toFixed(2);
 			}
 			else if(this.heldObstacle == level.spawnCoordinate){
 				let mx = mouseX-cameraPosition.x, my = mouseY-cameraPosition.y;
-				if(rectIntersectObstacle(mx-SpawnPoint.defaultRadius, my-SpawnPoint.defaultRadius,
-								 2*SpawnPoint.defaultRadius, 2*SpawnPoint.defaultRadius) == null){
-					level.spawnCoordinate.x = mx;
-					level.spawnCoordinate.y = my;
+				if(circleIntersectObstacle(mx, my, SpawnPoint.defaultRadius) == null){
+					level.spawnCoordinate.position.x = mx;
+					level.spawnCoordinate.position.y = my;
 				}
 			}
 			else if(this.heldObstacle == level.target){
 				let mx = mouseX-cameraPosition.x, my = mouseY-cameraPosition.y;
-				if(rectIntersectObstacle(mx-Target.defaultRadius, my-Target.defaultRadius, 
-										2*Target.defaultRadius, 2*Target.defaultRadius) == null){
+				if(circleIntersectObstacle(mx, my, Target.defaultRadius) == null){
 					level.target.position.x = mx;
 					level.target.position.y = my;
 				}
@@ -248,4 +319,9 @@ Editor.prototype.mouseReleased = function(){
 	}
 	
 	this.heldObstacle = null;
+	this.beganDrag = false;
+}
+Editor.prototype.mouseDragged = function(){
+	if(this.heldObstacle)
+		this.beganDrag = true;
 }

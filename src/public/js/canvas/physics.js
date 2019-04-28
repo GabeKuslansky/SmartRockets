@@ -18,18 +18,21 @@ function boundingBox(x, y, w, h){
 //	position: position of object
 //	isRocket: boolean of wheather object is a rockets
 //	ref:	reference to the object physicsObject is attatch to
+// 	isKinematic:	boolean to act with momentum
 //	callback:	callback function on collision
 // ref and callback are optional.
-function PhysicsObject(position, scale, isRocket, ref, callBack){
+function PhysicsObject(position, scale, isRocket, ref, isKinematic, callBack){
 	this.isRocket = isRocket;
 	this.colliders = [];
 	
 	this.position = position; // top left
 	this.scale = scale;
+	this.oldscale = createVector(scale.x, scale.y);
 	this.velocity = createVector();
 	this.acceleration = createVector();
 	
 	this.ref = ref;
+	this.isKinematic = isKinematic;
 	this.callBack = callBack;
 	
 	//add to list
@@ -57,6 +60,13 @@ PhysicsObject.prototype.rotate = function(angle){
 	//rotate colliders
 	for(let i = 0; i < this.colliders.length; i++){
 		this.colliders[i].rotate(radians);
+		this.updateBoundingBoxPoly(this.colliders[i].getBoundingBox());
+	}
+}
+
+PhysicsObject.prototype.updateBoundingBox = function(){
+	this.boundingBox = null;
+	for(let i = 0; i < this.colliders.length; i++){
 		this.updateBoundingBoxPoly(this.colliders[i].getBoundingBox());
 	}
 }
@@ -362,12 +372,13 @@ SpatialHash.prototype.getBucketsFromBox = function(bb){
 
 ///////////////////////////////////////////////////////////////////////////////
 //Update physics each frame
-function updatePhysics(){
+function updatePhysics(doResponse){
 	
 	spatialHashObjects = new SpatialHash(120);
 	
 	//ObstacleHash and Movement
 	for(let i = 0; i < physicsObjects.length; i++){
+		if(doResponse){
 		//physics stuff
 		physicsObjects[i].velocity.add(physicsObjects[i].acceleration);
 		physicsObjects[i].acceleration.mult(0);
@@ -375,7 +386,14 @@ function updatePhysics(){
 		//Handle position
 		physicsObjects[i].position.x += physicsObjects[i].velocity.x;
 		physicsObjects[i].position.y += physicsObjects[i].velocity.y;
+		}
 		
+		//check if bounding box needs updating
+		if(physicsObjects[i].scale.x != physicsObjects[i].oldscale.x || physicsObjects[i].scale.y != physicsObjects[i].oldscale.y){
+			physicsObjects[i].updateBoundingBox();
+			physicsObjects[i].oldscale.x = physicsObjects[i].scale.x;
+			physicsObjects[i].oldscale.y = physicsObjects[i].scale.y;
+		}
 		//Add to hash map
 		spatialHashObjects.add(physicsObjects[i]);
 	}
@@ -383,7 +401,7 @@ function updatePhysics(){
 	///////////////////////
 	//Collision Detection and Resolution
 	//Object collision detection
-	if(!gamePaused){
+	if(doResponse){
 		for(let i = 0; i < physicsObjects.length; i++){
 			
 			//Check Collision
@@ -454,9 +472,24 @@ function checkCollisionAndRespond(a){
 					collided = checkColliderCollision(a.colliders[colliderA], b.colliders[colliderB], response)
 					if(collided == true){ 
 						//Handle collision
-						a.position.x -= response.overlapV.x;
-						a.position.y -= response.overlapV.y;
-						a.velocity.sub(createVector(response.overlapV.x, response.overlapV.y));
+
+						if(a.velocity.x != 0 && a.velocity.y != 0){
+							//a's fault
+							a.position.x -= response.overlapV.x;
+							a.position.y -= response.overlapV.y;
+						}
+						else if(!a.isRocket){ //else when a is not a rocket, move b
+							//bs fault
+							b.position.x += response.overlapV.x;
+							b.position.y += response.overlapV.y;
+							if(b.isKinematic)
+								b.acceleration.add(createVector(response.overlapV.x, response.overlapV.y));
+						}
+						if(a.isKinematic)
+								a.acceleration.sub(createVector(response.overlapV.x, response.overlapV.y));
+						if(b.isKinematic && !a.isRocket)
+								b.acceleration.add(createVector(response.overlapV.x, response.overlapV.y));
+
 						collided = false;
 						therewasacollsion = true;
 					}
@@ -469,6 +502,25 @@ function checkCollisionAndRespond(a){
 		a.onCollision();
 	return therewasacollsion;	
 		
+}
+function circleIntersectObstacle(x_, y_, r){
+	//get buckets
+	let buckets = spatialHashObjects.getBucketsFromBox({x:x_-r, y:y_-r, w:r*2, h:r*2});
+	let circle = new SAT.Circle(new SAT.Vector(x_, y_), r);
+	let collided = false;
+
+	for(let i = 0; i < buckets.length; i++){
+		let obstacle = buckets[i];
+		//Check colliders of obstacle
+		for(let collider = 0; collider < obstacle.colliders.length; collider++){					
+			//Check collider against rect
+			collided = checkCircleCollision(circle, obstacle.colliders[collider])
+			if(collided == true)
+				return obstacle;
+		}
+	}
+	
+	return null;
 }
 //Top left coords
 function rectIntersectObstacle(x_, y_, w_, h_){
@@ -529,6 +581,15 @@ function checkPointCollision(point, collider){
 	else
 		throw "No Polygon Type Detected!";
 	
+}
+///////////////////////////////
+function checkCircleCollision(circle, collider){
+	if(collider.type == ColliderTypes.POLY)
+		return SAT.testCirclePolygon(circle, collider.getSATPolygon(), new SAT.Response());
+	else if(collider.type == ColliderTypes.CIRCLE)
+		return SAT.testCircleCircle(circle, collider.getSATCircle(), new SAT.Response());
+	else
+		throw "No Polygon Type Detected!";
 }
 /////////////////////////////
 function checkColliderCollision(colliderA, colliderB, response){

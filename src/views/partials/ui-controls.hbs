@@ -4,7 +4,7 @@
 
             {{!-- Population Slider --}}
             <label for="populationSlider">Population Size: <span id='populationValue'>50</span></label>
-            <input type="range" class="custom-range" value='50' min="1" max="200" step="1" id="populationSlider">
+            <input type="range" class="custom-range" value='50' min="2" max="200" step="1" id="populationSlider">
 
             {{!-- Mutation Rate --}}
             <label for="mutationSlider">Mutation Rate: <span id='mutationValue'>0.1</span></label>
@@ -16,16 +16,54 @@
 
             {{!-- Camera Follow --}}
             <button id='setFollowBtn' class='btn btn-primary mt' onclick='setFollow()'>Follow</button>
+
+            <!-- Die on Impact -->
+            <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="dieOnImpact" onclick="dieOnImpact()">
+            <label class="custom-control-label" for="dieOnImpact">Die On Impact</label>
+            </div>
         </div>
         
         <div class="col-sm">
+            {{!-- Fitness Dropdown --}}
             <span>Fitness Algorithm</span>
             <div class='row'>
-                <select id='fitnessSelect' class='browser-default custom-select'>
-                    <option selected hidden disabled>Please Select</option>
-                    <option>Distance</option>
-                    <option>Distance & Time</option>
-                </select>
+                <div class="btn-group">
+                    <button class="btn btn-primary mt dropdown-toggle" id='fitnessSelect' type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Distance Priority
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class ="dropdown-item" onclick='fitnessSelectDistance()'>Distance Prioirty</div>
+                        <div class="dropdown-item" onclick='fitnessSelectDistanceTime()'>Distance & Time</div>
+                        <div class="dropdown-item" onclick='fitnessSelectDistanceTimePrio()'>Time Priority</div>
+                    </div>
+                </div>
+            </div>
+            {{!-- Selection Dropdown --}}
+            <span>Selection Algorithm</span>
+            <div class='row'>
+                <div class="btn-group">
+                    <button class="btn btn-primary mt dropdown-toggle" id='selectionSelect' type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Natural
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class = "dropdown-item" onclick="selectionSelectNatural()">Natural</div>
+                        <div class = "dropdown-item" onclick="selectionSelectBest()">Best</div>
+                    </div>
+                </div>
+            </div>
+            {{!-- Crossover Dropdown --}}
+            <span>Crossover Algorithm</span>
+            <div class='row'>
+                <div class="btn-group">
+                    <button class="btn btn-primary mt dropdown-toggle" id='crossoverSelect' type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Midpoint
+                    </button>
+                    <div class="dropdown-menu">
+                        <div class = "dropdown-item" onclick="crossoverSelectMidpoint()">Midpoint</div>
+                        <div class = "dropdown-item" onclick="crossoverSelectRandom()">Random</div>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <button id='togglePauseBtn' class='btn btn-success mt-3' onclick='togglePause()'><span id='pauseState'>Play</span> <i class='fas fa-play'></i></button>
@@ -39,32 +77,72 @@
             </div>
             <div class="row">
                 {{!-- Create Population --}}
-                <button id='setFollowBtn' class='btn btn-primary mt' onclick='createPopulation()'>Create Population</button>
+                <button id='setFollowBtn' class='btn btn-primary mt' onclick='createPopulation()'>Begin Simulation</button>
                 {{!-- Kill Population --}}
-                <button id='setFollowBtn' class='btn btn-primary mt' onclick='killPopulation()'>Kill Population</button>
+                <button id='setFollowBtn' class='btn btn-primary mt' onclick='killPopulation()'>Kill Simulation</button>
             </div>
-            <div class = "row" id="editorUI">
-                <div class = "row">
-                    {{!-- Position X --}}
-                    <div class="col-4">
-                    Position X<input class="form-control" type="number" id="positionXForm">
+            {{#if create}}
+                <div class = "row" id="editorUI">
+                    <div class = "row">
+                        {{!-- Position X --}}
+                        <div class="col-4">
+                        Position X<input class="form-control" type="number" id="positionXForm">
+                        </div>
+                        {{!-- Position Y --}}
+                        <div class="col-4">
+                        Position Y<input class="form-control" type="number" id="positionYForm">
+                        </div>
                     </div>
-                    {{!-- Position Y --}}
-                    <div class="col-4">
-                    Position Y<input class="form-control" type="number" id="positionYForm">
+                    <div class = "row">
+                        {{!-- Scale X --}}
+                        <div class="col-4">
+                        Scale X or Radius<input class="form-control" type="number" id="scaleXForm">
+                        </div>
+                        {{!-- Scale Y --}}
+                        <div class="col-4">
+                        Scale Y<input class="form-control" type="number" id="scaleYForm">
+                        </div>
+                    </div>
+                    <div class = "row">
+                        {{!-- Start Force X --}}
+                        <div class="col-4">
+                        Start Force X<input class="form-control" type="number" id="forceXForm">
+                        </div>
+                        {{!-- Start Force X --}}
+                        <div class="col-4">
+                        Start Force Y<input class="form-control" type="number" id="forceYForm">
+                        </div>
+                    </div>
+                    <div class = "row">
+                        {{!-- Rotation Point X --}}
+                        <div class="col-4">
+                        Rotation Point X<input class="form-control" type="number" id="rotateXForm">
+                        </div>
+                        {{!-- Rotation Point Y --}}
+                        <div class="col-4">
+                        Rotation Point Y<input class="form-control" type="number" id="rotateYForm">
+                        </div>
+                    </div>
+                    <div class = "row">
+                        {{!-- Rotation Interval --}}
+                        <div class="col-4">
+                        Rotation Interval<input class="form-control" type="number" id="intervalForm">
+                        </div>
+                        <div class="col-4">
+                        Select Rotation<button type="button" class="btn btn-primary btn-circle" onclick = 'selectRotation()'><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class = "row">
+                        {{!-- Is Kinematic --}}
+                        <div class="col-4">
+                            <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="isKinematic" onclick="toggleKinematic()">
+                            <label class="custom-control-label" for="isKinematic">Is Kinematic</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class = "row">
-                    {{!-- Scale X --}}
-                    <div class="col-4">
-                    Scale X<input class="form-control" type="number" id="scaleXForm">
-                    </div>
-                    {{!-- Scale Y --}}
-                    <div class="col-4">
-                    Scale Y<input class="form-control" type="number" id="scaleYForm">
-                    </div>
-                </div>
-            </div>
+            {{/if}}
         </div>
     </div>
 </div>

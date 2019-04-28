@@ -43,7 +43,6 @@ function setup() {
 		level.initLevel();
 		editor = new Editor(width, height);
 		canvas.mousePressed(mousePressedCallback);
-		canvas.mouseReleased(mouseReleasedCallback);
 	}
 	cameraPosition = createVector(0, 0);
 	cameraTarget = createVector(0, 0);
@@ -111,16 +110,19 @@ function draw() {
 		}
 
 		//Update Physics
-		updatePhysics();
+		updatePhysics(!gamePaused && level.population != null);
 
-		//Render
-		if(createLevel)
-			editor.draw();
 		//camera pos
 		cameraPosition.x = lerp(cameraPosition.x, cameraTarget.x, lerpDist);
 		cameraPosition.y = lerp(cameraPosition.y, cameraTarget.y, lerpDist);
+		push();
 		translate(cameraPosition.x, cameraPosition.y);
 		level.draw();
+		pop();
+
+		//Render Editor
+		if(createLevel)
+		editor.draw();
 		
 
 	}
@@ -135,7 +137,12 @@ function draw() {
 		deleteQueue[i].deleteObstacle();
 	}
 	deleteQueue = [];
-}	
+}
+
+function mouseDragged(){
+	if(createLevel)
+		editor.mouseDragged();
+}
 
 function keyPressed(){
 	if(createLevel)
@@ -146,8 +153,9 @@ function mousePressedCallback(){
 	editor.mousePressed();
 }
 
-function mouseReleasedCallback(){
-	editor.mouseReleased();
+function mouseReleased(){
+	if(createLevel)
+		editor.mouseReleased();
 }
 
 function organizeCanvasForDOM() {
