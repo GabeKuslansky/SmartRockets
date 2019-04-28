@@ -18,9 +18,10 @@ function boundingBox(x, y, w, h){
 //	position: position of object
 //	isRocket: boolean of wheather object is a rockets
 //	ref:	reference to the object physicsObject is attatch to
+// 	isKinematic:	boolean to act with momentum
 //	callback:	callback function on collision
 // ref and callback are optional.
-function PhysicsObject(position, scale, isRocket, ref, callBack){
+function PhysicsObject(position, scale, isRocket, ref, isKinematic, callBack){
 	this.isRocket = isRocket;
 	this.colliders = [];
 	
@@ -31,6 +32,7 @@ function PhysicsObject(position, scale, isRocket, ref, callBack){
 	this.acceleration = createVector();
 	
 	this.ref = ref;
+	this.isKinematic = isKinematic;
 	this.callBack = callBack;
 	
 	//add to list
@@ -470,11 +472,24 @@ function checkCollisionAndRespond(a){
 					collided = checkColliderCollision(a.colliders[colliderA], b.colliders[colliderB], response)
 					if(collided == true){ 
 						//Handle collision
-						a.position.x -= response.overlapV.x;
-						a.position.y -= response.overlapV.y;
-						a.acceleration.sub(createVector(response.overlapV.x, response.overlapV.y));
-						if(!a.isRocket)
-							b.acceleration.add(createVector(response.overlapV.x, response.overlapV.y));
+
+						if(a.velocity.x != 0 && a.velocity.y != 0){
+							//a's fault
+							a.position.x -= response.overlapV.x;
+							a.position.y -= response.overlapV.y;
+						}
+						else if(!a.isRocket){ //else when a is not a rocket, move b
+							//bs fault
+							b.position.x += response.overlapV.x;
+							b.position.y += response.overlapV.y;
+							if(b.isKinematic)
+								b.acceleration.add(createVector(response.overlapV.x, response.overlapV.y));
+						}
+						if(a.isKinematic)
+								a.acceleration.sub(createVector(response.overlapV.x, response.overlapV.y));
+						if(b.isKinematic && !a.isRocket)
+								b.acceleration.add(createVector(response.overlapV.x, response.overlapV.y));
+
 						collided = false;
 						therewasacollsion = true;
 					}

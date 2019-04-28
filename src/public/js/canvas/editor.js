@@ -36,7 +36,7 @@ function Editor(width, height){
 	this.previousSelectedObject = null;
 
 
-	this.obstacleList = [Target, SpawnPoint, Rectangle, Circle, Polygon];
+	this.obstacleList = [Target, SpawnPoint, Rectangle, Circle, Polygon, BlackHole];
 	this.selectedIndex = 0;
 
 	this.scaleX = document.getElementById("scaleXForm");
@@ -52,6 +52,8 @@ function Editor(width, height){
 	this.rotateY = document.getElementById("rotateYForm");
 
 	this.interval = document.getElementById("intervalForm");
+
+	this.kinematic = document.getElementById("isKinematic");
 
 	this.editorUI = document.getElementById("editorUI");
 	this.editorUI.style.display = "none"
@@ -79,6 +81,8 @@ Editor.prototype.resetUI = function(){
 		this.rotateY.value = this.selectedObject.rotationPoint.y*-1;
 
 		this.interval.value = this.selectedObject.step;
+
+		this.kinematic.checked = this.selectedObject.physics.isKinematic;
 	}
 }
 Editor.prototype.update = function(){
