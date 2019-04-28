@@ -133,6 +133,7 @@ Level.prototype.initLevel = function(){
     //Create New Level
     if(!createLevel){
         this.deserialize(levelStructure);
+        this.createPopulation();
     }
     
 
