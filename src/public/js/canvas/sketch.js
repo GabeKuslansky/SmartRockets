@@ -8,6 +8,7 @@ let clipRocket;
 let clipSatellite;
 let clipAsteroid;
 let clipSign;
+let clipSattelite2
 
 const width = 800, height = 800;
 const rocketFrameRate = 60;
@@ -29,11 +30,13 @@ function preload(){
 	clipMars = loadImage('/public/images/assets/mars.png');
 	clipRocket = loadImage('/public/images/assets/rockets.png');
 	clipRocket.resize(25,25);
-	clipSatellite = loadImage('/public/images/assets/sattelite.png');
-	clipSatellite.resize(100,100);
-	clipAsteroid = loadImage('/public/images/assets/asteroidFixed.png');
+	clipSatellite = loadImage('/public/images/assets/satteliteFixed.png');
+	clipSatellite.resize(120,80);
+	clipAsteroid = loadImage('/public/images/assets/asteroidBetter.png');
 	clipAsteroid.resize(100,100);
 	clipSign = loadImage('/public/images/assets/ufoSign.png');
+	clipSattelite2= loadImage('/public/images/assets/image(2).png');
+	clipSattelite2.resize(100,60)
 }
 
 function setup() {
