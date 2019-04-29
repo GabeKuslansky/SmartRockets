@@ -15,7 +15,7 @@
                         <h4 class='card-text'>
                                 <span class='font-weight-bold'><img class='img-fluid rounded-circle mr-2' src="{{this.author.avatar}}"/> {{this.author.name}}</span> <i class='fa fa-user'></i>
                                 {{#if this.currentUserOwnsLevel}}
-                                <span class='mt-auto float-right ml-2'><i class='fa fa-edit'></i></span>
+                                {{!--<span class='mt-auto float-right ml-2'><i class='fa fa-edit'></i></span>--}}
                                 <a href='/api/level/delete/{{this._id}}'><span class='mt-auto float-right ml-2'><i class='fa fa-trash'></i></span></a>
                                 {{/if}}
                                 <span class='float-right card-text'>{{this.metadata.views}} <i class='fa fa-eye'></i></span>
