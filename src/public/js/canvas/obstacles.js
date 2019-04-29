@@ -35,16 +35,18 @@ Rectangle.prototype.draw = function(x, y){
 		rotate(radians(this.rotation));
 		translate(-this.position.x, -this.position.y);
 		imageMode(CENTER);
-		image(clipSatellite, this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
-		//rect(this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
+		image(clipSatellite, this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y*1.5);
+		
+		rect(this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
 	}
 	else{
 		translate(x, y);
 		rotate(radians(this.rotation));
 		translate(-x, -y);
 		imageMode(CENTER);
-		image(clipSatellite, x, y, this.w*this.scale.x, this.h*this.scale.y);
-		//rect(x, y, this.w*this.scale.x, this.h*this.scale.y);	
+		image(clipSatellite, x, y, this.w*this.scale.x, this.h*this.scale.y*1.5);
+		
+		rect(x, y, this.w*this.scale.x, this.h*this.scale.y);	
 	}
 	pop();
 }
@@ -86,26 +88,27 @@ Rectangle.prototype.reset = function(){
 	this.physics.acceleration.y = 0;
 	this.rotation = 0;
 }
-Rectangle.defaultDimensions = {w:80, h:80};
+Rectangle.defaultDimensions = {w:80, h:60};
 
 //Where xy is the cneter
 Rectangle.drawToGraphics = function(pg, x, y){
 	pg.push();
-	//pg.fill(255, 255, 255, 100);
+	pg.fill(255, 255, 255, 100);
 	pg.imageMode(CENTER);
-	//pg.rectMode(CENTER);
-	pg.image(clipSatellite, x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
+	pg.rectMode(CENTER);
+	pg.image(clipSatellite, x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h*1.5);
 	
-	//pg.rect(x, y, Rectangle.defaultDimensions.w/1.5, Rectangle.defaultDimensions.h/1.5);
+	pg.rect(x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
 	pg.pop();
 }
 //Draw with default values
 Rectangle.draw = function(x, y){
 	push();
 	imageMode(CENTER);
-	image(clipSatellite, x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
-	//rectMode(CENTER);
-	//rect(x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
+	image(clipSatellite, x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h*1.5);
+	
+	rectMode(CENTER);
+	rect(x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
 	pop();
 }
 
@@ -203,7 +206,7 @@ Polygon.defaultPoints = [new SAT.Vector(0, -70), new SAT.Vector(70, 70), new SAT
 //Where xy is the center
 Polygon.drawToGraphics = function(pg, x, y){
 	pg.push();
-	//pg.fill(255, 255, 255, 100);
+	pg.fill(255, 255, 255, 100);
 
 	pg.beginShape();
 	for(let i = 0; i < Polygon.defaultPoints.length; i++)
@@ -256,8 +259,9 @@ Circle.prototype.draw = function(x, y){
 		rotate(radians(this.rotation));
 		translate(-this.position.x, -this.position.y);
 		imageMode(CENTER);
-		image(clipAsteroid, this.position.x, this.position.y, this.r*this.scale.x, this.r*this.scale.x);
-		//circle(this.position.x, this.position.y, this.r*this.scale.x);
+		image(clipAsteroid, this.position.x, this.position.y, this.r*this.scale.x*2.7, this.r*this.scale.y*2.7);
+		fill(255,255,255,100);
+		circle(this.position.x, this.position.y, this.r*this.scale.x);
 		
 	}
 	else{
@@ -265,8 +269,9 @@ Circle.prototype.draw = function(x, y){
 		rotate(radians(this.rotation));
 		translate(-x, -y);
 		imageMode(CENTER);
-		image(clipAsteroid, x, y, this.r*this.scale.x, this.r*this.scale.x);
-		//circle(x, y, this.r*this.scale.x);
+		image(clipAsteroid, x, y, this.r*this.scale.x*2.7, this.r*this.scale.y*2.7);
+		fill(255,255,255,100);
+		circle(x, y, this.r*this.scale.x);
 		
 	}
 	pop();
@@ -309,24 +314,24 @@ Circle.prototype.reset = function(){
 	this.physics.acceleration.y = 0;
 	this.rotation = 0;
 }
-Circle.defaultRadius = 80;
+Circle.defaultRadius = 40;
 
 //Where xy is the cneter
 Circle.drawToGraphics = function(pg, x, y){
 	pg.push();
-	//pg.fill(255, 255, 255, 100);
+	pg.fill(255, 255, 255, 100);
 	pg.imageMode(CENTER);
-	pg.image(clipAsteroid, x, y, Circle.defaultRadius, Circle.defaultRadius);
-	//pg.rectMode(CENTER);
-	//pg.circle(x, y, Circle.defaultRadius/1.2);
+	pg.image(clipAsteroid, x, y, Circle.defaultRadius*2.7, Circle.defaultRadius*2.7);
+	pg.rectMode(CENTER);
+	pg.circle(x, y, Circle.defaultRadius);
 	pg.pop();
 }
 //Draw with default values
 Circle.draw = function(x, y){
 	push();
 	imageMode(CENTER);
-	image(clipAsteroid, x, y, Circle.defaultRadius, Circle.defaultRadius);
-	//circle(x, y, Circle.defaultRadius);
+	image(clipAsteroid, x, y, Circle.defaultRadius*2.7, Circle.defaultRadius*2.7);
+	circle(x, y, Circle.defaultRadius);
 	pop();
 }
 
@@ -378,11 +383,11 @@ BlackHole.prototype.draw = function(x, y){
 		translate(-this.position.x, -this.position.y);
 		push();
 		imageMode(CENTER);
-		image(clipBlack, this.position.x, this.position.y, this.outerR*this.scale.x,this.outerR*scale.y);
-		//fill(0, 0, 0, 100);
-		//circle(this.position.x, this.position.y, this.outerR*this.scale.x);
-		//fill(0, 0, 0, 200);
-		//circle(this.position.x, this.position.y, this.innerR);
+		image(clipBlack, this.position.x, this.position.y, this.outerR*this.scale.x*2, this.outerR*scale.y*2);
+		fill(0, 0, 0, 100);
+		circle(this.position.x, this.position.y, this.outerR*this.scale.x);
+		fill(0, 0, 0, 200);
+		circle(this.position.x, this.position.y, this.innerR);
 		pop();
 	}
 	else{
@@ -391,11 +396,11 @@ BlackHole.prototype.draw = function(x, y){
 		translate(-x, -y);
 		push();
 		imageMode(CENTER);
-		image(clipBlack, this.position.x, this.position.y, this.outerR*this.scale.x, this.outerR*scale.y);
-		//fill(0, 0, 0, 100);
-		//circle(x, y, this.outerR*this.scale.x);
-		//fill(0, 0, 0, 200);
-		//circle(x, y, this.innerR);
+		image(clipBlack, this.position.x, this.position.y, this.outerR*this.scale.x*2, this.outerR*scale.y*2);
+		fill(0, 0, 0, 100);
+		circle(x, y, this.outerR*this.scale.x);
+		fill(0, 0, 0, 200);
+		circle(x, y, this.innerR);
 		pop();
 
 	}
@@ -439,29 +444,29 @@ BlackHole.prototype.reset = function(){
 	this.physics.acceleration.y = 0;
 	this.rotation = 0;
 }
-BlackHole.defaultInnerRadius = 15;
-BlackHole.defaultOuterRadius = 70;
+BlackHole.defaultInnerRadius = 10;
+BlackHole.defaultOuterRadius = 60;
 BlackHole.force = 1.5;
 
 //Where xy is the cneter
 BlackHole.drawToGraphics = function(pg, x, y){
 	pg.push();
 	pg.imageMode(CENTER);
-	pg.image(clipBlack, x, y, BlackHole.defaultOuterRadius, BlackHole.defaultOuterRadius);
-	//pg.fill(0, 0, 0, 100);
-	//pg.circle(x, y, BlackHole.defaultOuterRadius/1.2);
-	//pg.fill(0, 0, 0, 200);
-	//pg.circle(x, y, BlackHole.defaultInnerRadius/1.2);
+	pg.image(clipBlack, x, y, BlackHole.defaultOuterRadius*2, BlackHole.defaultOuterRadius*2);
+	pg.fill(0, 0, 0, 100);
+	pg.circle(x, y, BlackHole.defaultOuterRadius);
+	pg.fill(0, 0, 0, 200);
+	pg.circle(x, y, BlackHole.defaultInnerRadius);
 	pg.pop();
 }
 //Draw with default values
 BlackHole.draw = function(x, y){
 	push();
 	imageMode(CENTER);
-	image(clipBlack, x, y, BlackHole.defaultOuterRadius, BlackHole.defaultOuterRadius);
-	//fill(0, 0, 0, 100);
-	//circle(x, y, BlackHole.defaultOuterRadius);
-	//fill(0, 0, 0, 200);
-	//circle(x, y, BlackHole.defaultInnerRadius);
+	image(clipBlack, x, y, BlackHole.defaultOuterRadius*2, BlackHole.defaultOuterRadius*2);
+	fill(0, 0, 0, 100);
+	circle(x, y, BlackHole.defaultOuterRadius);
+	fill(0, 0, 0, 200);
+	circle(x, y, BlackHole.defaultInnerRadius);
 	pop();
 }

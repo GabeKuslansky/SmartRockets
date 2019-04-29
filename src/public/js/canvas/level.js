@@ -14,17 +14,19 @@ Target.prototype.draw = function(x, y){
     if(!x){
         push();
         imageMode(CENTER);
-        image(clipMars, this.position.x, this.position.y, this.radius, this.radius);
-        //fill(200, 0, 0);
-        //circle(this.position.x, this.position.y, this.radius);
+        image(clipMars, this.position.x, this.position.y, this.radius*2, this.radius*2);
+        
+        fill(200, 0, 0, 100);
+        circle(this.position.x, this.position.y, this.radius);
         pop();
     }
     else{
         push();
         imageMode(CENTER);
-        image(clipMars, x, y, this.radius, this.radius);
-        //fill(200, 0, 0);
-        //circle(x, y, this.radius);
+        image(clipMars, x, y, this.radius*2, this.radius*2);
+        
+        fill(200, 0, 0, 100);
+        circle(x, y, this.radius);
         pop();
     }
 }
@@ -47,23 +49,25 @@ Target.prototype.intersectsTarget = function(physobj){
 Target.prototype.deleteObstacle = function(){
     level.target = null;
 }
-Target.defaultRadius = 80;
+Target.defaultRadius = 40;
 //Where xy is the cneter
 Target.drawToGraphics = function(pg, x, y){
     pg.push();
     pg.imageMode(CENTER);
-    pg.image(clipMars, x, y, Target.defaultRadius, Target.defaultRadius);
-	//pg.fill(200, 0, 100);
-	//pg.circle(x, y, Target.defaultRadius);
+    pg.image(clipMars, x, y, Target.defaultRadius*2, Target.defaultRadius*2);
+    
+    pg.fill(200, 0, 100, 100);
+	pg.circle(x, y, Target.defaultRadius);
 	pg.pop();
 }
 //Draw with default values
 Target.draw = function(x, y){
     push();
     imageMode(CENTER);
-    image(clipMars, x, y, Target.defaultRadius, Target.defaultRadius);
-    //fill(200, 0, 0);
-	//circle(x, y, Target.defaultRadius);
+    image(clipMars, x, y, Target.defaultRadius*2, Target.defaultRadius*2);
+    
+    fill(200, 0, 0, 100);
+	circle(x, y, Target.defaultRadius);
 	pop();
 }
 
@@ -74,18 +78,18 @@ SpawnPoint.prototype.draw = function(x, y){
     if(!x){
         push();
         imageMode(CENTER);
-        image(clipEarth, this.x, this.y, SpawnPoint.defaultRadius, SpawnPoint.defaultRadius);
-        //fill(255, 255, 255, 100);
+        image(clipEarth, this.x, this.y, SpawnPoint.defaultRadius*2, SpawnPoint.defaultRadius*2);
+        fill(255, 255, 255, 100);
 
-        //circle(this.x, this.y, SpawnPoint.defaultRadius);
+        circle(this.x, this.y, SpawnPoint.defaultRadius);
         pop(); 
     }
     else{
         push();
         imageMode(CENTER);
-        image(clipEarth, x, y, SpawnPoint.defaultRadius, SpawnPoint.defaultRadius);
-        //fill(255, 255, 255, 100);
-        //circle(x, y, SpawnPoint.defaultRadius);
+        image(clipEarth, x, y, SpawnPoint.defaultRadius*2, SpawnPoint.defaultRadius*2);
+        fill(255, 255, 255, 100);
+        circle(x, y, SpawnPoint.defaultRadius);
         pop();
     }
 }
@@ -109,23 +113,23 @@ SpawnPoint.prototype.intersectsSpawnPoint = function(physobj){
     }
     return false;
 }
-SpawnPoint.defaultRadius = 2;
-//Where xy is the cneter
+SpawnPoint.defaultRadius = 40;
+//Where xy is the center
 SpawnPoint.drawToGraphics = function(pg, x, y){
 	pg.push();
     pg.imageMode(CENTER);
-    pg.image(clipEarth, x, y, SpawnPoint.defaultRadius, SpawnPoint.defaultRadius);
-    //pg.fill(255, 255, 255, 100);
-	//pg.circle(x, y, 2);
+    pg.image(clipEarth, x, y, SpawnPoint.defaultRadius*2, SpawnPoint.defaultRadius*2);
+    pg.fill(255, 255, 255, 100);
+	pg.circle(x, y, SpawnPoint.defaultRadius);
 	pg.pop();
 }
 //Draw with default values
 SpawnPoint.draw = function(x, y){
     push();
     imageMode(CENTER);
-    image(clipEarth, x, y, SpawnPoint.defaultRadius, SpawnPoint.defaultRadius);
-    //fill(255, 255, 255, 100);
-	//circle(x, y, SpawnPoint.defaultRadius);
+    image(clipEarth, x, y, SpawnPoint.defaultRadius*2, SpawnPoint.defaultRadius*2);
+    fill(255, 255, 255, 100);
+    circle(x, y, SpawnPoint.defaultRadius);
 	pop();
 }
 

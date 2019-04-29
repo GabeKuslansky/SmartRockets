@@ -30,7 +30,7 @@ function preload(){
 	clipRocket = loadImage('/public/images/assets/rockets.png');
 	clipRocket.resize(25,25);
 	clipSatellite = loadImage('/public/images/assets/sattelite.png');
-	clipSatellite.resize(500,100);
+	clipSatellite.resize(100,100);
 	clipAsteroid = loadImage('/public/images/assets/asteroidFixed.png');
 	clipAsteroid.resize(100,100);
 	clipSign = loadImage('/public/images/assets/ufoSign.png');
