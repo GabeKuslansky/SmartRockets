@@ -85,7 +85,7 @@ Rocket.prototype.update = function(){
 }
 
 Rocket.prototype.isTouchingTarget = function() {
-return dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y) <= this.target.radius;
+return dist(this.position.x, this.position.y, level.target.position.x, level.target.position.y) <= level.target.radius;
 }
 
 //Collided
@@ -130,11 +130,11 @@ Rocket.prototype.calcFitness = function()
 //Delete Rocket
 Rocket.prototype.deleteRocket = function()
 {
-	if (this.isTouchingTarget()) {
+	/*if (this.isTouchingTarget()) {
 		this.onTargetCollision();
 	} else {
 		this.onObstacleDeathCollision();
-	}
+	}*/
 
 	//Delete physics object if not deleted
 	if(!this.deleted){

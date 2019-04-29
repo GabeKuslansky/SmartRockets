@@ -190,14 +190,14 @@ Polygon.prototype.reset = function(){
 	this.physics.acceleration.y = 0;
 	this.rotation = 0;
 }
-Polygon.defaultPoints = [new SAT.Vector(0, -70), new SAT.Vector(70, 70), new SAT.Vector(-70, 70)];
+Polygon.defaultPoints = [new SAT.Vector(0, -40), new SAT.Vector(40, 40), new SAT.Vector(-40, 40)];
 //Where xy is the cneter
 Polygon.drawToGraphics = function(pg, x, y){
 	pg.push();
 	pg.fill(255, 255, 255, 100);
 	pg.beginShape();
 	for(let i = 0; i < Polygon.defaultPoints.length; i++)
-		pg.vertex(Polygon.defaultPoints[i].x/3 + x, Polygon.defaultPoints[i].y/3 + y);
+		pg.vertex(Polygon.defaultPoints[i].x/1.5 + x, Polygon.defaultPoints[i].y/1.5 + y);
 	pg.endShape(CLOSE);
 	pg.pop();
 }
