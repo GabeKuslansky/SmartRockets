@@ -1,0 +1,8 @@
+{
+    "frontURL": "http://gabek.dev/auth/google/callback",
+    "google": {
+        "clientId": "818301761330-2gufmt22euh2c19op8lmmpqg1dcq6nab.apps.googleusercontent.com",
+        "clientSecret": "nbqCu9YW8q7SmQucd7Wed85G"
+    },
+    "sessionSecret": [ "GeniusMissles" ]
+}
