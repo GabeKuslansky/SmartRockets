@@ -270,10 +270,10 @@ Polygon2.prototype.draw = function(x, y){
 		translate(-this.position.x, -this.position.y);
 		fill(0,0,0,20);
 		strokeWeight(0);
-		beginShape();
+		/*beginShape();
 		for(let i = 0; i < this.points.length; i++)
 			vertex(this.points[i].x*this.scale.x + this.position.x, this.points[i].y*this.scale.y + this.position.y);
-		endShape(CLOSE);
+		endShape(CLOSE);*/
 		imageMode(CENTER);
 		image(clipSattelite2, this.position.x, this.position.y, 35*2*this.scale.x, 35*2*this.scale.y);
 	}
@@ -283,10 +283,10 @@ Polygon2.prototype.draw = function(x, y){
 		translate(-x, -y);
 		fill(0,0,0,20);
 		strokeWeight(0);
-		beginShape();
+		/*beginShape();
 		for(let i = 0; i < this.points.length; i++)
 			vertex(this.points[i].x*this.scale.x + x, this.points[i].y*this.scale.y + y);
-		endShape(CLOSE);
+		endShape(CLOSE);*/
 		imageMode(CENTER);
 		image(clipSattelite2, x, y, 35*2*this.scale.x, 35*2*this.scale.y);
 	}
@@ -336,10 +336,10 @@ Polygon2.drawToGraphics = function(pg, x, y){
 	pg.push();
 	pg.fill(0,0,0,20);
 	pg.strokeWeight(0);
-	pg.beginShape();
+	/*pg.beginShape();
 	for(let i = 0; i < Polygon2.defaultPoints.length; i++)
 		pg.vertex(Polygon2.defaultPoints[i].x + x, Polygon2.defaultPoints[i].y + y);
-	pg.endShape(CLOSE);
+	pg.endShape(CLOSE);*/
 	pg.imageMode(CENTER);
 	pg.image(clipSattelite2, x, y, 35*2, 35*2);
 	pg.pop();
@@ -349,10 +349,10 @@ Polygon2.draw = function(x, y){
 	push();
 	fill(0,0,0,20);
 	strokeWeight(0);
-	beginShape();
+	/*beginShape();
 	for(let i = 0; i <Polygon2.defaultPoints.length; i++)
 		vertex(Polygon2.defaultPoints[i].x + x, Polygon2.defaultPoints[i].y + y);
-	endShape(CLOSE);
+	endShape(CLOSE);*/
 	imageMode(CENTER);
 	image(clipSattelite2, x, y, 35*2, 35*2);
 	pop();
@@ -579,7 +579,7 @@ BlackHole.prototype.reset = function(){
 	this.physics.acceleration.y = 0;
 	this.rotation = 0;
 }
-BlackHole.defaultInnerRadius = 10;
+BlackHole.defaultInnerRadius = 2;
 BlackHole.defaultOuterRadius = 60;
 BlackHole.force = 1.5;
 

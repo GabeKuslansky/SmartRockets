@@ -11,6 +11,9 @@ let clipSign;
 let clipSattelite2
 
 const width = 800, height = 800;
+const tile_size = 400;
+const columns = width/tile_size;
+const rows = height/tile_size;
 const rocketFrameRate = 60;
 
 let deleteQueue = [];
@@ -21,6 +24,8 @@ let followRocket = false;
 const lerpDist = 0.08;
 const cameraSpeed = 10;
 const swapPeriod = 3000;
+
+
 
 function preload(){
 	backimg = loadImage('/public/images/assets/SpaceBackground.jpg');
@@ -58,7 +63,7 @@ function setup() {
 function draw() {
 	//Clear
 	background(204, 198, 198);
-	image(backimg, 0, 0, width, height);
+
 	if(level.initialized){
 
 		//Events
@@ -119,6 +124,11 @@ function draw() {
 		cameraPosition.x = lerp(cameraPosition.x, cameraTarget.x, lerpDist);
 		cameraPosition.y = lerp(cameraPosition.y, cameraTarget.y, lerpDist);
 		push();
+		for(let row = -1; row < rows+1; row++){
+			for(let column = -1; column < columns+1; column++){
+				image(backimg, row*tile_size+(cameraPosition.x%tile_size), column*tile_size+(cameraPosition.y%tile_size), tile_size, tile_size);
+			}
+		}
 		translate(cameraPosition.x, cameraPosition.y);
 		level.draw();
 		pop();
