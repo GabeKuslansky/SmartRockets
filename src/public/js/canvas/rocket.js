@@ -4,7 +4,7 @@ function Rocket(x, y, DNA){
 
 	//Middle Coords
     this.position = new createVector(x, y);
-	this.color = [random(255), random(255), random(255)];
+    //this.color = [random(255), random(255), random(255)];
 	
 	this.opacity = 145;
 	
@@ -47,11 +47,13 @@ Rocket.prototype.draw = function(){
 	translate(this.position.x, this.position.y);
 	rotate(this.angle);
 	rotate(PI/2);
-	fill(...this.color, this.opacity);
+	imageMode(CENTER);
+	image(clipRocket, 0, 0, this.w, this.h);
+	/*fill(...this.color, 145);
 	triangle(0, -this.h/2,
 			-this.w/2, this.h/2,
 			this.w/2, this.h/2);
-			
+	*/		
 	pop();
 }
 

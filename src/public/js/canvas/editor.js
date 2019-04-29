@@ -36,7 +36,7 @@ function Editor(width, height){
 	this.previousSelectedObject = null;
 
 
-	this.obstacleList = [Target, SpawnPoint, Rectangle, Circle, Polygon, BlackHole];
+	this.obstacleList = [Target, SpawnPoint, Rectangle, Circle, Polygon, Polygon2, BlackHole];
 	this.selectedIndex = 0;
 
 	this.scaleX = document.getElementById("scaleXForm");
