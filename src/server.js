@@ -27,7 +27,6 @@ const errorHandler = async (ctx, next) => {
     } catch(error) {
         ctx.redirect(ctx.originalUrl); //temp fix for unknown 404
         // ctx.render('error', { error: error.stack });
-        console.error(error)
     }
 }
 
