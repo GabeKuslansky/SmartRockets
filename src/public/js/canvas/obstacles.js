@@ -518,7 +518,7 @@ BlackHole.prototype.draw = function(x, y){
 		translate(-this.position.x, -this.position.y);
 		push();
 		imageMode(CENTER);
-		image(clipBlack, this.position.x, this.position.y, (this.outerR*2)*this.scale.x, (this.outerR*2)*this.scale.y);
+		image(clipBlack, this.position.x, this.position.y, (this.outerR*2)*this.scale.x, (this.outerR*2)*this.scale.x);
 		//fill(0, 0, 0, 100);
 		//circle(this.position.x, this.position.y, this.outerR*this.scale.x);
 		//fill(0, 0, 0, 200);
@@ -531,7 +531,7 @@ BlackHole.prototype.draw = function(x, y){
 		translate(-x, -y);
 		push();
 		imageMode(CENTER);
-		image(clipBlack, this.position.x, this.position.y, (this.outerR*2)*this.scale.x, (this.outerR*2)*scale.x);
+		image(clipBlack, x, y, (this.outerR*2)*this.scale.x, (this.outerR*2)*this.scale.x);
 		//fill(0, 0, 0, 100);
 		//circle(x, y, this.outerR*this.scale.x);
 		//fill(0, 0, 0, 200);
@@ -579,7 +579,7 @@ BlackHole.prototype.reset = function(){
 	this.physics.acceleration.y = 0;
 	this.rotation = 0;
 }
-BlackHole.defaultInnerRadius = 2;
+BlackHole.defaultInnerRadius = 10;
 BlackHole.defaultOuterRadius = 60;
 BlackHole.force = 1.5;
 

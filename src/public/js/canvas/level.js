@@ -162,7 +162,7 @@ Level.prototype.draw = function() {
     this.obstacles.forEach(element => element.draw());
     if(this.target != null)
     this.target.draw();
-    if(createLevel && this.spawnCoordinate != null)
+    if(this.spawnCoordinate != null)
     this.spawnCoordinate.draw();
     if(this.population != null)
         this.population.draw();
