@@ -1,0 +1,37 @@
+<div class='col-sm'>
+    <div class="row">
+        <div class='col-6 border-left'>
+
+            {{!-- Population Slider --}}
+            <label for="populationSlider">Population Size: <span id='populationValue'>50</span></label>
+            <input type="range" class="custom-range" value='50' min="1" max="200" step="1" id="populationSlider">
+
+            {{!-- Mutation Rate --}}
+            <label for="mutationSlider">Mutation Rate: <span id='mutationValue'>0.1</span></label>
+            <input type="range" class="custom-range" value='.1' min="0" max="100" step="0.1" id="mutationSlider">
+
+            {{!-- Lifespan --}}
+            <label for="lifespanSlider">Lifespan: <span id='lifespanValue'>6</span> seconds</label>
+            <input type="range" class="custom-range" value='360' min="5" max="2000" step="1" id="lifespanSlider">
+
+            {{!-- Camera Follow --}}
+            <button id='setFollowBtn' class='btn btn-primary mt' onclick='setFollow()'>Follow</button>
+        </div>
+        
+        <div class="col-6">
+            <span>Fitness Algorithm</span>
+            <select class='browser-default custom-select'>
+                <option selected hidden disabled>Please Select</option>
+                <option>Distance</option>
+                <option>Distance & Time</option>
+            </select>
+                    <button id='togglePauseBtn' class='btn btn-success mt-3' onclick='togglePause()'><span id='pauseState'>Play</span> level <i class='fas fa-play'></i></button>
+                    {{#if create}}
+                    <button id='createLevelBtn' class='btn btn-primary mt' onclick='saveLevel()'>Upload level <i class='fas fa-cloud-upload-alt'></i></button>
+                    {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src='/public/js/ui-controls.js'></script>
