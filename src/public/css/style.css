@@ -10,3 +10,7 @@
 body {
     background: url('/public/images/smart rockets texture.png')
 }
+
+#fitnessSelect {
+    width: 17em;
+}

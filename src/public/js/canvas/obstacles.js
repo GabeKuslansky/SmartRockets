@@ -1,150 +1,360 @@
+function Rectangle(x, y, w, h){
+	this.type = "Rectangle";
+	this.position = createVector(x, y); //center
+	if(!h){
+		this.w = Rectangle.defaultDimensions.w;
+		this.h = Rectangle.defaultDimensions.h;
+	}
+	else{
+		this.w = w;
+		this.h = h;
+	}
+	this.scale = createVector(1, 1);
 
-let boxScaleX = 1/3;
-let boxScaleY = .8;
-let boxOffsetX = 0;
-let boxOffsetY = 20;
+	this.startPosition = createVector(x, y);
+	this.startForce = createVector(0, 0);
 
-function BoxObstacle(x, y){
-	
-	this.name = "BoxObstacle";
-	this.position = createVector(x, y);
-	this.physics = new PhysicsObject(this.position, false);
-	this.physics.addColliderBox(0, 0, BoxObstacle.getWidth(), BoxObstacle.getHeight());
-		
+	this.rotation = 0; //degrees
+	this.step = 0;
+	this.rotationPoint = createVector(0, 0);
+	this.physics = new PhysicsObject(this.position, this.scale, false, this, true);
+	this.physics.addColliderBox(0, 0, this.w, this.h);
 }
 
-BoxObstacle.getColor = function(){
-	return [145, 156, 1];
+Rectangle.prototype.update = function(){
+	this.rotation += this.step;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.step));
+	this.position.add(this.rotationPoint);	
+	this.physics.rotate(this.rotation);
 }
-
-BoxObstacle.prototype.draw = function(){
+Rectangle.prototype.draw = function(x, y){
 	push();
-	fill(...BoxObstacle.getColor());
-	rect(this.position.x, this.position.y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
+	if(!x){
+		translate(this.position.x, this.position.y);
+		rotate(radians(this.rotation));
+		translate(-this.position.x, -this.position.y);
+		imageMode(CENTER);
+		image(clipSatellite, this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
+		
+		//rect(this.position.x, this.position.y, this.w*this.scale.x, this.h*this.scale.y);
+	}
+	else{
+		translate(x, y);
+		rotate(radians(this.rotation));
+		translate(-x, -y);
+		imageMode(CENTER);
+		image(clipSatellite, x, y, this.w*this.scale.x, this.h*this.scale.y);
+		
+		//rect(x, y, this.w*this.scale.x, this.h*this.scale.y);	
+	}
 	pop();
 }
-
-//Delete Obstacle
-BoxObstacle.prototype.deleteObstacle = function()
-{
-	//Delete physics object
-	if(this.physics != null){
-		this.physics.deletePhysics();
-		this.physics = null;
+Rectangle.prototype.setRotation = function(angle){
+	//undo current rotation
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(-this.rotation));
+	this.position.add(this.rotationPoint);
+	//rotate
+	this.rotation = angle;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.rotation));
+	this.position.add(this.rotationPoint);
+}
+//Delete
+Rectangle.prototype.deleteObstacle = function(){
+	//Delete physics
+	this.physics.deletePhysics();
+	//Remove from obstacles
+	let deleted = false;
+	for(let i = 0; i < level.obstacles.length && !deleted; i++){
+			if(this == level.obstacles[i]){
+				level.obstacles.splice(i, 1);
+				deleted = true;
+			}
 	}
 }
-
-BoxObstacle.drawIcon = function(x, y){
-	push()
-	var color = BoxObstacle.getColor();
-	if(pointInBox(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY))
-		fill(color[0]+50, color[1]+50, color[2]+50);
-	else
-		fill(...color);
-	rect(x+boxOffsetX, y+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY);
-	pop();
+//Start
+Rectangle.prototype.start = function(){
+	this.physics.applyForce(this.startForce);
 }
-
-BoxObstacle.mouseIntersectsIcon = function(boxPosX, boxPosY){
-	return pointInBox(mouseX-cameraPosition.x, mouseY-cameraPosition.y, boxPosX+boxOffsetX, boxPosY+boxOffsetY, BoxObstacle.getWidth()*boxScaleX, BoxObstacle.getHeight()*boxScaleY);
+//Reset
+Rectangle.prototype.reset = function(){
+	this.position.x = this.startPosition.x;
+	this.position.y = this.startPosition.y;
+	this.physics.velocity.x = 0;
+	this.physics.velocity.y = 0;
+	this.physics.acceleration.x = 0;
+	this.physics.acceleration.y = 0;
+	this.rotation = 0;
 }
+Rectangle.defaultDimensions = {w:80, h:40};
 
-BoxObstacle.getWidth = function(){
-	return 300;
-}
-BoxObstacle.getHeight = function(){
-	return 20;
-}
-
-//Draw obstacle no reference to class
-BoxObstacle.draw = function(x, y){
-	push();
-	fill(...BoxObstacle.getColor());
-	rect(x, y, BoxObstacle.getWidth(), BoxObstacle.getHeight());
-	pop();
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-/////				
-//			//////			/////
-					/////
-		//						///
-		///////////////////////////
-
-
-
-
-
-
-let circleScale = 1/2;
-let circleOffsetX = 40;
-let circleOffsetY = 30;
-
-function CircleObstacle(x, y){
+//Where xy is the cneter
+Rectangle.drawToGraphics = function(pg, x, y){
+	pg.push();
+	pg.fill(255, 255, 255, 100);
+	pg.imageMode(CENTER);
+	//pg.rectMode(CENTER);
+	pg.image(clipSatellite, x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
 	
-	this.name = "CircleObstacle";
-	this.position = createVector(x, y);
-	this.physics = new PhysicsObject(this.position, false);
-	this.physics.addColliderCircle(0, 0, CircleObstacle.getRadius());
-		
+	//pg.rect(x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
+	pg.pop();
 }
-
-
-
-CircleObstacle.getColor = function(){
-	return [145, 156, 1];
-}
-
-CircleObstacle.prototype.draw = function(){
+//Draw with default values
+Rectangle.draw = function(x, y){
 	push();
-	fill(...CircleObstacle.getColor());
-	circle(this.position.x, this.position.y, CircleObstacle.getRadius());
+	imageMode(CENTER);
+	image(clipSatellite, x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
+	
+	//rectMode(CENTER);
+	//rect(x, y, Rectangle.defaultDimensions.w, Rectangle.defaultDimensions.h);
 	pop();
 }
 
-//Delete Obstacle
-CircleObstacle.prototype.deleteObstacle = function()
-{
-	//Delete physics object
-	if(this.physics != null){
-		this.physics.deletePhysics();
-		this.physics = null;
+
+//DEFINE CLOCKWISE
+function Polygon(centerx, centery, points){
+	this.type = "Polygon";
+	this.position = createVector(centerx, centery); //center
+	if(!points){
+		this.points = [];
+		for(let i = 0; i < Polygon.defaultPoints.length; i++)
+			this.points.push(new SAT.Vector(Polygon.defaultPoints[i].x, Polygon.defaultPoints[i].y));
+	}
+	else
+		this.points = points;
+
+	this.startPosition = createVector(centerx, centery);
+	this.startForce = createVector(0, 0);
+
+	this.scale = createVector(1, 1);
+	this.rotation = 0; //degrees
+	this.step = 0;
+	this.rotationPoint = createVector(0, 0);
+	this.physics = new PhysicsObject(this.position, this.scale, false, this, true);
+	this.physics.addColliderPolygon(0, 0, this.points);
+}
+Polygon.prototype.update = function(){
+	this.rotation += this.step;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.step));
+	this.position.add(this.rotationPoint);	
+	this.physics.rotate(this.rotation);
+}
+Polygon.prototype.draw = function(x, y){
+	push();
+	if(!x){
+		translate(this.position.x, this.position.y);
+		rotate(radians(this.rotation));
+		translate(-this.position.x, -this.position.y);
+		beginShape();
+		for(let i = 0; i < this.points.length; i++)
+			vertex(this.points[i].x*this.scale.x + this.position.x, this.points[i].y*this.scale.y + this.position.y);
+		endShape(CLOSE);
+		imageMode(CENTER);
+		image(clipSign, this.position.x, this.position.y, 45*2*this.scale.x, 45*2*this.scale.y);
+	}
+	else{
+		translate(x, y);
+		rotate(radians(this.rotation));
+		translate(-x, -y);
+		beginShape();
+		for(let i = 0; i < this.points.length; i++)
+			vertex(this.points[i].x*this.scale.x + x, this.points[i].y*this.scale.y + y);
+		endShape(CLOSE);
+		imageMode(CENTER);
+		image(clipSign, x, y, 45*2*this.scale.x, 45*2*this.scale.y);
+	}
+	pop();
+}
+Polygon.prototype.setRotation = function(angle){
+	//undo current rotation
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(-this.rotation));
+	this.position.add(this.rotationPoint);
+	//rotate
+	this.rotation = angle;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.rotation));
+	this.position.add(this.rotationPoint);
+}
+//Delete
+Polygon.prototype.deleteObstacle = function(){
+	//Delete physics
+	this.physics.deletePhysics();
+	//Remove from obstacles
+	let deleted = false;
+	for(let i = 0; i < level.obstacles.length && !deleted; i++){
+			if(this == level.obstacles[i]){
+				level.obstacles.splice(i, 1);
+				deleted = true;
+			}
 	}
 }
-
-//Draw icon at x y coord
-CircleObstacle.drawIcon = function(x, y){
-	push()
-	var color = CircleObstacle.getColor();
-	if(pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+circleOffsetX, y+circleOffsetY, CircleObstacle.getRadius()*circleScale))
-		fill(color[0]+50, color[1]+50, color[2]+50);
-	else
-		fill(...color);
-	circle(x+circleOffsetX, y+circleOffsetY, CircleObstacle.getRadius()*circleScale);
-	pop();
+//Start
+Polygon.prototype.start = function(){
+	this.physics.applyForce(this.startForce);
 }
-
-CircleObstacle.mouseIntersectsIcon = function(circlePosX, circlePosY){
-	return pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, circlePosX+circleOffsetX, circlePosY+circleOffsetY, CircleObstacle.getRadius()*circleScale);
+//Reset
+Polygon.prototype.reset = function(){
+	this.position.x = this.startPosition.x;
+	this.position.y = this.startPosition.y;
+	this.physics.velocity.x = 0;
+	this.physics.velocity.y = 0;
+	this.physics.acceleration.x = 0;
+	this.physics.acceleration.y = 0;
+	this.rotation = 0;
 }
+Polygon.defaultPoints = [new SAT.Vector(0, -45), new SAT.Vector(45, 45), new SAT.Vector(-45, 45)];
+//Where xy is the center
+Polygon.drawToGraphics = function(pg, x, y){
+	pg.push();
+	pg.fill(255, 255, 255, 50);
 
-CircleObstacle.getRadius = function(){
-	return 50;
+	pg.beginShape();
+	for(let i = 0; i < Polygon.defaultPoints.length; i++)
+		pg.vertex(Polygon.defaultPoints[i].x/1.5 + x, Polygon.defaultPoints[i].y/1.5 + y);
+	pg.endShape(CLOSE);
+	pg.imageMode(CENTER);
+	pg.image(clipSign, x, y, 45*2, 45*2);
+	pg.pop();
 }
-
-
-//Draw obstacle no reference to class
-CircleObstacle.draw = function(x, y){
+//Draw with default values
+Polygon.draw = function(x, y){
 	push();
-	fill(...CircleObstacle.getColor());
-	circle(x, y, CircleObstacle.getRadius());
+	beginShape();
+	for(let i = 0; i <Polygon.defaultPoints.length; i++)
+		vertex(Polygon.defaultPoints[i].x + x, Polygon.defaultPoints[i].y + y);
+	endShape(CLOSE);
+	imageMode(CENTER);
+	image(clipSign, x, y, 45*2, 45*2);
+	pop();
+}
+
+
+
+function Polygon2(centerx, centery, points){
+	this.type = "Polygon";
+	this.position = createVector(centerx, centery); //center
+	if(!points){
+		this.points = [];
+		for(let i = 0; i < Polygon.defaultPoints.length; i++)
+			this.points.push(new SAT.Vector(Polygon.defaultPoints[i].x, Polygon.defaultPoints[i].y));
+	}
+	else
+		this.points = points;
+
+	this.startPosition = createVector(centerx, centery);
+	this.startForce = createVector(0, 0);
+
+	this.scale = createVector(1, 1);
+	this.rotation = 0; //degrees
+	this.step = 0;
+	this.rotationPoint = createVector(0, 0);
+	this.physics = new PhysicsObject(this.position, this.scale, false, this, true);
+	this.physics.addColliderPolygon(0, 0, this.points);
+}
+Polygon2.prototype.update = function(){
+	this.rotation += this.step;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.step));
+	this.position.add(this.rotationPoint);	
+	this.physics.rotate(this.rotation);
+}
+Polygon2.prototype.draw = function(x, y){
+	push();
+	if(!x){
+		translate(this.position.x, this.position.y);
+		rotate(radians(this.rotation));
+		translate(-this.position.x, -this.position.y);
+		fill(0,0,0,20);
+		strokeWeight(0);
+		/*beginShape();
+		for(let i = 0; i < this.points.length; i++)
+			vertex(this.points[i].x*this.scale.x + this.position.x, this.points[i].y*this.scale.y + this.position.y);
+		endShape(CLOSE);*/
+		imageMode(CENTER);
+		image(clipSattelite2, this.position.x, this.position.y, 35*2*this.scale.x, 35*2*this.scale.y);
+	}
+	else{
+		translate(x, y);
+		rotate(radians(this.rotation));
+		translate(-x, -y);
+		fill(0,0,0,20);
+		strokeWeight(0);
+		/*beginShape();
+		for(let i = 0; i < this.points.length; i++)
+			vertex(this.points[i].x*this.scale.x + x, this.points[i].y*this.scale.y + y);
+		endShape(CLOSE);*/
+		imageMode(CENTER);
+		image(clipSattelite2, x, y, 35*2*this.scale.x, 35*2*this.scale.y);
+	}
+	pop();
+}
+Polygon2.prototype.setRotation = function(angle){
+	//undo current rotation
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(-this.rotation));
+	this.position.add(this.rotationPoint);
+	//rotate
+	this.rotation = angle;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.rotation));
+	this.position.add(this.rotationPoint);
+}
+//Delete
+Polygon2.prototype.deleteObstacle = function(){
+	//Delete physics
+	this.physics.deletePhysics();
+	//Remove from obstacles
+	let deleted = false;
+	for(let i = 0; i < level.obstacles.length && !deleted; i++){
+			if(this == level.obstacles[i]){
+				level.obstacles.splice(i, 1);
+				deleted = true;
+			}
+	}
+}
+//Start
+Polygon2.prototype.start = function(){
+	this.physics.applyForce(this.startForce);
+}
+//Reset
+Polygon2.prototype.reset = function(){
+	this.position.x = this.startPosition.x;
+	this.position.y = this.startPosition.y;
+	this.physics.velocity.x = 0;
+	this.physics.velocity.y = 0;
+	this.physics.acceleration.x = 0;
+	this.physics.acceleration.y = 0;
+	this.rotation = 0;
+}
+Polygon2.defaultPoints = [new SAT.Vector(0, -35), new SAT.Vector(35, 35), new SAT.Vector(-35, 35)];
+//Where xy is the center
+Polygon2.drawToGraphics = function(pg, x, y){
+	pg.push();
+	pg.fill(0,0,0,20);
+	pg.strokeWeight(0);
+	/*pg.beginShape();
+	for(let i = 0; i < Polygon2.defaultPoints.length; i++)
+		pg.vertex(Polygon2.defaultPoints[i].x + x, Polygon2.defaultPoints[i].y + y);
+	pg.endShape(CLOSE);*/
+	pg.imageMode(CENTER);
+	pg.image(clipSattelite2, x, y, 35*2, 35*2);
+	pg.pop();
+}
+//Draw with default values
+Polygon2.draw = function(x, y){
+	push();
+	fill(0,0,0,20);
+	strokeWeight(0);
+	/*beginShape();
+	for(let i = 0; i <Polygon2.defaultPoints.length; i++)
+		vertex(Polygon2.defaultPoints[i].x + x, Polygon2.defaultPoints[i].y + y);
+	endShape(CLOSE);*/
+	imageMode(CENTER);
+	image(clipSattelite2, x, y, 35*2, 35*2);
 	pop();
 }
 
@@ -152,196 +362,246 @@ CircleObstacle.draw = function(x, y){
 
 
 
-
-
-////////////////////////////////////////////////////
-//BLACK HOLE
-
-
-//
-let blackHoleScale = 1.5;
-let blackHoleOffsetX = 10;
-let blackHoleOffsetY = 30;
-
-function BlackHoleObstacle(x, y){
-	
-	this.name = "BlackHoleObstacle";
+function Circle(x, y, r){
+	this.type = "Circle";
 	this.position = createVector(x, y);
-	this.physics = new PhysicsObject(this.position, false);
-	this.physics.addColliderCircle(0, 0, BlackHoleObstacle.getRadius());
+	if(!r)
+		this.r = Circle.defaultRadius;
+	else
+		this.r = r;
+
+	this.startPosition = createVector(x, y);
+	this.startForce = createVector(0, 0);
+
+	this.scale = createVector(1, 1);
+	this.rotation = 0; //degrees
+	this.step = 0;
+	this.rotationPoint = createVector(0, 0);
+	this.physics = new PhysicsObject(this.position, this.scale, false, this, true);
+	this.physics.addColliderCircle(0, 0, this.r);
+}
+Circle.prototype.update = function(){
+	this.rotation += this.step;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.step));
+	this.position.add(this.rotationPoint);	
+}
+Circle.prototype.draw = function(x, y){
+	push();
+	if(!x){
+		translate(this.position.x, this.position.y);
+		rotate(radians(this.rotation));
+		translate(-this.position.x, -this.position.y);
+		imageMode(CENTER);
+		image(clipAsteroid, this.position.x, this.position.y, (this.r*2)*this.scale.x, (this.r*2)*this.scale.x);
+		fill(0,0,0,50);
+		circle(this.position.x, this.position.y, this.r*this.scale.x);
 		
+	}
+	else{
+		translate(x, y);
+		rotate(radians(this.rotation));
+		translate(-x, -y);
+		imageMode(CENTER);
+		image(clipAsteroid, x, y, (this.r*2)*this.scale.x, (this.r*2)*this.scale.x);
+		fill(0,0,0,50);
+		circle(x, y, this.r*this.scale.x);
+		
+	}
+	pop();
+}
+Circle.prototype.setRotation = function(angle){
+	//undo current rotation
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(-this.rotation));
+	this.position.add(this.rotationPoint);
+	//rotate
+	this.rotation = angle;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.rotation));
+	this.position.add(this.rotationPoint);
+}
+//Delete
+Circle.prototype.deleteObstacle = function(){
+	//Delete physics
+	this.physics.deletePhysics();
+	//Remove from obstacles
+	let deleted = false;
+	for(let i = 0; i < level.obstacles.length && !deleted; i++){
+			if(this == level.obstacles[i]){
+				level.obstacles.splice(i, 1);
+				deleted = true;
+			}
+	}
+}
+//Start
+Circle.prototype.start = function(){
+	this.physics.applyForce(this.startForce);
+}
+//Reset
+Circle.prototype.reset = function(){
+	this.position.x = this.startPosition.x;
+	this.position.y = this.startPosition.y;
+	this.physics.velocity.x = 0;
+	this.physics.velocity.y = 0;
+	this.physics.acceleration.x = 0;
+	this.physics.acceleration.y = 0;
+	this.rotation = 0;
+}
+Circle.defaultRadius = 40;
+
+//Where xy is the cneter
+Circle.drawToGraphics = function(pg, x, y){
+	pg.push();
+	pg.fill(0, 0, 0, 50);
+	pg.imageMode(CENTER);
+	pg.image(clipAsteroid, x, y, Circle.defaultRadius*2, Circle.defaultRadius*2);
+	pg.rectMode(CENTER);
+	pg.circle(x, y, Circle.defaultRadius);
+	pg.pop();
+}
+//Draw with default values
+Circle.draw = function(x, y){
+	push();
+	imageMode(CENTER);
+	image(clipAsteroid, x, y, Circle.defaultRadius*2, Circle.defaultRadius*2);
+	fill(0, 0, 0, 50);
+	circle(x, y, Circle.defaultRadius);
+	pop();
 }
 
 
-BlackHoleObstacle.prototype.update = function(){
+
+
+//Black Hole
+function BlackHole(x, y, innerR, outerR){
+	this.type = "BlackHole";
+	this.position = createVector(x, y);
+	if(!innerR){
+		this.innerR = BlackHole.defaultInnerRadius;
+		this.outerR = BlackHole.defaultOuterRadius;
+	}
+	else{
+		this.innerR = innerR;
+		this.outerR = outerR;
+	}
+
+	this.startPosition = createVector(x, y);
+	this.startForce = createVector(0, 0);
+
+	this.scale = createVector(1, 1);
+	this.rotation = 0; //degrees
+	this.step = 0;
+	this.rotationPoint = createVector(0, 0);
+	this.physics = new PhysicsObject(this.position, createVector(1, 1), false, this, false);
+	this.physics.addColliderCircle(0, 0, this.innerR);
+}
+BlackHole.prototype.update = function(){
+	this.rotation += this.step;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.step));
+	this.position.add(this.rotationPoint);	
+
 	let rockets = level.population.rockets;
 	for(let i = 0; i < rockets.length; i++){
-		if(dist(this.position.x, this.position.y, rockets[i].position.x, rockets[i].position.y) < BlackHoleObstacle.getAttractionRadius()){
+		if(dist(this.position.x, this.position.y, rockets[i].position.x, rockets[i].position.y) < this.outerR*this.scale.x){
 			if(rockets[i].physics != null)
-				rockets[i].physics.applyForce(createVector(this.position.x - rockets[i].position.x, this.position.y - rockets[i].position.y).normalize().mult(BlackHoleObstacle.getForce())); //apply force inward to circle
+				rockets[i].physics.applyForce(createVector(this.position.x - rockets[i].position.x, this.position.y - rockets[i].position.y).normalize().mult(BlackHole.force)); //apply force inward to circle
 		}
 	}
 }
-
-BlackHoleObstacle.getForce = function(){
-	return 1;
-}
-
-BlackHoleObstacle.getColor = function(){
-	return [0, 0, 0];
-}
-
-BlackHoleObstacle.getOpacity = function(){
-	return 150;
-}
-
-BlackHoleObstacle.prototype.draw = function(){
+BlackHole.prototype.draw = function(x, y){
 	push();
-	strokeWeight(0);
-	var color = BlackHoleObstacle.getColor();
-	fill(color[0]+100, color[1]+100, color[2]+100, BlackHoleObstacle.getOpacity());
-	circle(this.position.x, this.position.y, BlackHoleObstacle.getAttractionRadius());
-	fill(color);
-	circle(this.position.x, this.position.y, BlackHoleObstacle.getRadius());
+	if(!x){
+		translate(this.position.x, this.position.y);
+		rotate(radians(this.rotation));
+		translate(-this.position.x, -this.position.y);
+		push();
+		imageMode(CENTER);
+		image(clipBlack, this.position.x, this.position.y, (this.outerR*2)*this.scale.x, (this.outerR*2)*this.scale.x);
+		//fill(0, 0, 0, 100);
+		//circle(this.position.x, this.position.y, this.outerR*this.scale.x);
+		//fill(0, 0, 0, 200);
+		//circle(this.position.x, this.position.y, this.innerR);
+		pop();
+	}
+	else{
+		translate(x, y);
+		rotate(radians(this.rotation));
+		translate(-x, -y);
+		push();
+		imageMode(CENTER);
+		image(clipBlack, x, y, (this.outerR*2)*this.scale.x, (this.outerR*2)*this.scale.x);
+		//fill(0, 0, 0, 100);
+		//circle(x, y, this.outerR*this.scale.x);
+		//fill(0, 0, 0, 200);
+		//circle(x, y, this.innerR);
+		pop();
+
+	}
 	pop();
 }
-
-//Delete Obstacle
-BlackHoleObstacle.prototype.deleteObstacle = function()
-{
-	//Delete physics object
-	if(this.physics != null){
-		this.physics.deletePhysics();
-		this.physics = null;
+BlackHole.prototype.setRotation = function(angle){
+	//undo current rotation
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(-this.rotation));
+	this.position.add(this.rotationPoint);
+	//rotate
+	this.rotation = angle;
+	this.position.sub(this.rotationPoint);
+	this.position.rotate(radians(this.rotation));
+	this.position.add(this.rotationPoint);
+}
+//Delete
+BlackHole.prototype.deleteObstacle = function(){
+	//Delete physics
+	this.physics.deletePhysics();
+	//Remove from obstacles
+	let deleted = false;
+	for(let i = 0; i < level.obstacles.length && !deleted; i++){
+			if(this == level.obstacles[i]){
+				level.obstacles.splice(i, 1);
+				deleted = true;
+			}
 	}
 }
-
-//Draw icon at x y coord
-BlackHoleObstacle.drawIcon = function(x, y){
-	push()
-	var color = BlackHoleObstacle.getColor();
-	if(pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale))
-		fill(color[0]+50, color[1]+50, color[2]+50);
-	else
-		fill(...color);
-	circle(x+blackHoleOffsetX, y+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
-	pop();
+//Start
+BlackHole.prototype.start = function(){
+	this.physics.applyForce(this.startForce);
 }
-
-BlackHoleObstacle.mouseIntersectsIcon = function(blackHolePosX, blackHolePosY){
-	return pointInCircle(mouseX-cameraPosition.x, mouseY-cameraPosition.y, blackHolePosX+blackHoleOffsetX, blackHolePosY+blackHoleOffsetY, BlackHoleObstacle.getRadius()*blackHoleScale);
+//Reset
+BlackHole.prototype.reset = function(){
+	this.position.x = this.startPosition.x;
+	this.position.y = this.startPosition.y;
+	this.physics.velocity.x = 0;
+	this.physics.velocity.y = 0;
+	this.physics.acceleration.x = 0;
+	this.physics.acceleration.y = 0;
+	this.rotation = 0;
 }
+BlackHole.defaultInnerRadius = 10;
+BlackHole.defaultOuterRadius = 60;
+BlackHole.force = 1.5;
 
-BlackHoleObstacle.getRadius = function(){
-	return 10;
+//Where xy is the cneter
+BlackHole.drawToGraphics = function(pg, x, y){
+	pg.push();
+	pg.imageMode(CENTER);
+	pg.image(clipBlack, x, y, BlackHole.defaultOuterRadius*2, BlackHole.defaultOuterRadius*2);
+	//pg.fill(0, 0, 0, 100);
+	//pg.circle(x, y, BlackHole.defaultOuterRadius);
+	//pg.fill(0, 0, 0, 200);
+	//pg.circle(x, y, BlackHole.defaultInnerRadius);
+	pg.pop();
 }
-BlackHoleObstacle.getAttractionRadius = function(){
-	return 100;
-}
-
-//Draw obstacle no reference to class
-BlackHoleObstacle.draw = function(x, y){
+//Draw with default values
+BlackHole.draw = function(x, y){
 	push();
-	fill(...BlackHoleObstacle.getColor());
-	circle(x, y, BlackHoleObstacle.getRadius());
-	pop();
-}
-
-
-
-
-
-
-
-
-
-
-////////MORE OBJECTS
-
-
-let triangleScale = 2/3;
-let triangleOffsetX = 10;
-let triangleOffsetY = 30;
-
-
-function TriangleObstacle(x, y){
-	
-	this.name = "TriangleObstacle";
-	//position at center
-	this.position = createVector(x, y);
-	this.physics = new PhysicsObject(this.position, false);
-	this.physics.addColliderPolygon(0, 0, [
-					new SAT.Vector(0, -TriangleObstacle.getLength()),
-					new SAT.Vector(TriangleObstacle.getLength(), TriangleObstacle.getLength()),
-					new SAT.Vector(-TriangleObstacle.getLength(), TriangleObstacle.getLength())]);
-		
-}
-
-TriangleObstacle.getColor = function(){
-	return [145, 156, 1];
-}
-
-TriangleObstacle.prototype.draw = function(){
-	push();
-	fill(...TriangleObstacle.getColor());
-	triangle(this.position.x, this.position.y - TriangleObstacle.getLength(),
-			this.position.x + TriangleObstacle.getLength(), this.position.y + TriangleObstacle.getLength(),
-			this.position.x - TriangleObstacle.getLength(), this.position.y + TriangleObstacle.getLength()
-			);
-	pop();
-}
-
-//Delete Obstacle
-TriangleObstacle.prototype.deleteObstacle = function()
-{
-	//Delete physics object
-	if(this.physics != null){
-		this.physics.deletePhysics();
-		this.physics = null;
-	}
-}
-
-//Draw icon at x y coord
-TriangleObstacle.drawIcon = function(x, y){
-	push()
-	var color = TriangleObstacle.getColor();
-	let poly = new SAT.Polygon(new SAT.Vector(x+triangleOffsetX, y+triangleOffsetY),[
-					new SAT.Vector(0, -TriangleObstacle.getLength()*triangleScale),
-					new SAT.Vector(TriangleObstacle.getLength()*triangleScale, TriangleObstacle.getLength()*triangleScale),
-					new SAT.Vector(-TriangleObstacle.getLength()*triangleScale, TriangleObstacle.getLength()*triangleScale)	
-	])
-	if(pointInPolygon(mouseX-cameraPosition.x, mouseY-cameraPosition.y, poly))
-		fill(color[0]+50, color[1]+50, color[2]+50);
-	else
-		fill(...color);
-	triangle(x+triangleOffsetX, y+triangleOffsetY - TriangleObstacle.getLength()*triangleScale,
-			x+triangleOffsetX + TriangleObstacle.getLength()*triangleScale, y+triangleOffsetY + TriangleObstacle.getLength()*triangleScale,
-			x+triangleOffsetX - TriangleObstacle.getLength()*triangleScale, y+triangleOffsetY + TriangleObstacle.getLength()*triangleScale
-			);
-	pop();
-}
-
-TriangleObstacle.mouseIntersectsIcon = function(trianglePosX, trianglePosY){
-	let poly = new SAT.Polygon(new SAT.Vector(trianglePosX+triangleOffsetX, trianglePosY+triangleOffsetY),[
-					new SAT.Vector(0, -TriangleObstacle.getLength()*triangleScale),
-					new SAT.Vector(TriangleObstacle.getLength()*triangleScale, TriangleObstacle.getLength()*triangleScale),
-					new SAT.Vector(-TriangleObstacle.getLength()*triangleScale, TriangleObstacle.getLength()*triangleScale)	
-	])
-	return pointInPolygon(mouseX-cameraPosition.x, mouseY-cameraPosition.y, poly)
-}
-
-TriangleObstacle.getLength = function(){
-	return 30;
-}
-
-
-//Draw obstacle no reference to class
-TriangleObstacle.draw = function(x, y){
-	push();
-	fill(...TriangleObstacle.getColor());
-		triangle(x, y - TriangleObstacle.getLength(),
-			x + TriangleObstacle.getLength(), y + TriangleObstacle.getLength(),
-			x - TriangleObstacle.getLength(), y + TriangleObstacle.getLength()
-			);
+	imageMode(CENTER);
+	image(clipBlack, x, y, BlackHole.defaultOuterRadius*2, BlackHole.defaultOuterRadius*2);
+	//fill(0, 0, 0, 100);
+	//circle(x, y, BlackHole.defaultOuterRadius);
+	//fill(0, 0, 0, 200);
+	//circle(x, y, BlackHole.defaultInnerRadius);
 	pop();
 }

@@ -1,25 +1,142 @@
+//TODO fix sliders to match creating and killing population
+
 function Target(x, y, radius){
-	
-	this.position = createVector(x, y);
-	this.radius = radius;
+    
+    this.color = [200, 0, 0]
+    this.position = createVector(x, y);
+    if(!radius)
+        this.radius = Target.defaultRadius;
+    else
+        this.radius = radius;
 	
 }
 //Draw
-Target.prototype.draw = function(){
-	push();
-	fill(200, 0, 0);
-	circle(this.position.x, this.position.y, this.radius);
+Target.prototype.draw = function(x, y){
+    if(!x){
+        push();
+        imageMode(CENTER);
+        image(clipMars, this.position.x, this.position.y, this.radius*2, this.radius*2);
+        fill(200, 0, 0, 100);
+        circle(this.position.x, this.position.y, this.radius);
+        pop();
+    }
+    else{
+        push();
+        imageMode(CENTER);
+        image(clipMars, x, y, this.radius*2, this.radius*2);
+        fill(200, 0, 0, 100);
+        circle(x, y, this.radius);
+        pop();
+    }
+}
+//Point in target
+Target.prototype.pointInTarget = function(x, y){
+	return dist(x, y, this.position.x, this.position.y) <= this.radius;
+}
+//Physics intersect target
+Target.prototype.intersectsTarget = function(physobj){
+    let collided = false;
+    let circle = new SAT.Circle(new SAT.Vector(this.position.x, this.position.y), Target.defaultRadius);
+    for(let i = 0; i < physobj.colliders.length; i++){
+        collided = checkCircleCollision(circle, physobj.colliders[i]);
+        if(collided)
+            return true
+    }
+    return false;
+}
+//deleting
+Target.prototype.deleteObstacle = function(){
+    level.target = null;
+}
+Target.defaultRadius = 40;
+//Where xy is the cneter
+Target.drawToGraphics = function(pg, x, y){
+    pg.push();
+    pg.imageMode(CENTER);
+    pg.image(clipMars, x, y, Target.defaultRadius*2, Target.defaultRadius*2);
+    pg.fill(200, 0, 0, 100);
+	pg.circle(x, y, Target.defaultRadius);
+	pg.pop();
+}
+//Draw with default values
+Target.draw = function(x, y){
+    push();
+    imageMode(CENTER);
+    image(clipMars, x, y, Target.defaultRadius*2, Target.defaultRadius*2);
+    fill(200, 0, 0, 100);
+	circle(x, y, Target.defaultRadius);
 	pop();
 }
+
+function SpawnPoint(x, y){
+    this.position = createVector(x, y);
+}
+SpawnPoint.prototype.draw = function(x, y){
+    if(!x){
+        push();
+        imageMode(CENTER);
+        image(clipEarth, this.position.x, this.position.y, SpawnPoint.defaultRadius*2, SpawnPoint.defaultRadius*2);
+        fill(255,255,255, 30);
+        circle(this.position.x, this.position.y, SpawnPoint.defaultRadius);
+        pop(); 
+    }
+    else{
+        push();
+        imageMode(CENTER);
+        image(clipEarth, x, y, SpawnPoint.defaultRadius*2, SpawnPoint.defaultRadius*2);
+        fill(255,255,255, 30);
+        circle(x, y, SpawnPoint.defaultRadius);
+        pop();
+    }
+}
+//Point on spawn points
+SpawnPoint.prototype.pointInSpawn = function(x, y){
+	return dist(x, y, this.position.x, this.position.y) <= SpawnPoint.defaultRadius*2;
+}
+//deleting
+SpawnPoint.prototype.deleteObstacle = function(){
+    level.spawnCoordinate = null;
+}
+//Physics intersect target
+SpawnPoint.prototype.intersectsSpawnPoint = function(physobj){
+
+    let collided = false;
+    let circle = new SAT.Circle(new SAT.Vector(this.position.x, this.position.y), SpawnPoint.defaultRadius);
+    for(let i = 0; i < physobj.colliders.length; i++){
+        collided = checkCircleCollision(circle, physobj.colliders[i]);
+        if(collided)
+            return true
+    }
+    return false;
+}
+SpawnPoint.defaultRadius = 40;
+//Where xy is the center
+SpawnPoint.drawToGraphics = function(pg, x, y){
+	pg.push();
+    pg.imageMode(CENTER);
+    pg.image(clipEarth, x, y, SpawnPoint.defaultRadius*2, SpawnPoint.defaultRadius*2);
+    pg.fill(255,255,255, 30);
+	pg.circle(x, y, SpawnPoint.defaultRadius);
+	pg.pop();
+}
+//Draw with default values
+SpawnPoint.draw = function(x, y){
+    push();
+    imageMode(CENTER);
+    image(clipEarth, x, y, SpawnPoint.defaultRadius*2, SpawnPoint.defaultRadius*2);
+    fill(255,255,255, 30);
+    circle(x, y, SpawnPoint.defaultRadius);
+	pop();
+}
+
+
 
 function Level() {
     this.initialized = false;
     this.obstacles = [];
-    this.width = 600;
-    this.height = 600;
-    this.spawnCoordinate = {x: this.width/2, y: this.height-100};
+    this.spawnCoordinate = null;
     this.populationSize = 50;
-    this.lifespan = 360;
+    this.lifespan = 6*60;
     this.population = null;
     this.target = null;
 }
@@ -30,43 +147,86 @@ Level.prototype.addObstacle = function(object) {
 
 Level.prototype.initLevel = function(){
     
-    const { obstacles, width, height, spawnCoordinate, populationSize, lifespan, target} = levelStructure;
-    const obstacleArray = obstacles;
-    
-    for(let i = 0; i < obstacleArray.length; i++){
-        this.obstacles.push(eval("new " + obstacleArray[i].name + "(" + obstacleArray[i].x + ", " + obstacleArray[i].y + ")"));
+    //Create New Level
+    if(!createLevel){
+        this.deserialize(levelStructure);
+        this.createPopulation();
     }
-    this.width = width;
-    this.height = height;
-    this.spawnCoordinate = spawnCoordinate;
-    this.target = new Target(target.x, target.y, target.r);
+    
 
-    this.population = new Population(this.populationSize, this.lifespan, this.spawnCoordinate.x, this.spawnCoordinate.y);
     this.initialized = true;
+
 }
 
 Level.prototype.draw = function() {
     this.obstacles.forEach(element => element.draw());
-    this.population.draw();
+    if(this.target != null)
     this.target.draw();
+    if(this.spawnCoordinate != null)
+    this.spawnCoordinate.draw();
+    if(this.population != null)
+        this.population.draw();
 }
 
 Level.prototype.update = function() {
-	
-	for(let i = 0; i < this.obstacles.length; i++){
-		if(this.obstacles[i].update)
-			this.obstacles[i].update();
-	}
-    this.population.update();
+    
+    if(this.population != null){
+
+        for(let i = 0; i < this.obstacles.length; i++){
+            if(this.obstacles[i].update)
+                this.obstacles[i].update();
+        }
+        this.population.update();
+    }
 }
 
-Level.prototype.setLevelDimensions = function(x, y){
-    this.width = x;
-    this.height = y;
+Level.prototype.setSpawn = function(x_, y_){
+    this.spawnCoordinate = {x:x_, y:y_};
 }
 
-Level.prototype.setSpawn = function(x, y){
-    this.spawnCoordinate = {x, y};
+Level.prototype.setTarget = function(x, y){
+    this.target = new Target(x, y);
+}
+
+Level.prototype.createPopulation = function(){
+    if(this.population == null && this.target != null && this.spawnCoordinate != null){
+        this.population = new Population();
+    }
+    this.objectStart();
+}
+
+Level.prototype.killPopulation = function(){
+    if(this.population != null){
+        this.population.deletePopulation();
+        this.population = null;
+
+        this.objectReset();
+
+        if(createLevel)
+            editor.resetUI();
+    }
+    
+}
+
+Level.prototype.reset = function(){
+
+    this.objectReset();
+    this.objectStart();
+
+    if(createLevel)
+     editor.resetUI();
+}
+
+Level.prototype.objectStart = function(){
+    //start obstacles
+    for(let i = 0; i < this.obstacles.length; i++)
+        this.obstacles[i].start();
+}
+
+Level.prototype.objectReset = function(){
+    //reset obstacles
+    for(let i = 0; i < this.obstacles.length; i++)
+        this.obstacles[i].reset();
 }
 
 Level.prototype.serialize = function(){
@@ -75,20 +235,49 @@ Level.prototype.serialize = function(){
     for(let i = 0; i < this.obstacles.length; i++){
         obstacleArray.push(
             {
-                name: this.obstacles[i].name,
+                type: this.obstacles[i].type,
                 x: this.obstacles[i].position.x,
-                y: this.obstacles[i].position.y
+                y: this.obstacles[i].position.y,
+                scalex: this.obstacles[i].scale.x,
+                scaley: this.obstacles[i].scale.y,
+                startforcex: this.obstacles[i].startForce.x,
+                startforcey: this.obstacles[i].startForce.y,
+                rotatepointx: this.obstacles[i].rotationPoint.x,
+                rotatepointy: this.obstacles[i].rotationPoint.y,
+                step: this.obstacles[i].step,
+                isKinematic: this.obstacles[i].physics.isKinematic
+
             }
         );
     }
     let target_ = {x: this.target.position.x, y: this.target.position.y, r: this.target.radius};
+    let spawnpoint = {x: this.spawnCoordinate.position.x, y: this.spawnCoordinate.position.y};
     return {
         obstacles : obstacleArray,
-        width : this.width,
-        height : this.height,
-        spawnCoordinate : this.spawnCoordinate,
+        spawnCoordinate : spawnpoint,
         populationSize : this.populationSize,
         lifespan : this.lifespan,
         target : target_
     };
+}
+Level.prototype.deserialize = function(levelStructure){
+    const { obstacles, spawnCoordinate, populationSize, lifespan, target} = levelStructure;
+
+    for(let i = 0; i < obstacles.length; i++){
+        let obstacle = new window[obstacles[i].type](obstacles[i].x, obstacles[i].y);
+        obstacle.scale.x = obstacles[i].scalex;
+        obstacle.scale.y = obstacles[i].scaley;
+        obstacle.startForce.x = obstacles[i].startforcex;
+        obstacle.startForce.y = obstacles[i].startforcey;
+        obstacle.rotationPoint.x = obstacles[i].rotatepointx;
+        obstacle.rotationPoint.y = obstacles[i].rotatepointy;
+        obstacle.step = obstacles[i].step;
+        obstacle.physics.isKinematic = obstacles[i].isKinematic;
+        this.obstacles.push(obstacle);
+    }
+    this.spawnCoordinate = new SpawnPoint(spawnCoordinate.x, spawnCoordinate.y);
+    this.target = new Target(target.x, target.y, target.r);
+    this.populationSize = populationSize;
+    this.lifespan = lifespan;
+    this.population = new Population();
 }
